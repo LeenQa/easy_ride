@@ -1,4 +1,4 @@
-name: flutter_auth
+name: easy_ride
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -22,14 +22,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  flutter_svg: ^0.19.1
+  flutter_svg: ^0.20.0-nullsafety.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.16.1  
+  intl: 0.17.0  
 
 
 # For information on the generic Dart part of this file, see the
@@ -57,7 +57,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+    - family: Quicksand
+      fonts:
+       - asset: assets/fonts/Quicksand-Regular.ttf
+       - asset: assets/fonts/Quicksand-Bold.ttf
+       - asset: assets/fonts/Quicksand-Light.ttf
+       - asset: assets/fonts/Quicksand-Medium.ttf
+       - asset: assets/fonts/Quicksand-SemiBold.ttf
+         weight: 700
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

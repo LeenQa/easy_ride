@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Login/login_screen.dart';
-import 'package:flutter_auth/Screens/Signup/signup_screen.dart';
-import 'package:flutter_auth/Screens/Welcome/components/background.dart';
-import 'package:flutter_auth/components/rounded_button.dart';
-import 'package:flutter_auth/constants.dart';
+import 'package:easy_ride/Screens/Login/login_screen.dart';
+import 'package:easy_ride/Screens/Signup/signup_screen.dart';
+import 'package:easy_ride/Screens/Welcome/components/background.dart';
+import 'package:easy_ride/components/rounded_button.dart';
+import 'package:easy_ride/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../main.dart';
