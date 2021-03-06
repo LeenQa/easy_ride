@@ -4,6 +4,7 @@ import 'package:easy_ride/Screens/Signup/signup_screen.dart';
 import 'package:easy_ride/Screens/Welcome/components/background.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../main.dart';
@@ -62,8 +63,8 @@ class Body extends StatelessWidget {
             ),
             RoundedButton(
               text: "SIGN UP",
-              color: kPrimaryLightColor,
-              textColor: Colors.black,
+              color: kPrimaryDarkColor,
+              textColor: Colors.white,
               press: () {
                 Navigator.push(
                   context,
