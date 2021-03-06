@@ -8,12 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../main.dart';
 
-class Body extends StatefulWidget {
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
+class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -26,19 +21,15 @@ class _BodyState extends State<Body> {
             ListTile(
               leading: RaisedButton(
                 onPressed: () {
-                  setState(() {
-                    MyApp.of(context)
-                        .setLocale(Locale.fromSubtags(languageCode: 'en'));
-                  });
+                  MyApp.of(context)
+                      .setLocale(Locale.fromSubtags(languageCode: 'en'));
                 },
                 child: Text('ENGLISH'),
               ),
               trailing: RaisedButton(
                 onPressed: () {
-                  setState(() {
-                    MyApp.of(context)
-                        .setLocale(Locale.fromSubtags(languageCode: 'ar'));
-                  });
+                  MyApp.of(context)
+                      .setLocale(Locale.fromSubtags(languageCode: 'ar'));
                 },
                 child: Text('ARABIC'),
               ),
