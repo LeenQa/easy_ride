@@ -5,7 +5,6 @@ import 'package:easy_ride/components/already_have_an_account_acheck.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
-import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
   const Body({

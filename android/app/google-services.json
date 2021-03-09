@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "475204599491",
+    "firebase_url": "https://easyride-8fdc3-default-rtdb.firebaseio.com",
+    "project_id": "easyride-8fdc3",
+    "storage_bucket": "easyride-8fdc3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475204599491:android:90d44be0c7077a7cfeac76",
+        "android_client_info": {
+          "package_name": "com.example.easy_ride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475204599491-cfrrvc1gamsvelr4jrs51u3ic8tmedd8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU-36jIp2MiJouJ6G2g3Y1Io-8QrPHVTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475204599491-cfrrvc1gamsvelr4jrs51u3ic8tmedd8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,10 +4,7 @@ import 'package:easy_ride/Screens/Signup/signup_screen.dart';
 import 'package:easy_ride/Screens/Welcome/components/background.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:easy_ride/constants.dart';
-import 'package:easy_ride/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../main.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -19,22 +16,22 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ListTile(
-              leading: RaisedButton(
-                onPressed: () {
-                  MyApp.of(context)
-                      .setLocale(Locale.fromSubtags(languageCode: 'en'));
-                },
-                child: Text('ENGLISH'),
-              ),
-              trailing: RaisedButton(
-                onPressed: () {
-                  MyApp.of(context)
-                      .setLocale(Locale.fromSubtags(languageCode: 'ar'));
-                },
-                child: Text('ARABIC'),
-              ),
-            ),
+            // ListTile(
+            //   leading: RaisedButton(
+            //     onPressed: () {
+            //       MyApp.of(context)
+            //           .setLocale(Locale.fromSubtags(languageCode: 'en'));
+            //     },
+            //     child: Text('ENGLISH'),
+            //   ),
+            //   trailing: RaisedButton(
+            //     onPressed: () {
+            //       MyApp.of(context)
+            //           .setLocale(Locale.fromSubtags(languageCode: 'ar'));
+            //     },
+            //     child: Text('ARABIC'),
+            //   ),
+            // ),
             Text(
               AppLocalizations.of(context).helloWorld,
               style: TextStyle(fontWeight: FontWeight.bold),
