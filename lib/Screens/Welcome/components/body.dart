@@ -40,7 +40,7 @@ class Body extends StatelessWidget {
             ClipRRect(
               child: Image.asset(
                 "assets/icons/EZ.png",
-                height: size.height * 0.35,
+                height: size.height * 0.25,
               ),
               borderRadius: BorderRadius.circular(120),
             ),

@@ -1,0 +1,161 @@
+import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
+import 'package:easy_ride/Screens/Signup/components/user.dart';
+import 'package:easy_ride/components/rounded_input_field.dart';
+import 'package:easy_ride/components/rounded_password_field.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_ride/Screens/Login/login_screen.dart';
+import 'package:easy_ride/Screens/Signup/components/background.dart';
+import 'package:easy_ride/Screens/Signup/components/or_divider.dart';
+import 'package:easy_ride/Screens/Signup/components/social_icon.dart';
+import 'package:easy_ride/components/already_have_an_account_acheck.dart';
+import 'package:easy_ride/components/rounded_button.dart';
+
+class SingupBody extends StatefulWidget {
+  final void Function(
+    User user,
+  ) signupSubmit;
+  SingupBody(this.signupSubmit);
+  @override
+  _SingupBodyState createState() => _SingupBodyState();
+}
+
+class _SingupBodyState extends State<SingupBody> {
+  User _user = User();
+  final _formKey = GlobalKey<FormState>();
+
+  void _trySubmit() {
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid) {
+      _formKey.currentState.save();
+      widget.signupSubmit(_user);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    String _passConf = '';
+    _user = User();
+    return Background(
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: size.height * 0.07),
+              Text(
+                "SIGNUP",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: size.height * 0.03),
+              ClipRRect(
+                child: Image.asset(
+                  "assets/icons/EZ.png",
+                  height: size.height * 0.2,
+                ),
+                borderRadius: BorderRadius.circular(120),
+              ),
+              RoundedInputField(
+                icon: Icons.person,
+                hintText: "First name",
+                onSaved: (value) {
+                  _user.firstName = value.trim();
+                },
+              ),
+              RoundedInputField(
+                icon: Icons.person,
+                hintText: "Last name",
+                onSaved: (value) {
+                  _user.lastName = value.trim();
+                },
+              ),
+              RoundedInputField(
+                icon: Icons.email,
+                keyboardType: TextInputType.emailAddress,
+                hintText: "Email",
+                onSaved: (value) {
+                  _user.email = value.trim();
+                },
+              ),
+              RoundedInputField(
+                icon: Icons.person,
+                hintText: "Username",
+                onSaved: (value) {
+                  _user.username = value.trim();
+                },
+              ),
+              RoundedInputField(
+                icon: Icons.phone,
+                keyboardType: TextInputType.phone,
+                hintText: "Phone number",
+                onSaved: (value) {
+                  _user.phone = int.parse(value.trim());
+                },
+              ),
+              RoundedPasswordField(
+                hintText: "Password",
+                validator: (value) {
+                  var check = FieldValidation.validatePassword(value);
+                  if (check == null) {
+                    _passConf = value;
+                  }
+                  return check;
+                },
+                onSaved: (value) {
+                  _user.password = value.trim();
+                },
+              ),
+              RoundedPasswordField(
+                hintText: "Confirm password",
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Fill empty fields";
+                  } else if (_passConf != value) {
+                    return "Passwords don't match";
+                  } else
+                    return null;
+                },
+                onSaved: (value) => _passConf = value,
+              ),
+              RoundedButton(
+                text: "SIGNUP",
+                press: _trySubmit,
+              ),
+              SizedBox(height: size.height * 0.03),
+              AlreadyHaveAnAccountCheck(
+                login: false,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginScreen();
+                      },
+                    ),
+                  );
+                },
+              ),
+              OrDivider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SocalIcon(
+                    iconSrc: "assets/icons/facebook.svg",
+                    press: () {},
+                  ),
+                  SocalIcon(
+                    iconSrc: "assets/icons/google-plus.svg",
+                    press: () {},
+                  ),
+                  SizedBox(height: size.height * 0.19),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
