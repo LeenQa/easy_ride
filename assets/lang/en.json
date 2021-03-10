@@ -1,0 +1,14 @@
+{
+    "welcome" : "Welcome to EasyRide",
+    "signup" : "Sign Up",
+    "login" : "Log In",
+    "username" : "Username",
+    "password" : "Password",
+    "email" : "Email",
+    "phone":"Phone Number",
+    "firstname" : "First Name",
+    "lastname" : "Last Name",
+    "confirmpass" : "Confirm Password",
+    "fillemptyfields": "Fill empty fields",
+    "passwordsnotmatch" : "Passwords don't match"
+    }

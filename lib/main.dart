@@ -1,7 +1,10 @@
+import 'package:easy_ride/test.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'localization/demo_localization.dart';
+import 'localization/language_constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,14 +14,28 @@ class MyApp extends StatefulWidget {
 
   static _MyAppState of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>();
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState state = context.findAncestorStateOfType<_MyAppState>();
+    state.setLocale(newLocale);
+  }
 }
 
 class _MyAppState extends State<MyApp> {
   Locale _locale;
-
-  void setLocale(Locale value) {
+  setLocale(Locale locale) {
     setState(() {
-      _locale = value;
+      _locale = locale;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getLocale().then((locale) {
+      setState(() {
+        this._locale = locale;
+      });
     });
   }
 
@@ -26,9 +43,25 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       locale: _locale,
-      localizationsDelegates:
-          AppLocalizations.localizationsDelegates, // Add this line
-      supportedLocales: AppLocalizations.supportedLocales, // Add this line
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('ar', 'AR'),
+      ],
+      localizationsDelegates: [
+        DemoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        for (var locale in supportedLocales) {
+          if (locale.languageCode == deviceLocale.languageCode) {
+            print(deviceLocale);
+            return deviceLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       debugShowCheckedModeBanner: false,
       title: 'Flutter Auth',
       theme: ThemeData(
@@ -44,8 +77,7 @@ class _MyAppState extends State<MyApp> {
               button: TextStyle(color: Colors.blue),
             ),
       ),
-
-      home: WelcomeScreen(),
+      home: HomePage(),
     );
   }
 }

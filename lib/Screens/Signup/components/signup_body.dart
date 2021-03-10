@@ -2,6 +2,7 @@ import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
 import 'package:easy_ride/Screens/Signup/components/user.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/background.dart';
@@ -9,12 +10,14 @@ import 'package:easy_ride/Screens/Signup/components/or_divider.dart';
 import 'package:easy_ride/Screens/Signup/components/social_icon.dart';
 import 'package:easy_ride/components/already_have_an_account_acheck.dart';
 import 'package:easy_ride/components/rounded_button.dart';
+import '../../../constants.dart';
 
 class SingupBody extends StatefulWidget {
   final void Function(
     User user,
   ) signupSubmit;
-  SingupBody(this.signupSubmit);
+  final bool _isLoading;
+  SingupBody(this.signupSubmit, this._isLoading);
   @override
   _SingupBodyState createState() => _SingupBodyState();
 }
@@ -46,8 +49,10 @@ class _SingupBodyState extends State<SingupBody> {
             children: <Widget>[
               SizedBox(height: size.height * 0.07),
               Text(
-                "SIGNUP",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                getTranslated(context, 'signup'),
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
               SizedBox(height: size.height * 0.03),
               ClipRRect(
@@ -57,16 +62,17 @@ class _SingupBodyState extends State<SingupBody> {
                 ),
                 borderRadius: BorderRadius.circular(120),
               ),
+              SizedBox(height: size.height * 0.02),
               RoundedInputField(
                 icon: Icons.person,
-                hintText: "First name",
+                hintText: getTranslated(context, 'firstname'),
                 onSaved: (value) {
                   _user.firstName = value.trim();
                 },
               ),
               RoundedInputField(
                 icon: Icons.person,
-                hintText: "Last name",
+                hintText: getTranslated(context, 'lastname'),
                 onSaved: (value) {
                   _user.lastName = value.trim();
                 },
@@ -74,14 +80,14 @@ class _SingupBodyState extends State<SingupBody> {
               RoundedInputField(
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
-                hintText: "Email",
+                hintText: getTranslated(context, 'email'),
                 onSaved: (value) {
                   _user.email = value.trim();
                 },
               ),
               RoundedInputField(
                 icon: Icons.person,
-                hintText: "Username",
+                hintText: getTranslated(context, 'username'),
                 onSaved: (value) {
                   _user.username = value.trim();
                 },
@@ -89,13 +95,13 @@ class _SingupBodyState extends State<SingupBody> {
               RoundedInputField(
                 icon: Icons.phone,
                 keyboardType: TextInputType.phone,
-                hintText: "Phone number",
+                hintText: getTranslated(context, 'phone'),
                 onSaved: (value) {
                   _user.phone = int.parse(value.trim());
                 },
               ),
               RoundedPasswordField(
-                hintText: "Password",
+                hintText: getTranslated(context, 'password'),
                 validator: (value) {
                   var check = FieldValidation.validatePassword(value);
                   if (check == null) {
@@ -108,21 +114,26 @@ class _SingupBodyState extends State<SingupBody> {
                 },
               ),
               RoundedPasswordField(
-                hintText: "Confirm password",
+                hintText: getTranslated(context, 'confirmpass'),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Fill empty fields";
+                    return getTranslated(context, 'fillemptyfields');
                   } else if (_passConf != value) {
-                    return "Passwords don't match";
+                    return getTranslated(context, 'passwordsnotmatch');
                   } else
                     return null;
                 },
                 onSaved: (value) => _passConf = value,
               ),
-              RoundedButton(
-                text: "SIGNUP",
-                press: _trySubmit,
-              ),
+              if (widget._isLoading)
+                CircularProgressIndicator(
+                  backgroundColor: kPrimaryColor,
+                ),
+              if (!widget._isLoading)
+                RoundedButton(
+                  text: getTranslated(context, 'signup'),
+                  press: _trySubmit,
+                ),
               SizedBox(height: size.height * 0.03),
               AlreadyHaveAnAccountCheck(
                 login: false,

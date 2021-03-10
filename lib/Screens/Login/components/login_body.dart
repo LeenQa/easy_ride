@@ -1,3 +1,5 @@
+import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/components/background.dart';
 import 'package:easy_ride/Screens/Signup/signup_screen.dart';
@@ -11,7 +13,8 @@ class LoginBody extends StatefulWidget {
   final void Function(
     User user,
   ) loginSubmit;
-  LoginBody(this.loginSubmit);
+  final bool _isLoading;
+  LoginBody(this.loginSubmit, this._isLoading);
 
   @override
   _LoginBodyState createState() => _LoginBodyState();
@@ -42,8 +45,10 @@ class _LoginBodyState extends State<LoginBody> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "LOGIN",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                getTranslated(context, 'login'),
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
               SizedBox(height: size.height * 0.03),
               ClipRRect(
@@ -57,16 +62,16 @@ class _LoginBodyState extends State<LoginBody> {
               RoundedInputField(
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
-                hintText: "Email",
+                hintText: getTranslated(context, 'email'),
                 onSaved: (value) {
                   _user.email = value.trim();
                 },
               ),
               RoundedPasswordField(
-                hintText: "Password",
+                hintText: getTranslated(context, 'password'),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Fill empty fields";
+                    return getTranslated(context, 'fillemptyfields');
                   } else
                     return null;
                 },
@@ -74,10 +79,15 @@ class _LoginBodyState extends State<LoginBody> {
                   _user.password = value.trim();
                 },
               ),
-              RoundedButton(
-                text: "LOGIN",
-                press: _trySubmit,
-              ),
+              if (widget._isLoading)
+                CircularProgressIndicator(
+                  backgroundColor: kPrimaryColor,
+                ),
+              if (!widget._isLoading)
+                RoundedButton(
+                  text: getTranslated(context, 'login'),
+                  press: _trySubmit,
+                ),
               SizedBox(height: size.height * 0.03),
               AlreadyHaveAnAccountCheck(
                 press: () {

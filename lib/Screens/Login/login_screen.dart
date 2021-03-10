@@ -11,10 +11,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
   _loginForm(
     User user,
   ) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       AuthResult authResult;
       authResult = await _auth.signInWithEmailAndPassword(
         email: user.email,
@@ -29,15 +33,21 @@ class _LoginScreenState extends State<LoginScreen> {
         content: Text(message),
         backgroundColor: Theme.of(context).errorColor,
       ));
+      setState(() {
+        _isLoading = false;
+      });
     } catch (err) {
       print(err);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LoginBody(_loginForm),
+      body: LoginBody(_loginForm, _isLoading),
     );
   }
 }

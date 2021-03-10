@@ -1,10 +1,10 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Signup/signup_screen.dart';
 import 'package:easy_ride/Screens/Welcome/components/background.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:easy_ride/constants.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -16,25 +16,18 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // ListTile(
-            //   leading: RaisedButton(
-            //     onPressed: () {
-            //       MyApp.of(context)
-            //           .setLocale(Locale.fromSubtags(languageCode: 'en'));
-            //     },
-            //     child: Text('ENGLISH'),
-            //   ),
-            //   trailing: RaisedButton(
-            //     onPressed: () {
-            //       MyApp.of(context)
-            //           .setLocale(Locale.fromSubtags(languageCode: 'ar'));
-            //     },
-            //     child: Text('ARABIC'),
-            //   ),
-            // ),
             Text(
-              AppLocalizations.of(context).helloWorld,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              getTranslated(context, 'welcome'),
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+            Text(
+              "EasyRide",
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryColor),
             ),
             SizedBox(height: size.height * 0.05),
             ClipRRect(
@@ -46,7 +39,7 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.05),
             RoundedButton(
-              text: "LOGIN",
+              text: getTranslated(context, 'login'),
               press: () {
                 Navigator.push(
                   context,
@@ -59,7 +52,7 @@ class Body extends StatelessWidget {
               },
             ),
             RoundedButton(
-              text: "SIGN UP",
+              text: getTranslated(context, 'signup'),
               color: kPrimaryDarkColor,
               textColor: Colors.white,
               press: () {
