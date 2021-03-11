@@ -37,7 +37,6 @@ class Auth implements BaseAuth {
 
   @override
   Future<void> signOut() async {
-    // TODO: implement signOut
     await _firebaseAuth.signOut();
     throw UnimplementedError();
   }
