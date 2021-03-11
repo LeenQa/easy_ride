@@ -1,3 +1,4 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/constants.dart';
 
@@ -16,13 +17,17 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          login ? "Don’t have an Account ? " : "Already have an Account ? ",
+          login
+              ? getTranslated(context, 'noaccount')
+              : getTranslated(context, 'haveaccount'),
           style: TextStyle(color: kPrimaryColor),
         ),
         GestureDetector(
           onTap: press,
           child: Text(
-            login ? "Sign Up" : "Sign In",
+            login
+                ? getTranslated(context, 'signup')
+                : getTranslated(context, 'login'),
             style: TextStyle(
               color: kPrimaryColor,
               fontWeight: FontWeight.bold,

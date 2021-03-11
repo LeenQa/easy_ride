@@ -7,6 +7,7 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:flutter/material.dart';
 
 class TabsScreen extends StatefulWidget {
+  static const routeName = '/tabs';
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }

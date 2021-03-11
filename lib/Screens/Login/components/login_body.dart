@@ -1,3 +1,4 @@
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +25,13 @@ class _LoginBodyState extends State<LoginBody> {
   User _user = User();
   final _formKey = GlobalKey<FormState>();
 
-  void _trySubmit() {
+  void _trySubmit(BuildContext ctx) {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
       widget.loginSubmit(_user);
+      Navigator.of(ctx).pushNamed(TabsScreen.routeName, arguments: {});
     }
   }
 
@@ -86,7 +88,7 @@ class _LoginBodyState extends State<LoginBody> {
               if (!widget._isLoading)
                 RoundedButton(
                   text: getTranslated(context, 'login'),
-                  press: _trySubmit,
+                  press: () => _trySubmit(context),
                 ),
               SizedBox(height: size.height * 0.03),
               AlreadyHaveAnAccountCheck(

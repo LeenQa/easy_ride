@@ -1,5 +1,6 @@
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
 import 'package:easy_ride/Screens/Signup/components/user.dart';
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
@@ -26,12 +27,15 @@ class _SingupBodyState extends State<SingupBody> {
   User _user = User();
   final _formKey = GlobalKey<FormState>();
 
-  void _trySubmit() {
+  void _trySubmit(BuildContext ctx) {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
       widget.signupSubmit(_user);
+      Navigator.of(ctx).pushNamed(
+        LoginScreen.routeName,
+      );
     }
   }
 
@@ -132,7 +136,7 @@ class _SingupBodyState extends State<SingupBody> {
               if (!widget._isLoading)
                 RoundedButton(
                   text: getTranslated(context, 'signup'),
-                  press: _trySubmit,
+                  press: () => _trySubmit(context),
                 ),
               SizedBox(height: size.height * 0.03),
               AlreadyHaveAnAccountCheck(

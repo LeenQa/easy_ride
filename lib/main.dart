@@ -1,8 +1,11 @@
+import 'package:easy_ride/Screens/Login/login_screen.dart';
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/test.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Screens/Signup/signup_screen.dart';
 import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
 
@@ -77,7 +80,16 @@ class _MyAppState extends State<MyApp> {
               button: TextStyle(color: Colors.blue),
             ),
       ),
-      home: HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (ctx) => WelcomeScreen(),
+        SignUpScreen.routeName: (ctx) => SignUpScreen(),
+        LoginScreen.routeName: (ctx) => LoginScreen(),
+        TabsScreen.routeName: (ctx) => TabsScreen()
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(builder: (ctx) => WelcomeScreen());
+      },
     );
   }
 }

@@ -10,5 +10,16 @@
     "lastname" : "Last Name",
     "confirmpass" : "Confirm Password",
     "fillemptyfields": "Fill empty fields",
-    "passwordsnotmatch" : "Passwords don't match"
+    "passwordsnotmatch" : "Passwords don't match",
+    "home" : "Home",
+    "messages" : "Messages",
+    "search" : "Search",
+    "notifications" : "Notifications",
+    "srchforard" : "Search for a Ride",
+    "offrard" : "Offer a Ride",
+    "bcmadriver" : "Become a Driver",
+    "forgetpass" : "Forgot Password",
+    "noaccount" : "Don’t have an Account ? ",
+    "haveaccount" :"Already have an Account ? "
+
     }

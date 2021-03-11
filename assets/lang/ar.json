@@ -10,5 +10,15 @@
     "lastname" : "اسم العائلة",
     "confirmpass" : "تأكيد كلمة المرور",
     "fillemptyfields": "تأكد من تعبئة جميع الفراغات",
-    "passwordsnotmatch" : "كلمات المرور لا تتطابق"
+    "passwordsnotmatch" : "كلمات المرور لا تتطابق",
+    "home" : "الصفحة الرئيسية",
+    "messages" : "الرسائل",
+    "search" : "ابحث",
+    "notifications" : "التنبيهات",
+    "srchforard" : "إبحث عن توصيلة",
+    "offrard" : "إعرض توصيلة",
+    "bcmadriver" : "اصبح سائق",
+    "forgetpass" : "نسيت كلمة المرور",
+    "noaccount" : " لا تملك حساب؟",
+    "haveaccount" :" تملك حساب؟"
     }
