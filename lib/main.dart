@@ -1,4 +1,9 @@
+import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
+import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
+import 'package:easy_ride/Screens/Profile/profile_screen.dart';
+import 'package:easy_ride/Screens/Settings/settings_screen.dart';
+import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/test.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +90,12 @@ class _MyAppState extends State<MyApp> {
         '/': (ctx) => WelcomeScreen(),
         SignUpScreen.routeName: (ctx) => SignUpScreen(),
         LoginScreen.routeName: (ctx) => LoginScreen(),
-        TabsScreen.routeName: (ctx) => TabsScreen()
+        TabsScreen.routeName: (ctx) => TabsScreen(),
+        ProfileScreen.routeName: (ctx) => ProfileScreen(),
+        UserSearchScreen.routeName: (ctx) => UserSearchScreen(),
+        OfferRideScreen.routeName: (ctx) => OfferRideScreen(),
+        BecomeDriverScreen.routeName: (ctx) => BecomeDriverScreen(),
+        SettingsScreen.routeName: (ctx) => SettingsScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (ctx) => WelcomeScreen());
