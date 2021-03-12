@@ -5,6 +5,7 @@ import 'package:easy_ride/Screens/Notifications/notifications_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -14,13 +15,6 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final List<Map<String, Object>> _pages = [
-    {'page': HomeScreen(), 'title': 'Home'},
-    {'page': MessagesScreen(), 'title': 'Messages'},
-    {'page': NotificationsScreen(), 'title': 'Notifications'},
-    {'page': SearchScreen(), 'title': 'Search'},
-  ];
-
   int _selectedPageIndex = 0;
 
   void _selectPage(int index) {
@@ -31,6 +25,15 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, Object>> _pages = [
+      {'page': HomeScreen(), 'title': 'EasyRide'},
+      {'page': MessagesScreen(), 'title': getTranslated(context, 'messages')},
+      {
+        'page': NotificationsScreen(),
+        'title': getTranslated(context, 'notifications')
+      },
+      {'page': SearchScreen(), 'title': getTranslated(context, 'search')},
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(

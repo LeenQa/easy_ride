@@ -1,3 +1,4 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -7,7 +8,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text(getTranslated(context, 'settings')),
       ),
       body: Container(
         child: Text("Settings"),

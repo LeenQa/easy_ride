@@ -1,3 +1,4 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 
 class BecomeDriverScreen extends StatelessWidget {
@@ -7,7 +8,7 @@ class BecomeDriverScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Become Driver"),
+        title: Text(getTranslated(context, 'bcmadriver')),
       ),
       body: Container(
         child: Text("Become Driver"),

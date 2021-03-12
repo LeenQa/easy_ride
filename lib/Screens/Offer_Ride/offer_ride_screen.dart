@@ -1,3 +1,4 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 
 class OfferRideScreen extends StatelessWidget {
@@ -7,7 +8,7 @@ class OfferRideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Offer Ride"),
+        title: Text(getTranslated(context, 'offrard')),
       ),
       body: Container(
         child: Text("Offer Ride"),
