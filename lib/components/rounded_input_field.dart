@@ -18,7 +18,7 @@ class RoundedInputField extends StatelessWidget {
       child: TextFormField(
         validator: (value) {
           if (hintText == "Username") {
-            return FieldValidation.validateUsername(value);
+            return FieldValidation.validateUsername(value, context);
           } else if (value.isEmpty) {
             return "Fill empty fields";
           } else

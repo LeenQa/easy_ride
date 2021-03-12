@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
       localeResolutionCallback: (deviceLocale, supportedLocales) {
         for (var locale in supportedLocales) {
           if (locale.languageCode == deviceLocale.languageCode) {
-            print(deviceLocale);
             return deviceLocale;
           }
         }

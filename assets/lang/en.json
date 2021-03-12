@@ -1,5 +1,5 @@
 {
-    "welcome" : "Welcome to EasyRide",
+    "welcome" : "Welcome to ",
     "signup" : "Sign Up",
     "login" : "Log In",
     "username" : "Username",
@@ -14,12 +14,16 @@
     "home" : "Home",
     "messages" : "Messages",
     "search" : "Search",
+    "profile" : "Profile",
+    "settings": "Settings",
     "notifications" : "Notifications",
     "srchforard" : "Search for a Ride",
+    "srchforausr" : "Search for a User",
     "offrard" : "Offer a Ride",
     "bcmadriver" : "Become a Driver",
     "forgetpass" : "Forgot Password",
     "noaccount" : "Don’t have an Account ? ",
-    "haveaccount" :"Already have an Account ? "
+    "haveaccount" :"Already have an Account ? ",
+    "usernameerror" : "Username should be at least four characters, and should only contain letters and numbers"
 
     }

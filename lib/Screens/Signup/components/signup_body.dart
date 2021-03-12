@@ -107,7 +107,7 @@ class _SingupBodyState extends State<SingupBody> {
               RoundedPasswordField(
                 hintText: getTranslated(context, 'password'),
                 validator: (value) {
-                  var check = FieldValidation.validatePassword(value);
+                  var check = FieldValidation.validatePassword(value, context);
                   if (check == null) {
                     _passConf = value;
                   }

@@ -29,6 +29,7 @@ dependencies:
   cloud_firestore: ^0.13.5
   firebase_auth: ^0.16.1
   curved_navigation_bar: ^0.3.7
+  lite_rolling_switch: ^0.1.1
 
 dev_dependencies:
   flutter_test:

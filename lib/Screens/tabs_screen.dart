@@ -4,6 +4,7 @@ import 'package:easy_ride/Screens/Messages/messages_screen.dart';
 import 'package:easy_ride/Screens/Notifications/notifications_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/constants.dart';
 import 'package:flutter/material.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -32,7 +33,11 @@ class _TabsScreenState extends State<TabsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_pages[_selectedPageIndex]['title']),
+        title: Text(
+          _pages[_selectedPageIndex]['title'],
+          style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
       ),
       drawer: MainDrawer(),
       body: _pages[_selectedPageIndex]['page'],

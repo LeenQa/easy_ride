@@ -1,5 +1,5 @@
 {
-    "welcome" : "مرحبا في ايزي رايد",
+    "welcome" : "مرجبا في ",
     "signup" : "إنشاء حساب",
     "login" : "تسجيل دخول",
     "username" : "اسم المستخدم",
@@ -9,16 +9,21 @@
     "firstname" : "الاسم الاول",
     "lastname" : "اسم العائلة",
     "confirmpass" : "تأكيد كلمة المرور",
-    "fillemptyfields": "تأكد من تعبئة جميع الفراغات",
+    "fillemptyfields": "تأكد من تعبئة جميع الخانات",
     "passwordsnotmatch" : "كلمات المرور لا تتطابق",
     "home" : "الصفحة الرئيسية",
     "messages" : "الرسائل",
     "search" : "ابحث",
+    "profile" : "الصفحة الشخصية",
+    "settings" : "الإعدادات",
     "notifications" : "التنبيهات",
     "srchforard" : "إبحث عن توصيلة",
+    "srchforausr": "إبحث عن مستخدم",
     "offrard" : "إعرض توصيلة",
     "bcmadriver" : "اصبح سائق",
     "forgetpass" : "نسيت كلمة المرور",
     "noaccount" : " لا تملك حساب؟",
-    "haveaccount" :" تملك حساب؟"
+    "haveaccount" :" تملك حساب؟",
+    "usernameerror" : "إسم المستخدم يجب أن يكون على الأقل خمسة حروف ويحتوي فقط على أرقام وحروف"
+
     }
