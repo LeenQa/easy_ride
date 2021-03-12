@@ -137,7 +137,7 @@ class _MainDrawerState extends State<MainDrawer> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
             child: LiteRollingSwitch(
-              value: langValue,
+              value: true,
               textOn: "English",
               textOff: "        العربية",
               colorOn: Colors.lightBlue,
