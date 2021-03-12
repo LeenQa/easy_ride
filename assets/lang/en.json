@@ -24,6 +24,7 @@
     "forgetpass" : "Forgot Password",
     "noaccount" : "Don’t have an Account ? ",
     "haveaccount" :"Already have an Account ? ",
-    "usernameerror" : "Username should be at least four characters, and should only contain letters and numbers"
+    "usernameerror" : "Username should be at least four characters, and should only contain letters and numbers",
+    "switchlang" : "Switch Language"
 
     }

@@ -33,23 +33,25 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
+  Widget getTitle(String title) {
+    return Text(title,
+        style: TextStyle(
+          color: Colors.black54,
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w600,
+          fontSize: 17,
+        ));
+  }
+
   Widget buildListTile(
-      BuildContext context, String title, IconData icon, Function tabHandler) {
+      BuildContext context, IconData icon, Function tabHandler, Widget title) {
     return ListTile(
       leading: Icon(
         icon,
         color: Theme.of(context).primaryColor,
         size: 26,
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontFamily: 'Quicksand',
-          fontWeight: FontWeight.w700,
-          fontSize: 17,
-        ),
-      ),
+      title: title,
       onTap: tabHandler,
     );
   }
@@ -87,74 +89,98 @@ class _MainDrawerState extends State<MainDrawer> {
           ),
           buildListTile(
             context,
-            getTranslated(context, 'profile'),
             Icons.person_pin_rounded,
             () {
               Navigator.of(context).pushNamed(ProfileScreen.routeName);
             },
+            getTitle(getTranslated(context, 'profile')),
           ),
           Divider(
-            thickness: 3,
+            thickness: 1,
           ),
           buildListTile(
             context,
-            getTranslated(context, 'srchforausr'),
             Icons.person_search_outlined,
             () {
               Navigator.of(context).pushNamed(UserSearchScreen.routeName);
             },
+            getTitle(getTranslated(context, 'srchforausr')),
           ),
           buildListTile(
             context,
-            getTranslated(context, 'offrard'),
             Icons.add_circle_outline_outlined,
             () {
               Navigator.of(context).pushNamed(OfferRideScreen.routeName);
             },
+            getTitle(getTranslated(context, 'offrard')),
           ),
           buildListTile(
             context,
-            getTranslated(context, 'bcmadriver'),
             Icons.check_circle_outline_outlined,
             () {
               Navigator.of(context).pushNamed(BecomeDriverScreen.routeName);
             },
+            getTitle(getTranslated(context, 'bcmadriver')),
           ),
           Divider(
-            thickness: 3,
+            thickness: 1,
+          ),
+          buildListTile(context, Icons.settings, () {
+            Navigator.of(context).pushNamed(SettingsScreen.routeName);
+          }, getTitle(getTranslated(context, 'settings'))),
+          Divider(
+            thickness: 1,
           ),
           buildListTile(
             context,
-            getTranslated(context, 'settings'),
-            Icons.settings,
-            () {
-              Navigator.of(context).pushNamed(SettingsScreen.routeName);
-            },
-          ),
-          Divider(
-            thickness: 3,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-            child: LiteRollingSwitch(
-              value: true,
-              textOn: "English",
-              textOff: "        العربية",
-              colorOn: Colors.lightBlue,
-              colorOff: Colors.pink[200],
-              iconOn: Icons.language,
-              iconOff: Icons.language,
-              textSize: 17,
-              onChanged: (bool position) {
-                // print(locale.languageCode);
-                if (position) {
-                  _changeLanguage(Language.languageList().elementAt(0));
-                } else {
-                  _changeLanguage(Language.languageList().elementAt(1));
-                }
+            Icons.language,
+            () {},
+            DropdownButton<Language>(
+              underline: SizedBox(),
+              hint: Text(getTranslated(context, "switchlang")),
+              onChanged: (Language language) {
+                _changeLanguage(language);
               },
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (e) => DropdownMenuItem<Language>(
+                      value: e,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Text(
+                            e.flag,
+                            style: TextStyle(fontSize: 30),
+                          ),
+                          Text(e.name)
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          //   child: LiteRollingSwitch(
+          //     value: true,
+          //     textOn: "English",
+          //     textOff: "        العربية",
+          //     colorOn: Colors.lightBlue,
+          //     colorOff: Colors.pink[200],
+          //     iconOn: Icons.language,
+          //     iconOff: Icons.language,
+          //     textSize: 17,
+          //     onChanged: (bool position) {
+          //       // print(locale.languageCode);
+          //       if (position) {
+          //         _changeLanguage(Language.languageList().elementAt(0));
+          //       } else {
+          //         _changeLanguage(Language.languageList().elementAt(1));
+          //       }
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
