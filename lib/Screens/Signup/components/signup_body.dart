@@ -1,9 +1,9 @@
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
-import 'package:easy_ride/Screens/Signup/components/user.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/background.dart';

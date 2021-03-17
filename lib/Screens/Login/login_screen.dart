@@ -1,8 +1,8 @@
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
+import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import '../Signup/components/user.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "/login";

@@ -14,6 +14,22 @@ class MainDrawer extends StatefulWidget {
   _MainDrawerState createState() => _MainDrawerState();
 }
 
+Widget getTitle({String title, Color color, double fontSize}) {
+  if (color == null) {
+    color = Colors.black54;
+  }
+  if (fontSize == null) {
+    fontSize = 17;
+  }
+  return Text(title,
+      style: TextStyle(
+        color: color,
+        fontFamily: 'Quicksand',
+        fontWeight: FontWeight.w600,
+        fontSize: fontSize,
+      ));
+}
+
 class _MainDrawerState extends State<MainDrawer> {
   Locale locale;
   void _changeLanguage(Language language) async {
@@ -31,16 +47,6 @@ class _MainDrawerState extends State<MainDrawer> {
       }
       langValue = false;
     });
-  }
-
-  Widget getTitle(String title) {
-    return Text(title,
-        style: TextStyle(
-          color: Colors.black54,
-          fontFamily: 'Quicksand',
-          fontWeight: FontWeight.w600,
-          fontSize: 17,
-        ));
   }
 
   Widget buildListTile(
@@ -93,7 +99,7 @@ class _MainDrawerState extends State<MainDrawer> {
             () {
               Navigator.of(context).pushNamed(ProfileScreen.routeName);
             },
-            getTitle(getTranslated(context, 'profile')),
+            getTitle(title: getTranslated(context, 'profile')),
           ),
           Divider(
             thickness: 1,
@@ -104,7 +110,7 @@ class _MainDrawerState extends State<MainDrawer> {
             () {
               Navigator.of(context).pushNamed(UserSearchScreen.routeName);
             },
-            getTitle(getTranslated(context, 'srchforausr')),
+            getTitle(title: getTranslated(context, 'srchforausr')),
           ),
           buildListTile(
             context,
@@ -112,7 +118,7 @@ class _MainDrawerState extends State<MainDrawer> {
             () {
               Navigator.of(context).pushNamed(OfferRideScreen.routeName);
             },
-            getTitle(getTranslated(context, 'offrard')),
+            getTitle(title: getTranslated(context, 'offrard')),
           ),
           buildListTile(
             context,
@@ -120,14 +126,14 @@ class _MainDrawerState extends State<MainDrawer> {
             () {
               Navigator.of(context).pushNamed(BecomeDriverScreen.routeName);
             },
-            getTitle(getTranslated(context, 'bcmadriver')),
+            getTitle(title: getTranslated(context, 'bcmadriver')),
           ),
           Divider(
             thickness: 1,
           ),
           buildListTile(context, Icons.settings, () {
             Navigator.of(context).pushNamed(SettingsScreen.routeName);
-          }, getTitle(getTranslated(context, 'settings'))),
+          }, getTitle(title: getTranslated(context, 'settings'))),
           Divider(
             thickness: 1,
           ),

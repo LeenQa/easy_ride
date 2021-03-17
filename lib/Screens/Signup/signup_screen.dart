@@ -1,9 +1,9 @@
+import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Signup/components/signup_body.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'components/user.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const String routeName = "/signup";

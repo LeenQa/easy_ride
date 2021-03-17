@@ -1,6 +1,7 @@
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/components/background.dart';
 import 'package:easy_ride/Screens/Signup/signup_screen.dart';
@@ -8,7 +9,6 @@ import 'package:easy_ride/components/already_have_an_account_acheck.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
-import '../../Signup/components/user.dart';
 
 class LoginBody extends StatefulWidget {
   final void Function(
