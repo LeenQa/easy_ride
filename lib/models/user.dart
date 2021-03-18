@@ -1,10 +1,12 @@
+import 'package:flutter/foundation.dart';
+
 enum Status {
   Student,
   Employee,
   Worker,
 }
 
-class User {
+class User extends ChangeNotifier {
   String _email;
   String _password;
   String _username;

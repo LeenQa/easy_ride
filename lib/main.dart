@@ -5,6 +5,10 @@ import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/models/driver.dart';
+import 'package:easy_ride/models/request.dart';
+import 'package:easy_ride/models/ride.dart';
+import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
@@ -12,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'Screens/Signup/signup_screen.dart';
 import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,56 +53,72 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: _locale,
-      supportedLocales: [
-        Locale('en', 'US'),
-        Locale('ar', 'AR'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Driver>(
+          create: (_) => Driver(),
+        ),
+        ChangeNotifierProvider<Request>(
+          create: (_) => Request(),
+        ),
+        ChangeNotifierProvider<Ride>(
+          create: (_) => Ride(),
+        ),
+        ChangeNotifierProvider<User>(
+          create: (_) => User(),
+        ),
       ],
-      localizationsDelegates: [
-        DemoLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      localeResolutionCallback: (deviceLocale, supportedLocales) {
-        for (var locale in supportedLocales) {
-          if (locale.languageCode == deviceLocale.languageCode) {
-            return deviceLocale;
+      child: MaterialApp(
+        locale: _locale,
+        supportedLocales: [
+          Locale('en', 'US'),
+          Locale('ar', 'AR'),
+        ],
+        localizationsDelegates: [
+          DemoLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        localeResolutionCallback: (deviceLocale, supportedLocales) {
+          for (var locale in supportedLocales) {
+            if (locale.languageCode == deviceLocale.languageCode) {
+              return deviceLocale;
+            }
           }
-        }
-        return supportedLocales.first;
-      },
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Auth',
-      theme: ThemeData(
-        fontFamily: 'Quicksand',
-        primaryColor: kPrimaryColor,
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: ThemeData.light().textTheme.copyWith(
-              headline6: TextStyle(
-                fontFamily: 'Quicksand',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+          return supportedLocales.first;
+        },
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Auth',
+        theme: ThemeData(
+          fontFamily: 'Quicksand',
+          primaryColor: kPrimaryColor,
+          scaffoldBackgroundColor: Colors.white,
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                button: TextStyle(color: Colors.blue),
               ),
-              button: TextStyle(color: Colors.blue),
-            ),
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (ctx) => WelcomeScreen(),
+          SignUpScreen.routeName: (ctx) => SignUpScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
+          TabsScreen.routeName: (ctx) => TabsScreen(),
+          ProfileScreen.routeName: (ctx) => ProfileScreen(),
+          UserSearchScreen.routeName: (ctx) => UserSearchScreen(),
+          OfferRideScreen.routeName: (ctx) => OfferRideScreen(),
+          BecomeDriverScreen.routeName: (ctx) => BecomeDriverScreen(),
+          SettingsScreen.routeName: (ctx) => SettingsScreen(),
+        },
+        onUnknownRoute: (settings) {
+          return MaterialPageRoute(builder: (ctx) => WelcomeScreen());
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (ctx) => WelcomeScreen(),
-        SignUpScreen.routeName: (ctx) => SignUpScreen(),
-        LoginScreen.routeName: (ctx) => LoginScreen(),
-        TabsScreen.routeName: (ctx) => TabsScreen(),
-        ProfileScreen.routeName: (ctx) => ProfileScreen(),
-        UserSearchScreen.routeName: (ctx) => UserSearchScreen(),
-        OfferRideScreen.routeName: (ctx) => OfferRideScreen(),
-        BecomeDriverScreen.routeName: (ctx) => BecomeDriverScreen(),
-        SettingsScreen.routeName: (ctx) => SettingsScreen(),
-      },
-      onUnknownRoute: (settings) {
-        return MaterialPageRoute(builder: (ctx) => WelcomeScreen());
-      },
     );
   }
 }

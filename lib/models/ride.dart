@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
+
 import 'driver.dart';
 
-class Ride {
+class Ride with ChangeNotifier {
   DateTime _startTime;
   DateTime _arrivalTime;
   String _startLocation;
