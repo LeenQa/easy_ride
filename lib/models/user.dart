@@ -6,7 +6,7 @@ enum Status {
   Worker,
 }
 
-class User extends ChangeNotifier {
+class User with ChangeNotifier {
   String _email;
   String _password;
   String _username;
