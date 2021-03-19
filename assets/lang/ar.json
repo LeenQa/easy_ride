@@ -25,6 +25,14 @@
     "noaccount" : " لا تملك حساب؟",
     "haveaccount" :" تملك حساب؟",
     "usernameerror" : "إسم المستخدم يجب أن يكون على الأقل خمسة حروف ويحتوي فقط على أرقام وحروف",
-    "switchlang" : "تغيير اللغة"
-
+    "switchlang" : "تغيير اللغة",
+    "jerusalem" : "القدس",
+    "bethlehem" : "بيت لحم",
+    "ramallah" : "رام الله",
+    "nablus" : "نابلس",
+    "hebron" : "الخليل",
+    "jericho" : "أريحا",
+    "jenin" : "جنين",
+    "tulkarem" : "طولكرم",
+    "qalqilya" : "قلقيلية"
     }

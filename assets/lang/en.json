@@ -25,6 +25,14 @@
     "noaccount" : "Don’t have an Account ? ",
     "haveaccount" :"Already have an Account ? ",
     "usernameerror" : "Username should be at least four characters, and should only contain letters and numbers",
-    "switchlang" : "Switch Language"
-
+    "switchlang" : "Switch Language",
+    "jerusalem" : "Jerusalem",
+    "bethlehem" : "Bethlehem",
+    "ramallah" : "Ramallah",
+    "nablus" : "Nablus",
+    "hebron" : "Hebron",
+    "jericho" : "Jericho",
+    "jenin" : "Jenin",
+    "tulkarem" : "Tulkarem",
+    "qalqilya" : "Qalqilya"
     }

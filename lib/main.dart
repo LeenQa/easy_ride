@@ -100,6 +100,12 @@ class _MyAppState extends State<MyApp> {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+                headline5: TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.lightBlue,
+                ),
                 button: TextStyle(color: Colors.blue),
               ),
         ),
