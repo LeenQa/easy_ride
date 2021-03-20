@@ -1,102 +1,135 @@
 import 'package:easy_ride/localization/language_constants.dart';
-import 'package:easy_ride/models/user.dart';
+import 'components/my_info.dart';
+import 'components/opaque_image.dart';
+import 'components/profile_info_big_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:easy_ride/constants.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
-
   @override
   Widget build(BuildContext context) {
-    final users = Provider.of<User>(context);
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'profile')),
       ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              elevation: 4,
-              margin: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    height: MediaQuery.of(context).size.width * 0.55,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              'https://scontent.fjrs4-1.fna.fbcdn.net/v/t1.0-9/62531188_10219369477333828_8288775080092106752_o.jpg?_nc_cat=105&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=Ozby0D4dufgAX-qyJgg&_nc_ht=scontent.fjrs4-1.fna&oh=5a191e65576fa58a4185ddfeb1319f2a&oe=607A7E23'),
-                          fit: BoxFit.fill),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Stack(
+                  children: [
+                    OpaqueImage(
+                      //make dynamic
+                      imageUrl:
+                          'https://media-exp1.licdn.com/dms/image/C4E03AQFjmnD212CQdw/profile-displayphoto-shrink_800_800/0/1605559690753?e=1621468800&v=beta&t=xtjlN_sPq-5CEydr3i6S4SM5r7teBBH9uUhTkywHkik',
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
                           children: [
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Text(
-                              'Alex Dukmak',
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
+                            MyInfo(),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                elevation: 4,
-                margin: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      minLeadingWidth: 1,
-                      minVerticalPadding: 1,
-                      leading: Icon(
-                        Icons.verified_rounded,
-                        color: Colors.lightBlue,
                       ),
-                      title: Text(
-                        "Verified Driver",
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ),
-                    Text(
-                      "Email: alex@gmail.com",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    Text(
-                      "Phone Number: 4324324",
-                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ],
                 ),
               ),
-            ),
-            Card(),
-          ],
-        ),
+              Expanded(
+                flex: 5,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 50),
+                  color: Colors.white,
+                  child: Table(
+                    children: [
+                      TableRow(
+                        children: [
+                          ProfileInfoBigCard(
+                            firstText: "13",
+                            secondText: "New matches",
+                            icon: Icon(
+                              Icons.star,
+                              size: 32,
+                              color: blueColor,
+                            ),
+                          ),
+                          ProfileInfoBigCard(
+                            firstText: "21",
+                            secondText: "Unmatched me",
+                            /* icon: Image.asset(
+                              "assets/icons/sad_smiley.png",
+                              width: 32,
+                              color: blueColor,
+                            ), */
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          ProfileInfoBigCard(
+                            firstText: "264",
+                            secondText: "All matches",
+                            /* icon: Image.asset(
+                              "assets/icons/checklist.png",
+                              width: 32,
+                              color: blueColor,
+                            ), */
+                          ),
+                          ProfileInfoBigCard(
+                            firstText: "42",
+                            secondText: "Rematches",
+                            icon: Icon(
+                              Icons.refresh,
+                              size: 32,
+                              color: blueColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          ProfileInfoBigCard(
+                            firstText: "404",
+                            secondText: "Profile Visitors",
+                            icon: Icon(
+                              Icons.remove_red_eye,
+                              size: 32,
+                              color: blueColor,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => null,
+                                ),
+                              );
+                            },
+                            child: ProfileInfoBigCard(
+                              firstText: "42",
+                              secondText: "Super likes",
+                              icon: Icon(
+                                Icons.favorite,
+                                size: 32,
+                                color: blueColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
