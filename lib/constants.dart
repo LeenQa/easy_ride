@@ -8,4 +8,4 @@ const kSecondaryColor = Color(0xFFFFDC59);
 const kPrimaryDarkColor = Color(0xffff914d);
 const kPrimaryLightColor = Color(0xFFffefe6);
 final Color greenColor = Colors.green.shade400;
-const Color blueColor = Colors.lightBlueAccent;
+const Color blueColor = Colors.blueAccent;
