@@ -14,22 +14,10 @@ final TextStyle blackNameTextStyle = TextStyle(
   color: Colors.black54,
   fontWeight: FontWeight.w600,
 );
-final TextStyle blackTextStyle = TextStyle(
-  fontFamily: 'Quicksand',
-  fontSize: 18.0,
-  color: Colors.black54,
-  fontWeight: FontWeight.w600,
-);
 final TextStyle blueSubHeadingTextStyle = TextStyle(
   fontFamily: 'Quicksand',
   fontSize: 16.0,
   color: Colors.blue,
-  fontWeight: FontWeight.w400,
-);
-final TextStyle whiteSubHeadingTextStyle = TextStyle(
-  fontFamily: 'Quicksand',
-  fontSize: 16.0,
-  color: Colors.white,
   fontWeight: FontWeight.w400,
 );
 final TextStyle titleStyle = TextStyle(
