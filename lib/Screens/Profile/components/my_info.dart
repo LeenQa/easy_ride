@@ -1,3 +1,4 @@
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -57,9 +58,12 @@ class MyInfo extends StatelessWidget {
                 color: Colors.blue,
                 size: 18,
               ),
-              Text(
-                " Verified Driver",
-                style: blueSubHeadingTextStyle,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Text(
+                  getTranslated(context, 'verifieddriver'),
+                  style: blueSubHeadingTextStyle,
+                ),
               )
             ],
           ),
