@@ -1,3 +1,4 @@
+import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,23 +12,6 @@ class _SearchScreenState extends State<SearchScreen> {
   String _fromChosenValue;
   String _toChosenValue;
   DateTime selectedDate;
-
-  void _presentDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 200)),
-      //execute when user chooses a date
-    ).then((value) {
-      if (value == null) {
-        return;
-      }
-      setState(() {
-        selectedDate = value;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,28 +34,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     return Container(
-      padding: EdgeInsets.all(20.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(selectedDate == null
-                  ? 'No Date Chosen!'
-                  : DateFormat.yMEd().format(selectedDate)),
-            ],
-          ),
-          TextButton(
-            onPressed: _presentDatePicker,
-            child: Text(
-              'Choose Date',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: SingleChildScrollView(child: MulticityInput()),
     );
   }
 }
