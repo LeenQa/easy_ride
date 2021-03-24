@@ -7,6 +7,7 @@ class CustomContainer extends StatelessWidget {
   const CustomContainer({Key key, this.child, this.height}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var cHeight = height != null ? height : 0.32;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -24,8 +25,7 @@ class CustomContainer extends StatelessWidget {
         ],
       ),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      height:
-          MediaQuery.of(context).size.height * height != null ? height : 0.32,
+      height: MediaQuery.of(context).size.height * cHeight,
       padding: const EdgeInsets.all(10.0),
       child: child,
     );

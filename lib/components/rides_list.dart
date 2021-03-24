@@ -16,6 +16,7 @@ class RidesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
+      height: 0.36,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
