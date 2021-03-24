@@ -35,5 +35,20 @@
     "jenin" : "جنين",
     "tulkarem" : "طولكرم",
     "qalqilya" : "قلقيلية",
-    "verifieddriver" : "سائق معتمد"
+    "verifieddriver" : "سائق معتمد",
+    "sendmessage" : "ارسل رسالة",
+    "rating" : "التقييم",
+    "rideresults" : "التوصيلات التي تم ايجادها",
+    "homequest1" : "هل تبحث عن توصيلة؟",
+    "homequest2" : "هل تريد ان تعرض توصيلات للناس؟",
+    "nearyou" : "بالقرب منك",
+    "logout" : "تسجيل خروج",
+    "from" : "من",
+    "to" : "الى",
+    "numofpass" : "عدد الركاب",
+    "choosedate" : "اختر التاريخ",
+    "choosetime" : "اختر الوقت",
+    "price": "السعر",
+    "nis": "شيقل",
+    "offernewride": "إعرض توصيلة"
     }

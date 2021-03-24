@@ -32,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .setData({
         'firstName': _user.firstName,
         'lastName': _user.lastName,
-        'username': _user.username,
         'phone': _user.phone,
         'email': _user.email,
       });

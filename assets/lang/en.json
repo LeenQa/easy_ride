@@ -35,5 +35,20 @@
     "jenin" : "Jenin",
     "tulkarem" : "Tulkarem",
     "qalqilya" : "Qalqilya",
-    "verifieddriver" : "Verified Driver"
+    "verifieddriver" : "Verified Driver",
+    "sendmessage" : "Send Message!",
+    "rating" : "Rating",
+    "rideresults" : "Rides Found",
+    "homequest1" : "Are you looking for Rides?",
+    "homequest2" : "Do you want to offer other people Rides?",
+    "nearyou" : "Near You",
+    "logout" : "Log Out",
+    "from" : "From",
+    "to" : "To",
+    "numofpass" : "Number of Passengers",
+    "choosedate" : "Choose Date",
+    "choosetime" : "Choose Time",
+    "price": "Price",
+    "nis": "NIS",
+    "offernewride": "Offer a new ride"
     }

@@ -89,13 +89,6 @@ class _SingupBodyState extends State<SingupBody> {
                 },
               ),
               RoundedInputField(
-                icon: Icons.person,
-                hintText: getTranslated(context, 'username'),
-                onSaved: (value) {
-                  _user.username = value.trim();
-                },
-              ),
-              RoundedInputField(
                 icon: Icons.phone,
                 keyboardType: TextInputType.phone,
                 hintText: getTranslated(context, 'phone'),

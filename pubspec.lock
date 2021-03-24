@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
+  autocomplete_textfield:
+    dependency: "direct dev"
+    description:
+      name: autocomplete_textfield
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -369,6 +376,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_star_rating:
+    dependency: "direct dev"
+    description:
+      name: smooth_star_rating
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   source_span:
     dependency: transitive
     description:

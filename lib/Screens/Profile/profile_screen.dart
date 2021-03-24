@@ -1,9 +1,11 @@
 import 'package:easy_ride/localization/language_constants.dart';
+import '../../text_style.dart';
 import 'components/my_info.dart';
 import 'components/opaque_image.dart';
 import 'components/profile_info_big_card.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
@@ -12,6 +14,7 @@ class ProfileScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: kPrimaryLightColor,
       appBar: AppBar(
         title: Text(getTranslated(context, 'profile')),
       ),
@@ -45,37 +48,86 @@ class ProfileScreen extends StatelessWidget {
                 flex: 5,
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: const EdgeInsets.only(top: 10),
-                    color: Colors.white,
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        ProfileInfoBigCard(
-                          firstText: "13",
-                          secondText: "New matches",
+                        TextButton.icon(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                return kPrimaryLightColor;
+                              },
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: blueColor),
+                              ),
+                            ),
+                          ),
                           icon: Icon(
-                            Icons.star,
-                            size: 32,
-                            color: blueColor,
+                            Icons.message_rounded,
+                          ),
+                          label: Text(getTranslated(context, 'sendmessage'),
+                              style: blueSubHeadingTextStyle),
+                          onPressed: () {},
+                        ),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.location_pin,
+                            color: Colors.red,
+                          ),
+                          title: Text(
+                            'Beit Jala, Bethlehem',
+                            style: blackTextStyle,
                           ),
                         ),
-                        ProfileInfoBigCard(
-                          firstText: "21",
-                          secondText: "Unmatched me",
-                          /* icon: Image.asset(
-                                "assets/icons/sad_smiley.png",
-                                width: 32,
-                                color: blueColor,
-                              ), */
+                        Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 0)),
+                            Title(
+                              color: Colors.pink,
+                              child: Text(
+                                getTranslated(context, 'rating'),
+                                style: blackTextStyle,
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                            ),
+                            SmoothStarRating(
+                              rating: 3.5,
+                              isReadOnly: true,
+                              size: 25,
+                              filledIconData: Icons.star,
+                              halfFilledIconData: Icons.star_half,
+                              defaultIconData: Icons.star_border,
+                              starCount: 5,
+                              //allowHalfRating: true,
+                              spacing: 1.0,
+                              onRated: (value) {
+                                print("rating value -> $value");
+                              },
+                            ),
+                          ],
                         ),
-                        ProfileInfoBigCard(
-                          firstText: "264",
-                          secondText: "All matches",
-                          /* icon: Image.asset(
-                                "assets/icons/checklist.png",
-                                width: 32,
-                                color: blueColor,
-                              ), */
-                        ),
+
+                        /* ProfileInfoBigCard(
+                            firstText: "13",
+                            secondText: "New matches",
+                            icon: Icon(
+                              Icons.star,
+                              size: 32,
+                              color: blueColor,
+                            ),
+                          ), */
                       ],
                     ),
                   ),

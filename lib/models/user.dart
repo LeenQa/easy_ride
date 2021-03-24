@@ -9,7 +9,6 @@ enum Status {
 class User with ChangeNotifier {
   String _email;
   String _password;
-  String _username;
   String _firstName;
   String _lastName;
   int _phone;
@@ -17,7 +16,6 @@ class User with ChangeNotifier {
   User(
       [this._email,
       this._password,
-      this._username,
       this._firstName,
       this._lastName,
       this._phone]);
@@ -37,10 +35,6 @@ class User with ChangeNotifier {
   set password(value) => this._password = value;
 
   String get password => this._password;
-
-  set username(String value) => this._username = value;
-
-  String get username => this._username;
 
   set phone(int value) => this._phone = value;
 
