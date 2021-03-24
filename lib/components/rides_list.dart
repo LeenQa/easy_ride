@@ -2,6 +2,7 @@ import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:flutter/material.dart';
 
+import 'custom_container.dart';
 import 'main_drawer.dart';
 
 class RidesList extends StatelessWidget {
@@ -14,25 +15,7 @@ class RidesList extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        //color: kCardColor,
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        //border: Border.all(color: kAccentColor, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      height: MediaQuery.of(context).size.height * 0.32,
-      padding: const EdgeInsets.all(10.0),
+    return CustomContainer(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

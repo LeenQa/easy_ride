@@ -17,7 +17,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
 
-  void _selectPage(int index) {
+  void selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
@@ -45,7 +45,7 @@ class _TabsScreenState extends State<TabsScreen> {
       drawer: MainDrawer(),
       body: _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: CurvedNavigationBar(
-        onTap: _selectPage,
+        onTap: selectPage,
         backgroundColor: Colors.white,
         color: Theme.of(context).primaryColor,
         buttonBackgroundColor: Colors.white,

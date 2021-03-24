@@ -31,7 +31,6 @@ class _LoginBodyState extends State<LoginBody> {
     if (isValid) {
       _formKey.currentState.save();
       widget.loginSubmit(_user);
-      Navigator.of(ctx).pushNamed(TabsScreen.routeName, arguments: {});
     }
   }
 

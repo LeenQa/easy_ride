@@ -2,6 +2,7 @@ import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
+import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
@@ -9,6 +10,7 @@ import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/request.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
@@ -109,9 +111,17 @@ class _MyAppState extends State<MyApp> {
                 button: TextStyle(color: Colors.blue),
               ),
         ),
-        initialRoute: '/',
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.onAuthStateChanged,
+          builder: (ctx, userSnapchot) {
+            if (userSnapchot.hasData) {
+              return TabsScreen();
+            } else
+              return LoginScreen();
+          },
+        ),
         routes: {
-          '/': (ctx) => WelcomeScreen(),
+          //'/': (ctx) => WelcomeScreen(),
           SignUpScreen.routeName: (ctx) => SignUpScreen(),
           LoginScreen.routeName: (ctx) => LoginScreen(),
           TabsScreen.routeName: (ctx) => TabsScreen(),
@@ -122,7 +132,18 @@ class _MyAppState extends State<MyApp> {
           SettingsScreen.routeName: (ctx) => SettingsScreen(),
         },
         onUnknownRoute: (settings) {
-          return MaterialPageRoute(builder: (ctx) => WelcomeScreen());
+          return MaterialPageRoute(builder: (ctx) {
+            var returnedScreen = StreamBuilder(
+              stream: FirebaseAuth.instance.onAuthStateChanged,
+              builder: (ctx, userSnapchot) {
+                if (userSnapchot.hasData) {
+                  return TabsScreen();
+                } else
+                  return LoginScreen();
+              },
+            );
+            return returnedScreen;
+          });
         },
       ),
     );

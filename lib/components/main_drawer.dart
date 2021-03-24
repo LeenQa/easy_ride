@@ -4,6 +4,7 @@ import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import '../constants.dart';
@@ -166,6 +167,12 @@ class _MainDrawerState extends State<MainDrawer> {
                   .toList(),
             ),
           ),
+          Divider(
+            thickness: 1,
+          ),
+          buildListTile(context, Icons.logout, () {
+            FirebaseAuth.instance.signOut();
+          }, getTitle(title: getTranslated(context, 'logout'))),
           // Container(
           //   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           //   child: LiteRollingSwitch(
