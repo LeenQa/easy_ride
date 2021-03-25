@@ -8,9 +8,17 @@
       "city": "Bethlehem"
     },
     {
+      "place": "bethlehem",
+      "city": "Bethlehem"
+      },
+    {
       "place": "Bir Zeit",
       "city": "Ramallah"
     },
+    {
+      "place": "ramallah",
+      "city": "Ramallah"
+      },
     {
       "place": "Halhul",
       "city": "Hebron"

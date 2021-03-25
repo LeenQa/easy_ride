@@ -8,6 +8,7 @@ import 'package:easy_ride/models/ride.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../components/main_drawer.dart';
+import '../../text_style.dart';
 
 class HomeScreen extends StatelessWidget {
   DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
@@ -53,7 +54,9 @@ class HomeScreen extends StatelessWidget {
                 getTitle(
                     title: "Our Services", color: Colors.white, fontSize: 15),
                 Text(
-                    "Lorem epsom Lorem epsom Lorem epsom Lorem epsom Lorem epsom")
+                  "EasyRide is a carpooling service, connecting drivers with empty seats to people travelling the same way.",
+                  style: whiteSubHeadingTextStyle,
+                )
               ],
             ),
           ),

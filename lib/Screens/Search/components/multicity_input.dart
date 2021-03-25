@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rides_list.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/driver.dart';
+import 'package:easy_ride/models/places.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 class MulticityInput extends StatefulWidget {
   @override
@@ -36,6 +41,14 @@ List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
 }
 
 class _MulticityInputState extends State<MulticityInput> {
+  List<Place> places;
+  AutoCompleteTextField searchTextFieldFrom;
+  AutoCompleteTextField searchTextFieldTo;
+  GlobalKey<AutoCompleteTextFieldState<Place>> keyFrom = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Place>> keyTo = new GlobalKey();
+
+  bool loading = true;
+
   DateTime _selectedDate;
   Ride ride1 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
@@ -69,8 +82,47 @@ class _MulticityInputState extends State<MulticityInput> {
   );
   Ride searched = Ride();
   List<Ride> results = [];
+  Future<String> loadJsonData() async {
+    var jsonText = await rootBundle.loadString('assets/places.json');
+    final parsed = json.decode(jsonText).cast<Map<String, dynamic>>();
+    setState(() =>
+        places = parsed.map<Place>((json) => Place.fromJson(json)).toList());
+    loading = false;
+    // places = json.decode(jsonText).cast<Map<String, dynamic>>());
+    print(places.first.place);
+    return 'success';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+  }
+
+  Widget row(Place place) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          place.place,
+          style: TextStyle(fontSize: 16.0),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var localizations = MaterialLocalizations.of(context).toString();
+    var padding;
+    setState(() {
+      if (localizations.contains("En")) {
+        padding = EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0);
+      } else {
+        padding = EdgeInsets.fromLTRB(64.0, 0.0, 0.0, 8.0);
+      }
+    });
+
     List<Ride> rides = [ride1, ride2];
     void _presentDatePicker() {
       showDatePicker(
@@ -101,43 +153,81 @@ class _MulticityInputState extends State<MulticityInput> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
-                      children: <Widget>[
+                      children: [
                         Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.local_taxi_rounded,
-                                  color: kSecondaryColor),
-                              labelText: getTranslated(context, 'from'),
-                            ),
-                            onChanged: (value) {
-                              searched.startLocation = value;
-                              print(searched.startLocation);
-                            },
-                          ),
+                          padding: padding,
+                          child: loading
+                              ? CircularProgressIndicator()
+                              : searchTextFieldFrom =
+                                  AutoCompleteTextField<Place>(
+                                  key: keyFrom,
+                                  clearOnSubmit: false,
+                                  suggestions: places,
+                                  decoration: new InputDecoration(
+                                    icon: Icon(Icons.local_taxi_rounded,
+                                        color: kPrimaryColor),
+                                    labelText: getTranslated(context, 'from'),
+                                  ),
+                                  itemFilter: (item, query) {
+                                    return item.place
+                                        .toLowerCase()
+                                        .startsWith(query.toLowerCase());
+                                  },
+                                  itemSorter: (a, b) {
+                                    return a.place.compareTo(b.place);
+                                  },
+                                  itemSubmitted: (item) {
+                                    searched.startLocation = item.place;
+                                    setState(() {
+                                      searchTextFieldFrom.textField.controller
+                                          .text = item.place;
+                                    });
+                                  },
+                                  itemBuilder: (context, item) {
+                                    return row(item);
+                                  },
+                                ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.local_taxi_rounded,
-                                  color: kSecondaryColor),
-                              labelText: getTranslated(context, 'to'),
-                            ),
-                            onChanged: (value) {
-                              searched.arrivalLocation = value;
-                            },
-                          ),
+                          padding: padding,
+                          child: loading
+                              ? CircularProgressIndicator()
+                              : searchTextFieldTo =
+                                  AutoCompleteTextField<Place>(
+                                  key: keyTo,
+                                  clearOnSubmit: false,
+                                  suggestions: places,
+                                  decoration: new InputDecoration(
+                                    icon: Icon(Icons.local_taxi_rounded,
+                                        color: kPrimaryColor),
+                                    labelText: getTranslated(context, 'to'),
+                                  ),
+                                  itemFilter: (item, query) {
+                                    return item.place
+                                        .toLowerCase()
+                                        .startsWith(query.toLowerCase());
+                                  },
+                                  itemSorter: (a, b) {
+                                    return a.place.compareTo(b.place);
+                                  },
+                                  itemSubmitted: (item) {
+                                    searched.arrivalLocation = item.place;
+                                    setState(() {
+                                      searchTextFieldTo.textField.controller
+                                          .text = item.place;
+                                    });
+                                  },
+                                  itemBuilder: (context, item) {
+                                    return row(item);
+                                  },
+                                ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
+                          padding: padding,
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              icon: Icon(Icons.person, color: kSecondaryColor),
+                              icon: Icon(Icons.person, color: kPrimaryColor),
                               labelText: getTranslated(context, 'numofpass'),
                             ),
                             onChanged: (value) {
@@ -155,7 +245,7 @@ class _MulticityInputState extends State<MulticityInput> {
                                 Row(
                                   children: <Widget>[
                                     Icon(Icons.date_range,
-                                        color: kSecondaryColor),
+                                        color: kPrimaryColor),
                                     SizedBox(
                                       width: 10,
                                     ),
@@ -192,7 +282,7 @@ class _MulticityInputState extends State<MulticityInput> {
                                 backgroundColor:
                                     MaterialStateProperty.resolveWith<Color>(
                                   (Set<MaterialState> states) {
-                                    return kSecondaryColor;
+                                    return kPrimaryColor;
                                   },
                                 ),
                                 shape: MaterialStateProperty.all<
