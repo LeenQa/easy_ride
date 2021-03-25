@@ -81,7 +81,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 size: 26,
               ),
               title: Text(
-                'username',
+                "user",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Quicksand',

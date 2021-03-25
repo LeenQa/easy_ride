@@ -1,9 +1,11 @@
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/models/ride.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_container.dart';
 import 'main_drawer.dart';
+import 'ride_details.dart';
 
 class RidesList extends StatelessWidget {
   final List<Ride> transactions;
@@ -13,10 +15,19 @@ class RidesList extends StatelessWidget {
     @required this.transactions,
     @required this.title,
   }) : super(key: key);
+
+  void _showRideDetails(BuildContext ctx, Ride ride) {
+    showCupertinoModalPopup(
+      context: ctx,
+      builder: (_) {
+        return RideDetails(ride: ride);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-      height: 0.36,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,31 +74,35 @@ class RidesList extends StatelessWidget {
                               //   vertical: 8,
                               //   horizontal: 8,
                               // ),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: kAccentColor,
-                                  radius: 30,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(0),
-                                    child: FittedBox(
-                                      child: Text(
-                                        "${transactions[index].price}₪",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                              child: InkWell(
+                                onTap: () => _showRideDetails(
+                                    context, transactions[index]),
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: kAccentColor,
+                                    radius: 30,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(0),
+                                      child: FittedBox(
+                                        child: Text(
+                                          "${transactions[index].price}₪",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                title: getTitle(
-                                    title:
-                                        "From ${transactions[index].startLocation}, To ${transactions[index].arrivalLocation}",
-                                    color: Colors.brown[500],
-                                    fontSize: 14),
-                                subtitle: Text(
-                                  "Number of seats left: ${transactions[index].numOfPassengers}",
-                                  style: TextStyle(
-                                      color: Colors.blueGrey, fontSize: 12),
+                                  title: getTitle(
+                                      title:
+                                          "From ${transactions[index].startLocation}, To ${transactions[index].arrivalLocation}",
+                                      color: Colors.brown[500],
+                                      fontSize: 14),
+                                  subtitle: Text(
+                                    "Number of seats left: ${transactions[index].numOfPassengers}",
+                                    style: TextStyle(
+                                        color: Colors.blueGrey, fontSize: 12),
+                                  ),
                                 ),
                               ),
                             ),

@@ -1,7 +1,7 @@
-import 'package:easy_ride/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Signup/components/signup_body.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
@@ -15,21 +15,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _isLoading = false;
   final _auth = FirebaseAuth.instance;
   _signUpForm(
-    User _user,
+    User.User _user,
   ) async {
     try {
       setState(() {
         _isLoading = true;
       });
-      AuthResult authResult;
-      authResult = await _auth.createUserWithEmailAndPassword(
+
+      UserCredential authResult = await _auth.createUserWithEmailAndPassword(
         email: _user.email,
         password: _user.password,
       );
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
-          .document(authResult.user.uid)
-          .setData({
+          .doc(authResult.user.uid)
+          .set({
         'firstName': _user.firstName,
         'lastName': _user.lastName,
         'phone': _user.phone,

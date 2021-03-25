@@ -9,8 +9,9 @@ import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/request.dart';
 import 'package:easy_ride/models/ride.dart';
-import 'package:easy_ride/models/user.dart';
+import 'package:easy_ride/models/user.dart' as User;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
@@ -44,6 +45,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      setState(() {});
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     getLocale().then((locale) {
@@ -66,8 +75,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<Ride>(
           create: (_) => Ride(),
         ),
-        ChangeNotifierProvider<User>(
-          create: (_) => User(),
+        ChangeNotifierProvider<User.User>(
+          create: (_) => User.User(),
         ),
       ],
       child: MaterialApp(
@@ -112,7 +121,7 @@ class _MyAppState extends State<MyApp> {
               ),
         ),
         home: StreamBuilder(
-          stream: FirebaseAuth.instance.onAuthStateChanged,
+          stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, userSnapchot) {
             if (userSnapchot.hasData) {
               return TabsScreen();
@@ -134,7 +143,7 @@ class _MyAppState extends State<MyApp> {
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) {
             var returnedScreen = StreamBuilder(
-              stream: FirebaseAuth.instance.onAuthStateChanged,
+              stream: FirebaseAuth.instance.authStateChanges(),
               builder: (ctx, userSnapchot) {
                 if (userSnapchot.hasData) {
                   return TabsScreen();

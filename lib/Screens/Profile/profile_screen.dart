@@ -1,3 +1,4 @@
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import '../../text_style.dart';
 import 'components/my_info.dart';
@@ -14,9 +15,13 @@ class ProfileScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: kPrimaryLightColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(getTranslated(context, 'profile')),
+        backgroundColor: Colors.white,
+        title: getTitle(
+            title: getTranslated(context, 'profile'),
+            color: kPrimaryColor,
+            fontSize: 20),
       ),
       body: Stack(
         children: [
@@ -48,33 +53,33 @@ class ProfileScreen extends StatelessWidget {
                 flex: 5,
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.only(bottom: 10, top: 6),
                     child: Column(
                       children: [
-                        TextButton.icon(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                return kPrimaryLightColor;
-                              },
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: blueColor),
-                              ),
-                            ),
-                          ),
-                          icon: Icon(
-                            Icons.message_rounded,
-                          ),
-                          label: Text(getTranslated(context, 'sendmessage'),
-                              style: blueSubHeadingTextStyle),
-                          onPressed: () {},
-                        ),
-                        Divider(),
+                        // TextButton.icon(
+                        //   style: ButtonStyle(
+                        //     backgroundColor:
+                        //         MaterialStateProperty.resolveWith<Color>(
+                        //       (Set<MaterialState> states) {
+                        //         return Colors.white;
+                        //       },
+                        //     ),
+                        //     shape: MaterialStateProperty.all<
+                        //         RoundedRectangleBorder>(
+                        //       RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(18.0),
+                        //         side: BorderSide(color: blueColor),
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   icon: Icon(
+                        //     Icons.message_rounded,
+                        //   ),
+                        //   label: Text(getTranslated(context, 'sendmessage'),
+                        //       style: blueSubHeadingTextStyle),
+                        //   onPressed: () {},
+                        // ),
+                        // Divider(),
                         ListTile(
                           leading: Icon(
                             Icons.location_pin,
@@ -85,13 +90,23 @@ class ProfileScreen extends StatelessWidget {
                             style: blackTextStyle,
                           ),
                         ),
-                        Divider(),
+                        Divider(
+                          indent: 10,
+                          endIndent: 10,
+                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 0)),
+                                    vertical: 25, horizontal: 10)),
+                            Icon(
+                              Icons.rate_review,
+                              color: Colors.red,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.08,
+                            ),
                             Title(
                               color: Colors.pink,
                               child: Text(
@@ -100,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.20,
+                              width: MediaQuery.of(context).size.width * 0.05,
                             ),
                             SmoothStarRating(
                               rating: 3.5,
@@ -118,7 +133,10 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-
+                        Divider(
+                          indent: 10,
+                          endIndent: 10,
+                        ),
                         /* ProfileInfoBigCard(
                             firstText: "13",
                             secondText: "New matches",
@@ -131,6 +149,18 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: FloatingActionButton(
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  elevation: 4,
+                  backgroundColor: kPrimaryColor,
+                  onPressed: () {},
                 ),
               ),
             ],

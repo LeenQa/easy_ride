@@ -50,5 +50,7 @@
     "choosetime" : "اختر الوقت",
     "price": "السعر",
     "nis": "شيقل",
-    "offernewride": "إعرض توصيلة"
+    "offernewride": "إعرض توصيلة",
+    "ridedetails" : "تفاصيل التوصيلة",
+    "requestride" : "طلب توصيلة"
     }

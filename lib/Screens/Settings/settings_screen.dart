@@ -9,6 +9,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'settings')),
+        backgroundColor: Colors.white,
       ),
       body: Container(
         child: Text("Settings"),

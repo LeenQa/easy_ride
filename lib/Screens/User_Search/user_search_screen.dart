@@ -9,6 +9,7 @@ class UserSearchScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'srchforausr')),
+        backgroundColor: Colors.white,
       ),
       body: Container(
         child: Text("User Search"),

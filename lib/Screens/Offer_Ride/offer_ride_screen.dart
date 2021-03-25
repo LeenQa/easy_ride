@@ -110,6 +110,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'offrard')),
+        backgroundColor: Colors.white,
       ),
       body: Container(
         child: Form(

@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                 getTitle(
                     title: "Our Services", color: Colors.white, fontSize: 15),
                 Text(
-                    "Lorem epsom Lorem epsom Lorem epsom Lorem epsom Lorem epsom Lorem")
+                    "Lorem epsom Lorem epsom Lorem epsom Lorem epsom Lorem epsom")
               ],
             ),
           ),

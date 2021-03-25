@@ -9,6 +9,7 @@ class BecomeDriverScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'bcmadriver')),
+        backgroundColor: Colors.white,
       ),
       body: Container(
         child: Text("Become Driver"),

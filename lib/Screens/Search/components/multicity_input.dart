@@ -3,7 +3,9 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rides_list.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/ride.dart';
+import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -44,6 +46,11 @@ class _MulticityInputState extends State<MulticityInput> {
     2,
     20.00,
     ["Jericho", "Ebediye"],
+    new Driver(
+      new User.User("email", "password", "Leen", "Qazaha", 059473232),
+      "Alfa Romeo giulia",
+      ["No smoking", "No pets"],
+    ),
   );
   Ride ride2 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
@@ -54,6 +61,11 @@ class _MulticityInputState extends State<MulticityInput> {
     2,
     20.00,
     ["Jericho", "Ebediye"],
+    new Driver(
+      new User.User("email", "password", "Leen", "Qazaha", 059473232),
+      "Alfa Romeo giulia",
+      ["No smoking", "No pets"],
+    ),
   );
   Ride searched = Ride();
   List<Ride> results = [];

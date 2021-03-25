@@ -36,7 +36,7 @@
     "tulkarem" : "Tulkarem",
     "qalqilya" : "Qalqilya",
     "verifieddriver" : "Verified Driver",
-    "sendmessage" : "Send Message!",
+    "sendmessage" : "Send Message",
     "rating" : "Rating",
     "rideresults" : "Rides Found",
     "homequest1" : "Are you looking for Rides?",
@@ -50,5 +50,7 @@
     "choosetime" : "Choose Time",
     "price": "Price",
     "nis": "NIS",
-    "offernewride": "Offer a new ride"
+    "offernewride": "Offer a new ride",
+    "ridedetails" : "Ride Details",
+    "requestride" : "Request Ride"
     }

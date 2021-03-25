@@ -1,5 +1,5 @@
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
-import 'package:easy_ride/models/user.dart';
+import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -14,13 +14,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   bool _isLoading = false;
   _loginForm(
-    User user,
+    User.User user,
   ) async {
     try {
       setState(() {
         _isLoading = true;
       });
-      AuthResult authResult;
+      UserCredential authResult;
       authResult = await _auth.signInWithEmailAndPassword(
         email: user.email,
         password: user.password,

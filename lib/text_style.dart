@@ -24,7 +24,7 @@ final TextStyle blueSubHeadingTextStyle = TextStyle(
   fontFamily: 'Quicksand',
   fontSize: 16.0,
   color: Colors.blue,
-  fontWeight: FontWeight.w400,
+  fontWeight: FontWeight.w700,
 );
 final TextStyle whiteSubHeadingTextStyle = TextStyle(
   fontFamily: 'Quicksand',

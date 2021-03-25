@@ -56,7 +56,7 @@ class MyInfo extends StatelessWidget {
               Icon(
                 Icons.verified_rounded,
                 color: Colors.blue,
-                size: 18,
+                size: 20,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
