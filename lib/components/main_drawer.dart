@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
@@ -64,6 +65,19 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  getUser() {
+    final User user = auth.currentUser;
+    uid = user.uid;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
@@ -74,20 +88,40 @@ class _MainDrawerState extends State<MainDrawer> {
             padding: EdgeInsets.all(20),
             alignment: Alignment.centerLeft,
             color: Theme.of(context).primaryColor,
-            child: ListTile(
-              leading: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 26,
-              ),
-              title: Text(
-                "user",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(uid)
+                          .get(),
+                      builder: (BuildContext context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListTile(
+                          leading: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                          title: getTitle(
+                            title: snapshot.data.data()['firstName'],
+                            color: Colors.white,
+                            /* style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Quicksand',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ), */
+                          ),
+                        );
+                      }),
+                ],
               ),
             ),
           ),
@@ -210,8 +244,8 @@ class Language {
 
   static List<Language> languageList() {
     return <Language>[
-      Language(1, "🇺🇸", "English", "en"),
-      Language(2, "🇸🇦", "اَلْعَرَبِيَّةُ‎", "ar"),
+      Language(1, "", "English", "en"),
+      Language(2, "", "اَلْعَرَبِيَّةُ‎", "ar"),
     ];
   }
 }

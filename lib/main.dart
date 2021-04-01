@@ -49,14 +49,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    Firebase.initializeApp().whenComplete(() {
-      setState(() {});
-    });
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     getLocale().then((locale) {
