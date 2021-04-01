@@ -21,7 +21,11 @@ import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override

@@ -37,14 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
         content: Text(message),
         backgroundColor: Theme.of(context).errorColor,
       ));
-      setState(() {
-        _isLoading = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } catch (err) {
       print(err);
-      setState(() {
-        _isLoading = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

@@ -46,7 +46,7 @@ final TextStyle subTitleStyle = TextStyle(
 );
 final TextStyle actionMenuStyle = TextStyle(
   fontFamily: 'Quicksand',
-  fontSize: 16.0,
+  fontSize: 17.0,
   color: kPrimaryColor,
   fontWeight: FontWeight.w600,
   letterSpacing: 5,
