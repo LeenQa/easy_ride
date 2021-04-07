@@ -4,7 +4,7 @@ import 'driver.dart';
 
 class Ride with ChangeNotifier {
   DateTime _startTime;
-  DateTime _arrivalTime;
+  // DateTime _arrivalTime;
   String _startLocation;
   String _arrivalLocation;
   DateTime _date;
@@ -15,7 +15,7 @@ class Ride with ChangeNotifier {
 
   Ride(
       [this._startTime,
-      this._arrivalTime,
+      // this._arrivalTime,
       this._startLocation,
       this._arrivalLocation,
       this._date,
@@ -26,8 +26,8 @@ class Ride with ChangeNotifier {
 
   set startTime(value) => this._startTime = value;
   DateTime get startTime => this._startTime;
-  set arrivalTime(value) => this._arrivalTime = value;
-  DateTime get arrivalTime => this._arrivalTime;
+  // set arrivalTime(value) => this._arrivalTime = value;
+  // DateTime get arrivalTime => this._arrivalTime;
   set startLocation(value) => this._startLocation = value;
   String get startLocation => this._startLocation;
   set arrivalLocation(value) => this._arrivalLocation = value;
@@ -43,7 +43,7 @@ class Ride with ChangeNotifier {
   set driver(value) => this._driver = value;
   Driver get driver => this._driver;
 
-  int getDuration() {
-    return this._arrivalTime.difference(this._startTime).inHours;
-  }
+  // int getDuration() {
+  //   return this._arrivalTime.difference(this._startTime).inHours;
+  // }
 }

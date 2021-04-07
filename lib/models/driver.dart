@@ -8,6 +8,7 @@ class Driver with ChangeNotifier {
   String _carModel;
   List<String> _setOfRules;
   List<Ride> _rides;
+  List<String> _pictures;
 
   Driver([this._user, this._carModel, this._setOfRules, this._rides]);
 

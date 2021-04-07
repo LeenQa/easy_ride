@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
   Ride ride1 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
   );
   Ride ride2 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),

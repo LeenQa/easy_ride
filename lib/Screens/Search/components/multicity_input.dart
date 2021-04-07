@@ -52,7 +52,7 @@ class _MulticityInputState extends State<MulticityInput> {
   DateTime _selectedDate;
   Ride ride1 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),
@@ -67,7 +67,7 @@ class _MulticityInputState extends State<MulticityInput> {
   );
   Ride ride2 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),

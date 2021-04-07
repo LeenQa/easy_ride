@@ -1,4 +1,6 @@
+import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
@@ -33,7 +35,7 @@ class _SingupBodyState extends State<SingupBody> {
       _formKey.currentState.save();
       widget.signupSubmit(_user);
       Navigator.of(ctx).pushNamed(
-        LoginScreen.routeName,
+        TabsScreen.routeName,
       );
     }
   }

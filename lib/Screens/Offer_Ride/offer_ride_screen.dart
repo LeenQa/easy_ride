@@ -76,6 +76,41 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
     return 'success';
   }
 
+  List<String> stopOvers = [];
+  TextEditingController _textFieldController = TextEditingController();
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add Stopovers'),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "stopover"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: getTitle(title: 'Cancel', color: kPrimaryColor),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: getTitle(title: 'Add', color: kPrimaryColor),
+              onPressed: () {
+                setState(() {
+                  stopOvers.add(_textFieldController.text);
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +147,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
         title: Text(getTranslated(context, 'offrard')),
         backgroundColor: Colors.white,
       ),
-      body: Container(
+      body: Card(
+        elevation: 5,
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         child: Form(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -285,6 +322,42 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                           child: Text(getTranslated(context, 'nis')),
                         ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: padding,
+                    child: Row(
+                      children: [
+                        if (stopOvers.isNotEmpty)
+                          Expanded(
+                            child: SizedBox(
+                              height: 20.0,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: stopOvers.length,
+                                  itemBuilder: (ctx, index) {
+                                    return getTitle(title: stopOvers[index]);
+                                  }),
+                            ),
+                          ),
+                        Container(
+                          height: 36.0,
+                          width: 36.0,
+                          child: FittedBox(
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                _displayTextInputDialog(context);
+                              },
+                              child: Icon(
+                                Icons.add,
+                              ),
+                              backgroundColor: kPrimaryColor,
+                              elevation: 3,
+                            ),
+                          ),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     ),
                   ),
                   Center(
