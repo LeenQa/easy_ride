@@ -11,6 +11,15 @@ class FieldValidation {
       return null;
   }
 
+  static String validateEmail(String email, BuildContext context) {
+    RegExp emailRegex =
+        RegExp(r"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
+    if (!emailRegex.hasMatch(email)) {
+      return "Write a valid Email";
+    } else
+      return null;
+  }
+
   static String validateUsername(String username, BuildContext context) {
     RegExp passRegex = RegExp(r"^[a-zA-Z][a-zA-Z\._]{3,}[a-zA-Z1-9]$");
     if (username.isEmpty) {

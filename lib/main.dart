@@ -18,10 +18,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Screens/Map/map_screen.dart';
 import 'Screens/Signup/signup_screen.dart';
 import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
 import 'package:provider/provider.dart';
+
+import 'models/address.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +79,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<User.User>(
           create: (_) => User.User(),
         ),
+        ChangeNotifierProvider<Address>(
+          create: (_) => Address(),
+        )
       ],
       child: MaterialApp(
         locale: _locale,
@@ -143,6 +149,7 @@ class _MyAppState extends State<MyApp> {
           SettingsScreen.routeName: (ctx) => SettingsScreen(),
           AdminPanelScreen.routeName: (ctx) => AdminPanelScreen(),
           ProfilePicScreen.routeName: (ctx) => ProfilePicScreen(),
+          MapScreen.routeName: (ctx) => MapScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) {

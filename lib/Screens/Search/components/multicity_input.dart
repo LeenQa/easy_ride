@@ -1,25 +1,48 @@
 import 'dart:convert';
 
+import 'package:easy_ride/Assistants/assistantMethods.dart';
+import 'package:easy_ride/Assistants/requestAssistant.dart';
+import 'package:easy_ride/Screens/Map/map_screen.dart';
+import 'package:easy_ride/Screens/Search/components/prediction_tile.dart';
+import 'package:easy_ride/components/configMaps.dart';
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rides_list.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/driver.dart';
+import 'package:easy_ride/models/place_prediction.dart';
 import 'package:easy_ride/models/places.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:provider/provider.dart';
 
 class MulticityInput extends StatefulWidget {
   @override
   _MulticityInputState createState() => _MulticityInputState();
 }
 
+List<PlacePrediction> pickUpPlacePredictionList = [];
+List<PlacePrediction> dropOffPlacePredictionList = [];
+TextEditingController pickUpController = TextEditingController();
+TextEditingController dropOffController = TextEditingController();
+List<LatLng> pLineCoordinates = [];
+Set<Polyline> polylineSet = {};
+LatLngBounds latLngBounds;
+Set<Marker> markersSet = {};
+Set<Circle> circlesSet = {};
+Ride searched = Ride();
+List<Ride> results = [];
 bool searchFound = false;
+var result;
+var _res;
 
 List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
   List<Ride> matches = [];
@@ -42,17 +65,11 @@ List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
 
 class _MulticityInputState extends State<MulticityInput> {
   List<Place> places;
-  AutoCompleteTextField searchTextFieldFrom;
-  AutoCompleteTextField searchTextFieldTo;
-  GlobalKey<AutoCompleteTextFieldState<Place>> keyFrom = new GlobalKey();
-  GlobalKey<AutoCompleteTextFieldState<Place>> keyTo = new GlobalKey();
-
-  bool loading = true;
 
   DateTime _selectedDate;
   Ride ride1 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),
@@ -67,7 +84,7 @@ class _MulticityInputState extends State<MulticityInput> {
   );
   Ride ride2 = new Ride(
     DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
-    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+    //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
     DateTime.now(),
@@ -80,23 +97,27 @@ class _MulticityInputState extends State<MulticityInput> {
       ["No smoking", "No pets"],
     ),
   );
-  Ride searched = Ride();
-  List<Ride> results = [];
-  Future<String> loadJsonData() async {
-    var jsonText = await rootBundle.loadString('assets/places.json');
-    final parsed = json.decode(jsonText).cast<Map<String, dynamic>>();
-    setState(() =>
-        places = parsed.map<Place>((json) => Place.fromJson(json)).toList());
-    loading = false;
-    // places = json.decode(jsonText).cast<Map<String, dynamic>>());
-    print(places.first.place);
-    return 'success';
-  }
 
   @override
   void initState() {
     super.initState();
-    loadJsonData();
+  }
+
+  callback(String pd) {
+    setState(() {
+      pickUpPlacePredictionList = [];
+      dropOffPlacePredictionList = [];
+      if (pd == "pick") {
+        pickUpController.text = Provider.of<Address>(context, listen: false)
+            .pickUpLocation
+            .placeName;
+      }
+      if (pd == "drop") {
+        dropOffController.text = Provider.of<Address>(context, listen: false)
+            .dropOffLocation
+            .placeName;
+      }
+    });
   }
 
   Widget row(Place place) {
@@ -154,74 +175,123 @@ class _MulticityInputState extends State<MulticityInput> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
+                        //Text(_res == null ? "not chosen yet" : _res),
                         Padding(
                           padding: padding,
-                          child: loading
-                              ? CircularProgressIndicator()
-                              : searchTextFieldFrom =
-                                  AutoCompleteTextField<Place>(
-                                  key: keyFrom,
-                                  clearOnSubmit: false,
-                                  suggestions: places,
-                                  decoration: new InputDecoration(
-                                    icon: Icon(Icons.local_taxi_rounded,
-                                        color: kPrimaryColor),
-                                    labelText: getTranslated(context, 'from'),
-                                  ),
-                                  itemFilter: (item, query) {
-                                    return item.place
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase());
-                                  },
-                                  itemSorter: (a, b) {
-                                    return a.place.compareTo(b.place);
-                                  },
-                                  itemSubmitted: (item) {
-                                    searched.startLocation = item.place;
-                                    setState(() {
-                                      searchTextFieldFrom.textField.controller
-                                          .text = item.place;
-                                    });
-                                  },
-                                  itemBuilder: (context, item) {
-                                    return row(item);
-                                  },
-                                ),
+                          child: TextFormField(
+                            controller: pickUpController,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.local_taxi_rounded,
+                                  color: kPrimaryColor),
+                              labelText: getTranslated(context, 'from'),
+                            ),
+                            onChanged: (value) {
+                              findPickUp(value);
+                            },
+                          ),
                         ),
+                        (pickUpPlacePredictionList.length > 0)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) {
+                                      //return Text("data");
+                                      return PredictionTile(
+                                        placePrediction:
+                                            pickUpPlacePredictionList[index],
+                                        pickORdrop: "pick",
+                                        callback: callback,
+                                      );
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            Divider(),
+                                    itemCount: pickUpPlacePredictionList.length,
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics()),
+                              )
+                            : Container(),
                         Padding(
                           padding: padding,
-                          child: loading
-                              ? CircularProgressIndicator()
-                              : searchTextFieldTo =
-                                  AutoCompleteTextField<Place>(
-                                  key: keyTo,
-                                  clearOnSubmit: false,
-                                  suggestions: places,
-                                  decoration: new InputDecoration(
-                                    icon: Icon(Icons.local_taxi_rounded,
-                                        color: kPrimaryColor),
-                                    labelText: getTranslated(context, 'to'),
-                                  ),
-                                  itemFilter: (item, query) {
-                                    return item.place
-                                        .toLowerCase()
-                                        .startsWith(query.toLowerCase());
-                                  },
-                                  itemSorter: (a, b) {
-                                    return a.place.compareTo(b.place);
-                                  },
-                                  itemSubmitted: (item) {
-                                    searched.arrivalLocation = item.place;
-                                    setState(() {
-                                      searchTextFieldTo.textField.controller
-                                          .text = item.place;
-                                    });
-                                  },
-                                  itemBuilder: (context, item) {
-                                    return row(item);
-                                  },
-                                ),
+                          child: TextFormField(
+                            controller: dropOffController,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.local_taxi_rounded,
+                                  color: kPrimaryColor),
+                              labelText: getTranslated(context, 'to'),
+                            ),
+                            onChanged: (value) {
+                              findDropOff(value);
+                            },
+                          ),
                         ),
+                        (dropOffPlacePredictionList.length > 0)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) {
+                                      //return Text("data");
+                                      return PredictionTile(
+                                          placePrediction:
+                                              dropOffPlacePredictionList[index],
+                                          pickORdrop: "drop",
+                                          callback: callback);
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            Divider(),
+                                    itemCount:
+                                        dropOffPlacePredictionList.length,
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics()),
+                              )
+                            : Container(),
+                        TextButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  return kPrimaryColor;
+                                },
+                              ),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              )),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20)),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 30))),
+                          onPressed: () async {
+                            (Provider.of<Address>(context, listen: false)
+                                            .pickUpLocation ==
+                                        null) ||
+                                    (Provider.of<Address>(context,
+                                                listen: false)
+                                            .dropOffLocation ==
+                                        null)
+                                ? {}
+                                : await getPlaceDirection();
+                            await Navigator.of(context)
+                                .pushNamed(
+                              MapScreen.routeName,
+                            )
+                                .then((value) {
+                              setState(() {
+                                _res = value;
+                              });
+                            });
+                          },
+                          child: getTitle(
+                              title: "Get Directions",
+                              color: Colors.white,
+                              fontSize: 14),
+                        ),
+
                         Padding(
                           padding: padding,
                           child: TextFormField(
@@ -343,5 +413,155 @@ class _MulticityInputState extends State<MulticityInput> {
         ),
       ],
     );
+  }
+
+  void findPickUp(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:PS";
+
+      var response =
+          await RequestAssistant.getRequest(Uri.parse(autoCompleteUrl));
+
+      if (response == "Failed.") {
+        return;
+      }
+
+      if (response["status"] == "OK") {
+        var predictions = response["predictions"];
+        var placesList = (predictions as List)
+            .map((e) => PlacePrediction.fromJson(e))
+            .toList();
+        setState(() {
+          pickUpPlacePredictionList = placesList;
+        });
+      }
+      print(response);
+    }
+  }
+
+  void findDropOff(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:PS";
+
+      var response =
+          await RequestAssistant.getRequest(Uri.parse(autoCompleteUrl));
+
+      if (response == "Failed.") {
+        return;
+      }
+
+      if (response["status"] == "OK") {
+        var predictions = response["predictions"];
+        var placesList = (predictions as List)
+            .map((e) => PlacePrediction.fromJson(e))
+            .toList();
+        setState(() {
+          dropOffPlacePredictionList = placesList;
+        });
+      }
+      print(response);
+    }
+  }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos =
+        Provider.of<Address>(context, listen: false).pickUpLocation;
+    var finalPos = Provider.of<Address>(context, listen: false).dropOffLocation;
+
+    var pickUpLatLng = LatLng(initialPos.latitude, initialPos.longitude);
+    var dropOffLatLnt = LatLng(finalPos.latitude, finalPos.longitude);
+
+    var details = await AssistantMethods.obtainPlaceDirectionDetails(
+        pickUpLatLng, dropOffLatLnt);
+
+    print("encoded points");
+    print(details.encodingPoints);
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolyLinePointsResult =
+        polylinePoints.decodePolyline(details.encodingPoints);
+    pLineCoordinates.clear();
+    if (decodedPolyLinePointsResult.isNotEmpty) {
+      decodedPolyLinePointsResult.forEach((PointLatLng pointLatLng) {
+        pLineCoordinates
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      });
+    }
+
+    polylineSet.clear();
+    setState(() {
+      Polyline polyline = Polyline(
+        color: Colors.red,
+        polylineId: PolylineId("PolylineID"),
+        jointType: JointType.round,
+        points: pLineCoordinates,
+        width: 5,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+      polylineSet.add(polyline);
+    });
+
+    if (pickUpLatLng.latitude > dropOffLatLnt.latitude &&
+        pickUpLatLng.longitude > dropOffLatLnt.longitude) {
+      latLngBounds =
+          LatLngBounds(southwest: dropOffLatLnt, northeast: pickUpLatLng);
+    } else if (pickUpLatLng.longitude > dropOffLatLnt.longitude) {
+      latLngBounds = LatLngBounds(
+          southwest: LatLng(pickUpLatLng.latitude, dropOffLatLnt.longitude),
+          northeast: LatLng(dropOffLatLnt.latitude, pickUpLatLng.longitude));
+    } else if (pickUpLatLng.latitude > dropOffLatLnt.latitude) {
+      latLngBounds = LatLngBounds(
+          southwest: LatLng(dropOffLatLnt.latitude, pickUpLatLng.longitude),
+          northeast: LatLng(pickUpLatLng.latitude, dropOffLatLnt.longitude));
+    } else {
+      latLngBounds =
+          LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLnt);
+    }
+
+    Marker pickUpMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(title: initialPos.placeName),
+      position: pickUpLatLng,
+      markerId: MarkerId("pickUpId"),
+    );
+    Marker dropOffMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      infoWindow: InfoWindow(title: finalPos.placeName),
+      position: dropOffLatLnt,
+      markerId: MarkerId("dropOffId"),
+    );
+
+    setState(() {
+      markersSet.clear();
+      markersSet.add(pickUpMarker);
+      markersSet.add(dropOffMarker);
+    });
+
+    Circle pickUpCircle = Circle(
+      fillColor: Colors.redAccent,
+      center: pickUpLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.redAccent,
+      circleId: CircleId("pickUpId"),
+    );
+
+    Circle dropOffCircle = Circle(
+      fillColor: Colors.blueAccent,
+      center: dropOffLatLnt,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.blueAccent,
+      circleId: CircleId("dropOffId"),
+    );
+
+    setState(() {
+      circlesSet.add(pickUpCircle);
+      circlesSet.add(dropOffCircle);
+    });
   }
 }

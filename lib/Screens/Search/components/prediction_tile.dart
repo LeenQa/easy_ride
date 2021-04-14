@@ -1,0 +1,101 @@
+import 'package:easy_ride/Assistants/requestAssistant.dart';
+import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
+import 'package:easy_ride/components/configMaps.dart';
+import 'package:easy_ride/models/address.dart';
+import 'package:easy_ride/models/place_prediction.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class PredictionTile extends StatefulWidget {
+  PlacePrediction placePrediction;
+  String pickORdrop;
+  Function callback;
+  PredictionTile(
+      {Key key, this.placePrediction, this.pickORdrop, this.callback})
+      : super(key: key);
+
+  @override
+  _PredictionTileState createState() => _PredictionTileState();
+}
+
+class _PredictionTileState extends State<PredictionTile> {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        if (widget.pickORdrop == "pick") {
+          getPlaceAddressDetails(
+              widget.placePrediction.place_id, context, "pick");
+        }
+        if (widget.pickORdrop == "drop") {
+          getPlaceAddressDetails(
+              widget.placePrediction.place_id, context, "drop");
+        }
+      },
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(width: 10),
+            Row(
+              children: [
+                Icon(Icons.add_location),
+                SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.placePrediction.main_text,
+                          overflow: TextOverflow.ellipsis),
+                      SizedBox(height: 3),
+                      (widget.placePrediction.secondary_text == null
+                          ? Text(widget.placePrediction.main_text)
+                          : Text(widget.placePrediction.secondary_text,
+                              overflow: TextOverflow.ellipsis)),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> getPlaceAddressDetails(String placeId, context, pd) async {
+    String placeDetailsUrl =
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+
+    var response =
+        await RequestAssistant.getRequest(Uri.parse(placeDetailsUrl));
+
+    if (response == "Failed.") {
+      return;
+    }
+
+    if (response["status"] == "OK") {
+      Address address = Address();
+      address.placeName = response["result"]["name"];
+      address.placeId = placeId;
+      address.latitude = response["result"]["geometry"]["location"]["lat"];
+      address.longitude = response["result"]["geometry"]["location"]["lng"];
+
+      if (pd == "pick") {
+        Provider.of<Address>(context, listen: false)
+            .updatePickUpLocation(address);
+        searched.startLocation = address.placeName;
+        print("pick up location");
+        print(address.placeName);
+        widget.callback("pick");
+      }
+      if (pd == "drop") {
+        Provider.of<Address>(context, listen: false)
+            .updateDropOffLocation(address);
+        searched.arrivalLocation = address.placeName;
+        print("drop off location");
+        print(address.placeName);
+        widget.callback("drop");
+      }
+    }
+  }
+}

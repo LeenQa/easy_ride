@@ -91,11 +91,11 @@ class _MainDrawerState extends State<MainDrawer> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
+                  StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
                           .collection('users')
                           .doc(uid)
-                          .get(),
+                          .snapshots(),
                       builder: (BuildContext context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -110,7 +110,8 @@ class _MainDrawerState extends State<MainDrawer> {
                             size: 26,
                           ),
                           title: getTitle(
-                            title: snapshot.data.data()['firstName'],
+                            title:
+                                "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
                             color: Colors.white,
                             /* style: TextStyle(
                               color: Colors.white,
