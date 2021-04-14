@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Screens/Profile_Pic_Screen/profile_pic_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../text_style.dart';
 import 'components/my_info.dart';
 import 'components/opaque_image.dart';
@@ -8,8 +11,34 @@ import 'package:flutter/material.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String _urlAvatar;
+  String _name;
+  String _uid;
+  getUser() async {
+    final User user = auth.currentUser;
+    _uid = user.uid;
+    var data =
+        await FirebaseFirestore.instance.collection("users").doc(_uid).get();
+    _urlAvatar = data.data()['urlAvatar'];
+    print("noooor kidddd $_urlAvatar");
+    _name = data.data()['firstName'] + " " + data.data()['lastName'];
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -31,17 +60,16 @@ class ProfileScreen extends StatelessWidget {
                 flex: 4,
                 child: Stack(
                   children: [
-                    OpaqueImage(
-                      //make dynamic
-                      imageUrl:
-                          'https://media-exp1.licdn.com/dms/image/C4E03AQFjmnD212CQdw/profile-displayphoto-shrink_800_800/0/1605559690753?e=1621468800&v=beta&t=xtjlN_sPq-5CEydr3i6S4SM5r7teBBH9uUhTkywHkik',
-                    ),
+                    // OpaqueImage(
+                    //   //make dynamic
+                    //   imageUrl: _urlAvatar,
+                    // ),
                     SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            MyInfo(),
+                            MyInfo(_name, _urlAvatar),
                           ],
                         ),
                       ),
@@ -160,7 +188,10 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   elevation: 4,
                   backgroundColor: kPrimaryColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, ProfilePicScreen.routeName,
+                        arguments: _uid);
+                  },
                 ),
               ),
             ],

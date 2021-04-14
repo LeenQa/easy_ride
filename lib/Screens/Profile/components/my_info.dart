@@ -6,10 +6,14 @@ import 'package:flutter/widgets.dart';
 import '../../../constants.dart';
 
 class MyInfo extends StatelessWidget {
+  final String name;
+  final String urlAvatar;
   double sizedBoxSize = 10;
   //if not driver change it to 20
 
   final ifDriverS = 20;
+
+  MyInfo(this.name, this.urlAvatar);
 
   //final Size size = Size.fromWidth(120);
 
@@ -29,8 +33,7 @@ class MyInfo extends StatelessWidget {
                 ),
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(
-                      'https://media-exp1.licdn.com/dms/image/C4E03AQFjmnD212CQdw/profile-displayphoto-shrink_800_800/0/1605559690753?e=1621468800&v=beta&t=xtjlN_sPq-5CEydr3i6S4SM5r7teBBH9uUhTkywHkik'),
+                  image: NetworkImage(urlAvatar),
                   fit: BoxFit.fitWidth,
                 )),
           ),
@@ -41,7 +44,7 @@ class MyInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Alex Dukmak',
+                name,
                 style: blackNameTextStyle,
               ),
             ],

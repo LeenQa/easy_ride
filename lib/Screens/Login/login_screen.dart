@@ -1,3 +1,4 @@
+import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
@@ -27,6 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
         email: user.email,
         password: user.password,
       );
+      if (authResult.user.uid.startsWith("fjsrQq4AmdVWHK8Z7vSHlFRelBV2")) {
+        Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
+      }
       Navigator.pushReplacementNamed(context, TabsScreen.routeName);
     } on PlatformException catch (err) {
       var message = 'An error occured, please check your credentials!';

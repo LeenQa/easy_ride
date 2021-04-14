@@ -1,7 +1,9 @@
+import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
+import 'package:easy_ride/Screens/Profile_Pic_Screen/profile_pic_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
@@ -120,7 +122,11 @@ class _MyAppState extends State<MyApp> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, userSnapchot) {
             if (userSnapchot.hasData) {
-              return TabsScreen();
+              if (FirebaseAuth.instance.currentUser.uid ==
+                  "fjsrQq4AmdVWHK8Z7vSHlFRelBV2") {
+                return AdminPanelScreen();
+              } else
+                return TabsScreen();
             } else
               return LoginScreen();
           },
@@ -135,6 +141,8 @@ class _MyAppState extends State<MyApp> {
           OfferRideScreen.routeName: (ctx) => OfferRideScreen(),
           BecomeDriverScreen.routeName: (ctx) => BecomeDriverScreen(),
           SettingsScreen.routeName: (ctx) => SettingsScreen(),
+          AdminPanelScreen.routeName: (ctx) => AdminPanelScreen(),
+          ProfilePicScreen.routeName: (ctx) => ProfilePicScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) {
