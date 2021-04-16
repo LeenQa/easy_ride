@@ -372,6 +372,8 @@ class _MulticityInputState extends State<MulticityInput> {
                                     searched.arrivalLocation,
                                     _selectedDate,
                                     rides);
+                                pickUpController.clear();
+                                dropOffController.clear();
                                 print(results.isEmpty);
                               });
                             },

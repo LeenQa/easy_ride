@@ -5,17 +5,31 @@ import 'package:easy_ride/components/text_field_container.dart';
 import 'package:easy_ride/constants.dart';
 
 class RoundedInputField extends StatelessWidget {
+  final double margin;
+  final double radius;
   final String hintText;
   final TextInputType keyboardType;
   final IconData icon;
   final ValueChanged<String> onSaved;
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
   const RoundedInputField(
-      {Key key, this.hintText, this.icon, this.onSaved, this.keyboardType})
+      {Key key,
+      this.hintText,
+      this.icon,
+      this.onSaved,
+      this.keyboardType,
+      this.controller,
+      this.onChanged,
+      this.margin,
+      this.radius})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
+      margin: margin,
+      radius: radius,
       child: TextFormField(
         validator: (value) {
           if (value.isEmpty) {
@@ -37,6 +51,8 @@ class RoundedInputField extends StatelessWidget {
             return null;
         },
         onSaved: onSaved,
+        onChanged: onChanged,
+        controller: controller,
         cursorColor: kPrimaryColor,
         keyboardType: keyboardType,
         decoration: InputDecoration(

@@ -52,5 +52,6 @@
     "nis": "NIS",
     "offernewride": "Offer a new ride",
     "ridedetails" : "Ride Details",
-    "requestride" : "Request Ride"
+    "requestride" : "Request Ride",
+    "location" : "Location"
     }

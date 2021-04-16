@@ -1,9 +1,13 @@
+import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/components/configMaps.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/address.dart';
+import 'package:easy_ride/models/place_prediction.dart';
 import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
@@ -12,7 +16,9 @@ import 'package:easy_ride/Screens/Signup/components/or_divider.dart';
 import 'package:easy_ride/Screens/Signup/components/social_icon.dart';
 import 'package:easy_ride/components/already_have_an_account_acheck.dart';
 import 'package:easy_ride/components/rounded_button.dart';
+import 'package:provider/provider.dart';
 import '../../../constants.dart';
+import 'location_prediction_tile.dart';
 
 class SingupBody extends StatefulWidget {
   final void Function(
@@ -23,6 +29,9 @@ class SingupBody extends StatefulWidget {
   @override
   _SingupBodyState createState() => _SingupBodyState();
 }
+
+List<PlacePrediction> userLocationPredictionList = [];
+TextEditingController userLocationController = TextEditingController();
 
 class _SingupBodyState extends State<SingupBody> {
   User _user = User();
@@ -38,6 +47,14 @@ class _SingupBodyState extends State<SingupBody> {
         TabsScreen.routeName,
       );
     }
+  }
+
+  callback() {
+    setState(() {
+      userLocationPredictionList = [];
+      userLocationController.text =
+          Provider.of<Address>(context, listen: false).userLocation.placeName;
+    });
   }
 
   @override
@@ -123,6 +140,55 @@ class _SingupBodyState extends State<SingupBody> {
                 },
                 onSaved: (value) => _passConf = value,
               ),
+              RoundedInputField(
+                icon: Icons.location_on,
+                hintText: getTranslated(context, 'location'),
+                onSaved: (value) {
+                  _user.location = value.trim();
+                },
+                onChanged: (value) {
+                  findLocation(value);
+                },
+                controller: userLocationController,
+                margin: 0,
+                radius: (userLocationPredictionList.length > 0 ? 0 : null),
+              ),
+              (userLocationPredictionList.length > 0)
+                  ? Padding(
+                      padding: EdgeInsets.zero,
+                      child: Container(
+                        width: size.width * 0.8,
+                        decoration: BoxDecoration(
+                          color: kPrimaryLightColor,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(29),
+                              bottomRight: Radius.circular(29),
+                              topLeft: Radius.circular(0),
+                              topRight: Radius.circular(0)),
+                        ),
+                        child: ListView.separated(
+                            padding: EdgeInsets.all(5),
+                            itemBuilder: (context, index) {
+                              //return Text("data");
+                              return PredictionTile(
+                                  placePrediction:
+                                      userLocationPredictionList[index],
+                                  callback: callback);
+                            },
+                            separatorBuilder: (BuildContext context,
+                                    int index) =>
+                                Divider(
+                                  indent:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  endIndent:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                ),
+                            itemCount: userLocationPredictionList.length,
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics()),
+                      ),
+                    )
+                  : Container(),
               if (widget._isLoading)
                 CircularProgressIndicator(
                   backgroundColor: kPrimaryColor,
@@ -166,5 +232,30 @@ class _SingupBodyState extends State<SingupBody> {
         ),
       ),
     );
+  }
+
+  void findLocation(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:PS";
+
+      var response =
+          await RequestAssistant.getRequest(Uri.parse(autoCompleteUrl));
+
+      if (response == "Failed.") {
+        return;
+      }
+
+      if (response["status"] == "OK") {
+        var predictions = response["predictions"];
+        var placesList = (predictions as List)
+            .map((e) => PlacePrediction.fromJson(e))
+            .toList();
+        setState(() {
+          userLocationPredictionList = placesList;
+        });
+      }
+      print(response);
+    }
   }
 }

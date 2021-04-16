@@ -12,13 +12,15 @@ class User with ChangeNotifier {
   String _firstName;
   String _lastName;
   int _phone;
+  String _location;
 
   User(
       [this._email,
       this._password,
       this._firstName,
       this._lastName,
-      this._phone]);
+      this._phone,
+      this._location]);
 
   set email(value) => this._email = value;
 
@@ -39,4 +41,8 @@ class User with ChangeNotifier {
   set phone(int value) => this._phone = value;
 
   int get phone => this._phone;
+
+  set location(value) => this._location = value;
+
+  String get location => this._location;
 }

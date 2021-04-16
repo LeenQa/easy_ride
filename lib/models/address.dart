@@ -18,6 +18,7 @@ class Address extends ChangeNotifier {
   Address pickUpLocation;
   Address dropOffLocation;
   Address currentLocation;
+  Address userLocation;
 
   void updatePickUpLocation(Address pickUpAddress) {
     pickUpLocation = pickUpAddress;
@@ -31,6 +32,11 @@ class Address extends ChangeNotifier {
 
   void updateCurrentLocation(Address currentAddress) {
     currentLocation = currentAddress;
+    notifyListeners();
+  }
+
+  void updateUserLocation(Address userAddress) {
+    userLocation = userAddress;
     notifyListeners();
   }
 }
