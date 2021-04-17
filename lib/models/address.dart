@@ -15,18 +15,21 @@ class Address extends ChangeNotifier {
     this.longitude,
   });
 
-  Address pickUpLocation;
-  Address dropOffLocation;
+  Address searchRidePickUpLocation;
+  Address searchRideDropOffLocation;
   Address currentLocation;
   Address userLocation;
+  Address offerRidePickUpLocation;
+  Address offerRideDropOffLocation;
+  Address stopOverLocation;
 
-  void updatePickUpLocation(Address pickUpAddress) {
-    pickUpLocation = pickUpAddress;
+  void updateSearchPickUpLocation(Address pickUpAddress) {
+    searchRidePickUpLocation = pickUpAddress;
     notifyListeners();
   }
 
-  void updateDropOffLocation(Address dropOffAddress) {
-    dropOffLocation = dropOffAddress;
+  void updateSearchDropOffLocation(Address dropOffAddress) {
+    searchRideDropOffLocation = dropOffAddress;
     notifyListeners();
   }
 
@@ -37,6 +40,21 @@ class Address extends ChangeNotifier {
 
   void updateUserLocation(Address userAddress) {
     userLocation = userAddress;
+    notifyListeners();
+  }
+
+  void updateOfferPickUpLocation(Address pickUpAddress) {
+    offerRidePickUpLocation = pickUpAddress;
+    notifyListeners();
+  }
+
+  void updateOfferDropOffLocation(Address dropOffAddress) {
+    offerRideDropOffLocation = dropOffAddress;
+    notifyListeners();
+  }
+
+  void updateStopOverLocation(Address stopoOverAddress) {
+    stopOverLocation = stopoOverAddress;
     notifyListeners();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:easy_ride/Assistants/requestAssistant.dart';
-import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/configMaps.dart';
 import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/place_prediction.dart';
@@ -73,7 +72,7 @@ class _PredictionTileState extends State<PredictionTile> {
       address.longitude = response["result"]["geometry"]["location"]["lng"];
 
       Provider.of<Address>(context, listen: false).updateUserLocation(address);
-      searched.startLocation = address.placeName;
+      //searched.startLocation = address.placeName;
       print("user location");
       print(address.placeName);
       widget.callback();

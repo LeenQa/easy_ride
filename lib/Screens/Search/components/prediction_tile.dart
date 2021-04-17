@@ -31,6 +31,17 @@ class _PredictionTileState extends State<PredictionTile> {
           getPlaceAddressDetails(
               widget.placePrediction.place_id, context, "drop");
         }
+        if (widget.pickORdrop == "offer_pick") {
+          getPlaceAddressDetails(
+              widget.placePrediction.place_id, context, "offer_pick");
+        }
+        if (widget.pickORdrop == "offer_drop") {
+          getPlaceAddressDetails(
+              widget.placePrediction.place_id, context, "offer_drop");
+        } else {
+          getPlaceAddressDetails(
+              widget.placePrediction.place_id, context, "stop");
+        }
       },
       child: Container(
         child: Column(
@@ -82,7 +93,7 @@ class _PredictionTileState extends State<PredictionTile> {
 
       if (pd == "pick") {
         Provider.of<Address>(context, listen: false)
-            .updatePickUpLocation(address);
+            .updateSearchPickUpLocation(address);
         searched.startLocation = address.placeName;
         print("pick up location");
         print(address.placeName);
@@ -90,11 +101,35 @@ class _PredictionTileState extends State<PredictionTile> {
       }
       if (pd == "drop") {
         Provider.of<Address>(context, listen: false)
-            .updateDropOffLocation(address);
+            .updateSearchDropOffLocation(address);
         searched.arrivalLocation = address.placeName;
         print("drop off location");
         print(address.placeName);
         widget.callback("drop");
+      }
+      if (pd == "offer_pick") {
+        Provider.of<Address>(context, listen: false)
+            .updateOfferPickUpLocation(address);
+        searched.startLocation = address.placeName;
+        print("pick up location");
+        print(address.placeName);
+        widget.callback("pick");
+      }
+      if (pd == "offer_drop") {
+        Provider.of<Address>(context, listen: false)
+            .updateOfferDropOffLocation(address);
+        searched.arrivalLocation = address.placeName;
+        print("drop off location");
+        print(address.placeName);
+        widget.callback("drop");
+      }
+      if (pd == "stop") {
+        Provider.of<Address>(context, listen: false)
+            .updateStopOverLocation(address);
+        //searched.arrivalLocation = address.placeName;
+        print("stop over location");
+        print(address.placeName);
+        widget.callback("stop");
       }
     }
   }

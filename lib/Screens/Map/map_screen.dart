@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:easy_ride/Assistants/assistantMethods.dart';
-import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
+import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart' as Offer;
+import 'package:easy_ride/Screens/Search/components/multicity_input.dart'
+    as Search;
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/address.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,38 +37,48 @@ class _MapScreenState extends State<MapScreen> {
   Position currentPosition;
   var geolocator = Geolocator();
 
-  void locatePostition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
-
-    LatLng latLatPosition = LatLng(position.latitude, position.longitude);
-
-    CameraPosition cameraPosition =
-        new CameraPosition(target: latLatPosition, zoom: 14);
-    latLngBounds == null
-        ? newGoogleMapController
-            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
-        : newGoogleMapController
-            .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
-    address = await AssistantMethods.searchCoordinateAddress(position, context);
-
-    print(address.length);
-    print("this is address ${address}");
-  }
-
-  LatLng northEast = LatLng(33.304222, 34.790746);
-  LatLng southWest = LatLng(29.596533, 35.222665);
-
   @override
   Widget build(BuildContext context) {
+    var arg = ModalRoute.of(context).settings.arguments;
+    print(arg);
+    bool search = arg == "search_for_a_ride";
     /* var resultLocation = Provider.of<Address>(context).pickUpLocation != null
         ? Provider.of<Address>(context).pickUpLocation.placeName
         : "waiiting"; */
+    void locatePostition() async {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      currentPosition = position;
+
+      LatLng latLatPosition = LatLng(position.latitude, position.longitude);
+
+      CameraPosition cameraPosition =
+          new CameraPosition(target: latLatPosition, zoom: 14);
+      search
+          ? Search.latLngBounds == null
+              ? newGoogleMapController
+                  .animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
+              : newGoogleMapController.animateCamera(
+                  CameraUpdate.newLatLngBounds(Search.latLngBounds, 70))
+          : Offer.latLngBounds == null
+              ? newGoogleMapController
+                  .animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
+              : newGoogleMapController.animateCamera(
+                  CameraUpdate.newLatLngBounds(Offer.latLngBounds, 70));
+
+      address =
+          await AssistantMethods.searchCoordinateAddress(position, context);
+
+      print(address.length);
+      print("this is address ${address}");
+    }
+
+    LatLng northEast = LatLng(33.304222, 34.790746);
+    LatLng southWest = LatLng(29.596533, 35.222665);
     return new Scaffold(
       appBar: AppBar(
         title: Text(
-          "Map",
+          getTranslated(context, "map"),
           style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -80,16 +93,16 @@ class _MapScreenState extends State<MapScreen> {
           children: [
             GoogleMap(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.14, top: 15),
+                  bottom: MediaQuery.of(context).size.height * 0.16, top: 15),
               mapType: MapType.normal,
               initialCameraPosition: _kPalestine,
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
               zoomControlsEnabled: true,
               zoomGesturesEnabled: true,
-              polylines: polylineSet,
-              markers: markersSet,
-              circles: circlesSet,
+              polylines: search ? Search.polylineSet : Offer.polylineSet,
+              markers: search ? Search.markersSet : Offer.markersSet,
+              circles: search ? Search.circlesSet : Offer.circlesSet,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
                 newGoogleMapController = controller;
@@ -102,7 +115,7 @@ class _MapScreenState extends State<MapScreen> {
               right: 0,
               bottom: 0,
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.14,
+                height: MediaQuery.of(context).size.height * 0.16,
                 //height: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -126,7 +139,8 @@ class _MapScreenState extends State<MapScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6),
-                      getTitle(title: "Current Location:"),
+                      getTitle(
+                          title: getTranslated(context, "currentlocation")),
                       SizedBox(height: 20),
                       Container(
                         decoration: BoxDecoration(

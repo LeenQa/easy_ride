@@ -53,5 +53,13 @@
     "offernewride": "إعرض توصيلة",
     "ridedetails" : "تفاصيل التوصيلة",
     "requestride" : "طلب توصيلة",
-    "location" : "الموقع"
+    "location" : "الموقع",
+    "stopover" : "محطة توقف",
+    "stopovers" : "محطات التوقف:",
+    "addstopovers": "أضف محطات توقف",
+    "cancel" : "إلغاء",
+    "add" : "أضِف",
+    "directions" : "الإتجاهات",
+    "map" : "الخارطة",
+    "currentlocation" : "الموقع الحالي:"
     }

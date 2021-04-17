@@ -53,5 +53,13 @@
     "offernewride": "Offer a new ride",
     "ridedetails" : "Ride Details",
     "requestride" : "Request Ride",
-    "location" : "Location"
+    "location" : "Location",
+    "stopover" : "Stopover",
+    "stopovers" : "Stopovers:",
+    "addstopovers": "Add Stopovers",
+    "cancel" : "Cancel",
+    "add" : "Add",
+    "directions" : "Directions",
+    "map" : "Map",
+    "currentlocation" : "Current Location:"
     }

@@ -109,12 +109,12 @@ class _MulticityInputState extends State<MulticityInput> {
       dropOffPlacePredictionList = [];
       if (pd == "pick") {
         pickUpController.text = Provider.of<Address>(context, listen: false)
-            .pickUpLocation
+            .searchRidePickUpLocation
             .placeName;
       }
       if (pd == "drop") {
         dropOffController.text = Provider.of<Address>(context, listen: false)
-            .dropOffLocation
+            .searchRideDropOffLocation
             .placeName;
       }
     });
@@ -268,18 +268,17 @@ class _MulticityInputState extends State<MulticityInput> {
                                   TextStyle(fontSize: 30))),
                           onPressed: () async {
                             (Provider.of<Address>(context, listen: false)
-                                            .pickUpLocation ==
+                                            .searchRidePickUpLocation ==
                                         null) ||
                                     (Provider.of<Address>(context,
                                                 listen: false)
-                                            .dropOffLocation ==
+                                            .searchRideDropOffLocation ==
                                         null)
                                 ? {}
                                 : await getPlaceDirection();
                             await Navigator.of(context)
-                                .pushNamed(
-                              MapScreen.routeName,
-                            )
+                                .pushNamed(MapScreen.routeName,
+                                    arguments: "search_for_a_ride")
                                 .then((value) {
                               setState(() {
                                 _res = value;
@@ -287,7 +286,7 @@ class _MulticityInputState extends State<MulticityInput> {
                             });
                           },
                           child: getTitle(
-                              title: "Get Directions",
+                              title: getTranslated(context, "directions"),
                               color: Colors.white,
                               fontSize: 14),
                         ),
@@ -469,8 +468,9 @@ class _MulticityInputState extends State<MulticityInput> {
 
   Future<void> getPlaceDirection() async {
     var initialPos =
-        Provider.of<Address>(context, listen: false).pickUpLocation;
-    var finalPos = Provider.of<Address>(context, listen: false).dropOffLocation;
+        Provider.of<Address>(context, listen: false).searchRidePickUpLocation;
+    var finalPos =
+        Provider.of<Address>(context, listen: false).searchRideDropOffLocation;
 
     var pickUpLatLng = LatLng(initialPos.latitude, initialPos.longitude);
     var dropOffLatLnt = LatLng(finalPos.latitude, finalPos.longitude);
