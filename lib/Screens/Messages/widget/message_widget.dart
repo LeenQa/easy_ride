@@ -1,13 +1,15 @@
-import '../model/message.dart';
+import 'package:easy_ride/constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageWidget extends StatelessWidget {
-  final Message message;
+  final String message;
+  final String urlAvatar;
   final bool isMe;
 
   const MessageWidget({
     @required this.message,
     @required this.isMe,
+    @required this.urlAvatar,
   });
 
   @override
@@ -19,14 +21,13 @@ class MessageWidget extends StatelessWidget {
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: <Widget>[
         if (!isMe)
-          CircleAvatar(
-              radius: 16, backgroundImage: NetworkImage(message.urlAvatar)),
+          CircleAvatar(radius: 16, backgroundImage: NetworkImage(urlAvatar)),
         Container(
           padding: EdgeInsets.all(16),
           margin: EdgeInsets.all(16),
           constraints: BoxConstraints(maxWidth: 140),
           decoration: BoxDecoration(
-            color: isMe ? Colors.grey[100] : Theme.of(context).accentColor,
+            color: isMe ? Colors.grey[100] : kPrimaryColor,
             borderRadius: isMe
                 ? borderRadius.subtract(BorderRadius.only(bottomRight: radius))
                 : borderRadius.subtract(BorderRadius.only(bottomLeft: radius)),
@@ -42,7 +43,7 @@ class MessageWidget extends StatelessWidget {
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            message.message,
+            message,
             style: TextStyle(color: isMe ? Colors.black : Colors.white),
             textAlign: isMe ? TextAlign.end : TextAlign.start,
           ),

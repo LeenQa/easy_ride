@@ -1,14 +1,35 @@
-import '../model/user.dart';
+import 'package:async/async.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../page/chat_page.dart';
 import 'package:flutter/material.dart';
 
-class ChatBodyWidget extends StatelessWidget {
-  final List<User> users;
+class ChatBodyWidget extends StatefulWidget {
+  final List<QueryDocumentSnapshot> conversations;
+  final String uid;
 
-  const ChatBodyWidget({
-    @required this.users,
+  ChatBodyWidget({
+    @required this.conversations,
+    @required this.uid,
     Key key,
   }) : super(key: key);
+
+  @override
+  _ChatBodyWidgetState createState() => _ChatBodyWidgetState();
+}
+
+class _ChatBodyWidgetState extends State<ChatBodyWidget> {
+  getUserData(String userid) async {
+    var userdata =
+        await FirebaseFirestore.instance.collection('users').doc(userid).get();
+  }
+
+  //final AsyncMemoizer _memoizer = AsyncMemoizer();
+  getConversations(String userId) async {
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get();
+  }
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -28,24 +49,62 @@ class ChatBodyWidget extends StatelessWidget {
   Widget buildChats() => ListView.builder(
         physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
-          final user = users[index];
-
+          final userId = widget.conversations[index].data()["receiverId"];
           return Container(
             height: 75,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChatPage(user: user),
-                ));
+            child: FutureBuilder(
+              future: getConversations(userId),
+              builder: (BuildContext context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text('Something Went Wrong Try later');
+                    } else if (!snapshot.hasData) {
+                      return Text('No Data');
+                    } else {
+                      final name = snapshot.data.data()["firstName"] +
+                          " " +
+                          snapshot.data.data()["lastName"];
+                      final urlAvatar = snapshot.data.data()["urlAvatar"];
+                      // final user = widget.uid == uid1
+                      //     ? snapshot.data.data()["userId2"].trim()
+                      //     : uid1;
+                      // getUserData(user.trim());
+                      if (name == null) {
+                        return Text('No Conversations Found');
+                      } else
+                        return Column(
+                          children: [
+                            //ChatHeaderWidget(users: users),
+                            //ChatBodyWidget(conversations: user),
+                            ListTile(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ChatPage(
+                                    convId: widget.conversations[index].id,
+                                    name: name,
+                                    urlAvatar: urlAvatar,
+                                  ),
+                                ));
+                              },
+                              leading: CircleAvatar(
+                                radius: 25,
+                                backgroundImage:
+                                    NetworkImage(urlAvatar), //urlavatar
+                              ),
+                              title: Text(name), //name
+                            ),
+                          ],
+                        );
+                    }
+                }
               },
-              leading: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(user.urlAvatar),
-              ),
-              title: Text(user.name),
             ),
           );
         },
-        itemCount: users.length,
+        itemCount: widget.conversations.length,
       );
 }

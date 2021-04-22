@@ -3,7 +3,7 @@ import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
-import 'package:easy_ride/Screens/Profile_Pic_Screen/profile_pic_screen.dart';
+import 'package:easy_ride/Screens/Profile_Pic_Screen/edit_profile_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
@@ -108,6 +108,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           fontFamily: 'Quicksand',
           primaryColor: kPrimaryColor,
+          accentColor: kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(

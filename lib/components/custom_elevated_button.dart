@@ -1,3 +1,4 @@
+import 'package:easy_ride/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'main_drawer.dart';
@@ -28,9 +29,11 @@ class CustomElevatedButton extends StatelessWidget {
         backgroundColor: MaterialStateProperty.resolveWith<Color>(
           (Set<MaterialState> states) {
             if (states.contains(MaterialState.pressed))
-              return color;
+              return kPrimaryLightColor;
             else
-              return backgroundColor; // Use the component's default.
+              return backgroundColor == null
+                  ? kPrimaryColor
+                  : backgroundColor; // Use the component's default.
           },
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
-import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
@@ -31,7 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (authResult.user.uid.startsWith("fjsrQq4AmdVWHK8Z7vSHlFRelBV2")) {
         Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
       }
+      //  if (authResult.user.emailVerified) {
       Navigator.pushReplacementNamed(context, TabsScreen.routeName);
+      // } else {
+      //   Navigator.pushNamed(context, EmailConfirmationScreen.routeName);
+      // }
     } on PlatformException catch (err) {
       var message = 'An error occured, please check your credentials!';
       if (err.message != null) {

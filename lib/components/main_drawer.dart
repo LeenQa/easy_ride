@@ -7,8 +7,6 @@ import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-import '../constants.dart';
 import '../main.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -79,31 +77,28 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          Container(
-            height: 80,
-            width: double.infinity,
-            padding: EdgeInsets.all(20),
-            alignment: Alignment.centerLeft,
-            color: Theme.of(context).primaryColor,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(uid)
-                          .snapshots(),
-                      builder: (BuildContext context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return ListTile(
+    return StreamBuilder<DocumentSnapshot>(
+        stream:
+            FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Drawer(
+            child: Column(
+              children: [
+                Container(
+                  height: 80,
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20),
+                  alignment: Alignment.centerLeft,
+                  color: Theme.of(context).primaryColor,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListTile(
                           leading: Icon(
                             Icons.person,
                             color: Colors.white,
@@ -113,125 +108,106 @@ class _MainDrawerState extends State<MainDrawer> {
                             title:
                                 "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
                             color: Colors.white,
-                            /* style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Quicksand',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ), */
                           ),
-                        );
-                      }),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          buildListTile(
-            context,
-            Icons.person_pin_rounded,
-            () {
-              Navigator.of(context).pushNamed(ProfileScreen.routeName);
-            },
-            getTitle(title: getTranslated(context, 'profile')),
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          buildListTile(
-            context,
-            Icons.person_search_outlined,
-            () {
-              Navigator.of(context).pushNamed(UserSearchScreen.routeName);
-            },
-            getTitle(title: getTranslated(context, 'srchforausr')),
-          ),
-          buildListTile(
-            context,
-            Icons.add_circle_outline_outlined,
-            () {
-              Navigator.of(context).pushNamed(OfferRideScreen.routeName);
-            },
-            getTitle(title: getTranslated(context, 'offrard')),
-          ),
-          buildListTile(
-            context,
-            Icons.check_circle_outline_outlined,
-            () {
-              Navigator.of(context).pushNamed(BecomeDriverScreen.routeName);
-            },
-            getTitle(title: getTranslated(context, 'bcmadriver')),
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          buildListTile(context, Icons.settings, () {
-            Navigator.of(context).pushNamed(SettingsScreen.routeName);
-          }, getTitle(title: getTranslated(context, 'settings'))),
-          Divider(
-            thickness: 1,
-          ),
-          buildListTile(
-            context,
-            Icons.language,
-            () {},
-            DropdownButton<Language>(
-              underline: SizedBox(),
-              hint: Text(getTranslated(context, "switchlang")),
-              onChanged: (Language language) {
-                _changeLanguage(language);
-              },
-              items: Language.languageList()
-                  .map<DropdownMenuItem<Language>>(
-                    (e) => DropdownMenuItem<Language>(
-                      value: e,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text(
-                            e.flag,
-                            style: TextStyle(fontSize: 30),
-                          ),
-                          Text(e.name)
-                        ],
-                      ),
+                        ),
+                        //streambuilder
+                      ],
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                buildListTile(
+                  context,
+                  Icons.person_pin_rounded,
+                  () {
+                    Navigator.of(context)
+                        .pushNamed(ProfileScreen.routeName, arguments: {
+                      'name':
+                          "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
+                      'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
+                      'isMe': true,
+                    });
+                  },
+                  getTitle(title: getTranslated(context, 'profile')),
+                ),
+                Divider(
+                  thickness: 1,
+                ),
+                buildListTile(
+                  context,
+                  Icons.person_search_outlined,
+                  () {
+                    Navigator.of(context).pushNamed(UserSearchScreen.routeName);
+                  },
+                  getTitle(title: getTranslated(context, 'srchforausr')),
+                ),
+                buildListTile(
+                  context,
+                  Icons.add_circle_outline_outlined,
+                  () {
+                    Navigator.of(context).pushNamed(OfferRideScreen.routeName);
+                  },
+                  getTitle(title: getTranslated(context, 'offrard')),
+                ),
+                buildListTile(
+                  context,
+                  Icons.check_circle_outline_outlined,
+                  () {
+                    Navigator.of(context)
+                        .pushNamed(BecomeDriverScreen.routeName);
+                  },
+                  getTitle(title: getTranslated(context, 'bcmadriver')),
+                ),
+                Divider(
+                  thickness: 1,
+                ),
+                buildListTile(context, Icons.settings, () {
+                  Navigator.of(context).pushNamed(SettingsScreen.routeName);
+                }, getTitle(title: getTranslated(context, 'settings'))),
+                Divider(
+                  thickness: 1,
+                ),
+                buildListTile(
+                  context,
+                  Icons.language,
+                  () {},
+                  DropdownButton<Language>(
+                    underline: SizedBox(),
+                    hint: Text(getTranslated(context, "switchlang")),
+                    onChanged: (Language language) {
+                      _changeLanguage(language);
+                    },
+                    items: Language.languageList()
+                        .map<DropdownMenuItem<Language>>(
+                          (e) => DropdownMenuItem<Language>(
+                            value: e,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Text(
+                                  e.flag,
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                                Text(e.name)
+                              ],
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                Divider(
+                  thickness: 1,
+                ),
+                buildListTile(context, Icons.logout, () {
+                  FirebaseAuth.instance.signOut();
+                }, getTitle(title: getTranslated(context, 'logout'))),
+              ],
             ),
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          buildListTile(context, Icons.logout, () {
-            FirebaseAuth.instance.signOut();
-          }, getTitle(title: getTranslated(context, 'logout'))),
-          // Container(
-          //   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          //   child: LiteRollingSwitch(
-          //     value: true,
-          //     textOn: "English",
-          //     textOff: "        العربية",
-          //     colorOn: Colors.lightBlue,
-          //     colorOff: Colors.pink[200],
-          //     iconOn: Icons.language,
-          //     iconOff: Icons.language,
-          //     textSize: 17,
-          //     onChanged: (bool position) {
-          //       // print(locale.languageCode);
-          //       if (position) {
-          //         _changeLanguage(Language.languageList().elementAt(0));
-          //       } else {
-          //         _changeLanguage(Language.languageList().elementAt(1));
-          //       }
-          //     },
-          //   ),
-          // ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 

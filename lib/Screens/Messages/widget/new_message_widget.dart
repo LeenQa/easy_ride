@@ -1,12 +1,16 @@
-import '../api/firebase_api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class NewMessageWidget extends StatefulWidget {
-  final String idUser;
+  final String convId;
+  final String userId;
 
   const NewMessageWidget({
-    @required this.idUser,
+    @required this.convId,
+    @required this.userId,
     Key key,
   }) : super(key: key);
 
@@ -19,9 +23,18 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
   String message = '';
 
   void sendMessage() async {
-    FocusScope.of(context).unfocus();
+    // FocusScope.of(context).unfocus();
 
-    await FirebaseApi.uploadMessage(widget.idUser, message);
+    await FirebaseFirestore.instance
+        .collection("conversationmsgs")
+        .doc(widget.convId.trim())
+        .collection("messages")
+        .doc()
+        .set({
+      "content": message,
+      "dateTime": DateTime.now(),
+      "senderId": widget.userId,
+    });
 
     _controller.clear();
   }
@@ -60,9 +73,9 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.blue,
+                  color: Colors.white,
                 ),
-                child: Icon(Icons.send, color: Colors.white),
+                child: Icon(Icons.send, color: kPrimaryColor),
               ),
             ),
           ],

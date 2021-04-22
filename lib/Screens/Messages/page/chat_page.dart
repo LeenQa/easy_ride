@@ -1,14 +1,19 @@
-import '../model/user.dart';
+import 'package:easy_ride/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widget/messages_widget.dart';
 import '../widget/new_message_widget.dart';
 import '../widget/profile_header_widget.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-  final User user;
+  final String convId;
+  final String name;
+  final String urlAvatar;
 
   const ChatPage({
-    @required this.user,
+    @required this.convId,
+    @required this.name,
+    @required this.urlAvatar,
     Key key,
   }) : super(key: key);
 
@@ -18,13 +23,25 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  getUser() {
+    uid = auth.currentUser.uid;
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: kPrimaryColor,
         body: SafeArea(
           child: Column(
             children: [
-              ProfileHeaderWidget(name: widget.user.name),
+              ProfileHeaderWidget(name: widget.name),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(10),
@@ -35,10 +52,16 @@ class _ChatPageState extends State<ChatPage> {
                       topRight: Radius.circular(25),
                     ),
                   ),
-                  child: MessagesWidget(idUser: widget.user.idUser),
+                  child: MessagesWidget(
+                    convId: widget.convId,
+                    urlAvatar: widget.urlAvatar,
+                  ),
                 ),
               ),
-              NewMessageWidget(idUser: widget.user.idUser)
+              NewMessageWidget(
+                convId: widget.convId,
+                userId: uid,
+              )
             ],
           ),
         ),

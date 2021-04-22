@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_ride/Screens/Profile_Pic_Screen/profile_pic_screen.dart';
+import 'package:easy_ride/Screens/Messages/page/chat_page.dart';
+import 'package:easy_ride/Screens/Profile_Pic_Screen/edit_profile_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,22 +27,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  String _urlAvatar;
-  String _name;
-  String _uid;
+  String uid;
+  String currentUser;
+
   getUser() async {
+    Map args = ModalRoute.of(context).settings.arguments;
     final User user = auth.currentUser;
-    _uid = user.uid;
-    var data =
-        await FirebaseFirestore.instance.collection("users").doc(_uid).get();
-    _urlAvatar = data.data()['urlAvatar'];
-    print("noooor kidddd $_urlAvatar");
-    _name = data.data()['firstName'] + " " + data.data()['lastName'];
+    currentUser = user.uid;
+    uid = args['id'] == null ? user.uid : args['id'];
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    Map args = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,7 +68,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            MyInfo(_name, _urlAvatar),
+                            FutureBuilder<DocumentSnapshot>(
+                                future: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(uid)
+                                    .get(),
+                                builder: (BuildContext context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  return MyInfo(
+                                      args['name'], args['urlAvatar']);
+                                }),
                           ],
                         ),
                       ),
@@ -181,18 +194,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: FloatingActionButton(
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                  elevation: 4,
-                  backgroundColor: kPrimaryColor,
-                  onPressed: () {
-                    Navigator.pushNamed(context, ProfilePicScreen.routeName,
-                        arguments: _uid);
-                  },
-                ),
+                child: args["isMe"] == true
+                    ? FloatingActionButton(
+                        child: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                        elevation: 4,
+                        backgroundColor: kPrimaryColor,
+                        onPressed: () {
+                          final auth = FirebaseAuth.instance.currentUser.uid;
+                          Navigator.pushNamed(
+                            context,
+                            ProfilePicScreen.routeName,
+                            arguments: {
+                              'id': auth,
+                            },
+                          );
+                        },
+                      )
+                    : FloatingActionButton(
+                        child: Icon(
+                          Icons.message,
+                          color: Colors.white,
+                        ),
+                        elevation: 4,
+                        backgroundColor: kPrimaryColor,
+                        onPressed: () async {
+                          Map args = ModalRoute.of(context).settings.arguments;
+                          final auth = FirebaseAuth.instance.currentUser.uid;
+                          String convId = null;
+                          await FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(auth)
+                              .collection("conversations")
+                              .get()
+                              .then((value) async {
+                            value.docs.asMap().forEach((key, value) {
+                              print(value.data()["receiverId"]);
+                              if (value.data()["receiverId"] == args['id']) {
+                                convId = value.id;
+                              }
+                            });
+                            if (convId != null) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                  convId: convId,
+                                  name: args['name'],
+                                  urlAvatar: args['urlAvatar'],
+                                ),
+                              ));
+                            } else {
+                              String path = await FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(auth)
+                                  .collection("conversations")
+                                  .doc()
+                                  .id;
+                              await FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(auth)
+                                  .collection("conversations")
+                                  .doc(path)
+                                  .set({
+                                'lastMessageTime': DateTime.now(),
+                                'receiverId': args['id']
+                              }).then((value) async {
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(args['id'])
+                                    .collection("conversations")
+                                    .doc(path)
+                                    .set({
+                                  'lastMessageTime': DateTime.now(),
+                                  'receiverId': auth
+                                }).then((value) async {
+                                  await FirebaseFirestore.instance
+                                      .collection("conversationmsgs")
+                                      .doc(path)
+                                      .collection("messages")
+                                      .doc()
+                                      .id;
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(
+                                    builder: (context) => ChatPage(
+                                      convId: path,
+                                      name: args['name'],
+                                      urlAvatar: args['urlAvatar'],
+                                    ),
+                                  ));
+                                });
+                              });
+                            }
+                          });
+                        },
+                      ),
               ),
             ],
           ),

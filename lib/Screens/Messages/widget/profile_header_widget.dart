@@ -22,34 +22,16 @@ class ProfileHeaderWidget extends StatelessWidget {
                   child: Text(
                     name,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 22,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    buildIcon(Icons.call),
-                    SizedBox(width: 12),
-                    buildIcon(Icons.videocam),
-                  ],
-                ),
-                SizedBox(width: 4),
               ],
             )
           ],
         ),
-      );
-
-  Widget buildIcon(IconData icon) => Container(
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white54,
-        ),
-        child: Icon(icon, size: 25, color: Colors.white),
       );
 }

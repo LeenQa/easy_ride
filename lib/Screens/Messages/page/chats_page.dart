@@ -1,17 +1,37 @@
-import '../api/firebase_api.dart';
-import '../model/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widget/chat_body_widget.dart';
-import '../widget/chat_header_widget.dart';
 import 'package:flutter/material.dart';
 
-class ChatsPage extends StatelessWidget {
+class ChatsPage extends StatefulWidget {
+  @override
+  _ChatsPageState createState() => _ChatsPageState();
+}
+
+class _ChatsPageState extends State<ChatsPage> {
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  getUser() {
+    uid = auth.currentUser.uid;
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
         body: SafeArea(
-          child: StreamBuilder<List<User>>(
-            stream: FirebaseApi.getUsers(),
-            builder: (context, snapshot) {
+          child: FutureBuilder<QuerySnapshot>(
+            future: FirebaseFirestore.instance
+                .collection('users')
+                .doc(uid)
+                .collection('conversations')
+                .get(),
+            builder: (BuildContext context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return Center(child: CircularProgressIndicator());
@@ -20,15 +40,14 @@ class ChatsPage extends StatelessWidget {
                     print(snapshot.error);
                     return buildText('Something Went Wrong Try later');
                   } else {
-                    final users = snapshot.data;
+                    final conversations = snapshot.data.docs;
 
-                    if (users.isEmpty) {
-                      return buildText('No Users Found');
+                    if (conversations.isEmpty) {
+                      return buildText('No Conversations Found');
                     } else
                       return Column(
                         children: [
-                          ChatHeaderWidget(users: users),
-                          ChatBodyWidget(users: users)
+                          ChatBodyWidget(conversations: conversations, uid: uid)
                         ],
                       );
                   }
