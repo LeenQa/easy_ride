@@ -128,6 +128,10 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               'userEmail': user.email,
               'pictures': pictures,
               'carModel': _carModel,
+            }).then((value) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('Your request is sent successfully')));
             });
           });
         });

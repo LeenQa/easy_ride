@@ -41,89 +41,93 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
         title: Text(getTranslated(context, 'srchforausr')),
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            RoundedInputField(
-              onChanged: (String srchquery) {
-                setState(() {
-                  this.query = srchquery;
-                });
-              },
-            ),
-            StreamBuilder(
-                stream: getUserList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<QuerySnapshot>> snapshot) {
-                  if (snapshot.hasError)
-                    return new Text('Error: ${snapshot.error}');
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Center(
-                        child: Column(
-                          children: <Widget>[
-                            CircularProgressIndicator(),
-                            Text('Loading'),
-                          ],
-                        ),
-                      );
-                    default:
-                      List<QuerySnapshot> querySnapshotData;
-                      if (snapshot.data == null) {
-                        return Container();
-                      } else
-                        querySnapshotData = snapshot.data.toList();
-                      querySnapshotData[0]
-                          .docs
-                          .addAll(querySnapshotData[1].docs);
-                      List<QueryDocumentSnapshot> query =
-                          querySnapshotData[0].docs;
-                      return Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListView.separated(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.all(10.0),
-                              itemCount: query.length,
-                              itemBuilder: (context, index) {
-                                var user = query[index];
-                                // return buildUserRow(snapshot.data.documents[index]);
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        ProfileScreen.routeName,
-                                        arguments: {
-                                          'id': user.id,
-                                          'name': user.data()["firstName"] +
-                                              " " +
-                                              user.data()["lastName"],
-                                          'urlAvatar': user.data()["urlAvatar"],
-                                          'isMe': false,
-                                        });
-                                  },
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                          user.data()["urlAvatar"]),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              RoundedInputField(
+                icon: Icons.search,
+                hintText: "type user's name",
+                onChanged: (String srchquery) {
+                  setState(() {
+                    this.query = srchquery;
+                  });
+                },
+              ),
+              StreamBuilder(
+                  stream: getUserList(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+                    if (snapshot.hasError)
+                      return new Text('Error: ${snapshot.error}');
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: Column(
+                            children: <Widget>[
+                              CircularProgressIndicator(),
+                              Text('Loading'),
+                            ],
+                          ),
+                        );
+                      default:
+                        List<QuerySnapshot> querySnapshotData;
+                        if (snapshot.data == null) {
+                          return Container();
+                        } else
+                          querySnapshotData = snapshot.data.toList();
+                        List<QueryDocumentSnapshot> query =
+                            querySnapshotData[0].docs +
+                                querySnapshotData[1].docs;
+                        return Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListView.separated(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.all(10.0),
+                                itemCount: query.length,
+                                itemBuilder: (context, index) {
+                                  var user = query[index];
+                                  // return buildUserRow(snapshot.data.documents[index]);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          ProfileScreen.routeName,
+                                          arguments: {
+                                            'id': user.id,
+                                            'name': user.data()["firstName"] +
+                                                " " +
+                                                user.data()["lastName"],
+                                            'urlAvatar':
+                                                user.data()["urlAvatar"],
+                                            'isMe': false,
+                                          });
+                                    },
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(
+                                            user.data()["urlAvatar"]),
+                                      ),
+                                      title: Text(user.data()["firstName"] +
+                                          " " +
+                                          user.data()["lastName"]),
                                     ),
-                                    title: Text(user.data()["firstName"] +
-                                        " " +
-                                        user.data()["lastName"]),
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return Divider();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                  }
-                }),
-          ],
+                                  );
+                                },
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                    }
+                  }),
+            ],
+          ),
         ),
       ),
     );
