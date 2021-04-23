@@ -1,10 +1,10 @@
+import 'package:easy_ride/components/custom_container.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'custom_container.dart';
-import 'main_drawer.dart';
 import 'ride_details.dart';
 
 class RidesList extends StatelessWidget {

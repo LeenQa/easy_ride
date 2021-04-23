@@ -1,16 +1,18 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Map/map_screen.dart';
+import 'package:easy_ride/Screens/Rides_List/rides_list.dart';
 import 'package:easy_ride/Screens/Search/components/prediction_tile.dart';
 import 'package:easy_ride/components/configMaps.dart';
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/components/main_drawer.dart';
-import 'package:easy_ride/components/rides_list.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/address.dart';
+import 'package:easy_ride/models/direction_details.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:easy_ride/models/places.dart';
@@ -43,6 +45,7 @@ List<Ride> results = [];
 bool searchFound = false;
 var result;
 var _res;
+DirectionsDetails directionsDetails;
 
 List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
   List<Ride> matches = [];
@@ -68,7 +71,7 @@ class _MulticityInputState extends State<MulticityInput> {
 
   DateTime _selectedDate;
   Ride ride1 = new Ride(
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
+    TimeOfDay.now(),
     //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
@@ -83,7 +86,7 @@ class _MulticityInputState extends State<MulticityInput> {
     ),
   );
   Ride ride2 = new Ride(
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
+    TimeOfDay.now(),
     //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
@@ -300,7 +303,7 @@ class _MulticityInputState extends State<MulticityInput> {
                               labelText: getTranslated(context, 'numofpass'),
                             ),
                             onChanged: (value) {
-                              searched.numOfPassengers = value.toString();
+                              searched.numOfPassengers = int.parse(value);
                             },
                           ),
                         ),
@@ -365,6 +368,26 @@ class _MulticityInputState extends State<MulticityInput> {
                                 textStyle: MaterialStateProperty.all(
                                     TextStyle(fontSize: 30))),
                             onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .get()
+                                  .then((querySnapshot) {
+                                print("result.data()3");
+                                print(querySnapshot.size);
+                                querySnapshot.docs.forEach((result) {
+                                  print("result.data()2");
+                                  FirebaseFirestore.instance
+                                      .collection("rides")
+                                      .doc(result.id)
+                                      .collection("userrides")
+                                      .get()
+                                      .then((querySnapshot) {
+                                    querySnapshot.docs.forEach((result) {
+                                      print(result.data());
+                                    });
+                                  });
+                                });
+                              });
                               setState(() {
                                 results = Search(
                                     searched.startLocation,
@@ -477,6 +500,10 @@ class _MulticityInputState extends State<MulticityInput> {
 
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLnt);
+
+    setState(() {
+      directionsDetails = details;
+    });
 
     print("encoded points");
     print(details.encodingPoints);

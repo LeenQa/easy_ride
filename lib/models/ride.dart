@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'driver.dart';
 
 class Ride with ChangeNotifier {
-  DateTime _startTime;
+  TimeOfDay _startTime;
   // DateTime _arrivalTime;
   String _startLocation;
   String _arrivalLocation;
@@ -12,6 +13,7 @@ class Ride with ChangeNotifier {
   double _price;
   List<String> _stopOvers;
   Driver _driver;
+  String _description;
 
   Ride(
       [this._startTime,
@@ -22,10 +24,11 @@ class Ride with ChangeNotifier {
       this._numOfPassengers,
       this._price,
       this._stopOvers,
-      this._driver]);
+      this._driver,
+      this._description]);
 
   set startTime(value) => this._startTime = value;
-  DateTime get startTime => this._startTime;
+  TimeOfDay get startTime => this._startTime;
   // set arrivalTime(value) => this._arrivalTime = value;
   // DateTime get arrivalTime => this._arrivalTime;
   set startLocation(value) => this._startLocation = value;
@@ -42,7 +45,8 @@ class Ride with ChangeNotifier {
   List<String> get stopOvers => this._stopOvers;
   set driver(value) => this._driver = value;
   Driver get driver => this._driver;
-
+  set description(value) => this._description = value;
+  Driver get description => this.description;
   // int getDuration() {
   //   return this._arrivalTime.difference(this._startTime).inHours;
   // }

@@ -7,6 +7,9 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/address.dart';
+import 'package:easy_ride/models/direction_details.dart';
+import 'package:easy_ride/text_style.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,6 +45,41 @@ class _MapScreenState extends State<MapScreen> {
     var arg = ModalRoute.of(context).settings.arguments;
     print(arg);
     bool search = arg == "search_for_a_ride";
+    var price;
+    search
+        ? Search.directionsDetails != null
+            ? price =
+                (Search.directionsDetails.distanceValue / 1000 * 0.4).truncate()
+            : price = null
+        : Offer.directionsDetails != null
+            ? price =
+                (Offer.directionsDetails.distanceValue / 1000 * 0.4).truncate()
+            : price = null;
+
+    if (price == 0) {
+      price = 1;
+    }
+
+    var distance;
+    search
+        ? Search.directionsDetails != null
+            ? distance =
+                (Search.directionsDetails.distanceValue / 1000).truncate()
+            : distance = null
+        : Offer.directionsDetails != null
+            ? distance =
+                (Offer.directionsDetails.distanceValue / 1000).truncate()
+            : distance = null;
+
+    var pad;
+    search
+        ? Search.directionsDetails != null
+            ? pad = 0.20
+            : pad = 0.15
+        : Offer.directionsDetails != null
+            ? pad = 0.20
+            : pad = 0.15;
+
     /* var resultLocation = Provider.of<Address>(context).pickUpLocation != null
         ? Provider.of<Address>(context).pickUpLocation.placeName
         : "waiiting"; */
@@ -93,7 +131,7 @@ class _MapScreenState extends State<MapScreen> {
           children: [
             GoogleMap(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.16, top: 15),
+                  bottom: MediaQuery.of(context).size.height * pad, top: 15),
               mapType: MapType.normal,
               initialCameraPosition: _kPalestine,
               myLocationButtonEnabled: true,
@@ -115,7 +153,7 @@ class _MapScreenState extends State<MapScreen> {
               right: 0,
               bottom: 0,
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.16,
+                height: MediaQuery.of(context).size.height * pad,
                 //height: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -138,10 +176,20 @@ class _MapScreenState extends State<MapScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 6),
+                      distance == null
+                          ? Container()
+                          : Text(
+                              "Distance between the two places: $distance km",
+                              style: blueSubHeadingTextStyle),
+                      SizedBox(height: 4),
+                      price == null
+                          ? Container()
+                          : Text("Estimated cost: $price NIS",
+                              style: blueSubHeadingTextStyle),
+                      SizedBox(height: 10),
                       getTitle(
                           title: getTranslated(context, "currentlocation")),
-                      SizedBox(height: 20),
+                      SizedBox(height: 15),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3),

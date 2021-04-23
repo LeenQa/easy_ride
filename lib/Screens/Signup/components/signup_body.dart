@@ -68,7 +68,7 @@ class _SingupBodyState extends State<SingupBody> {
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
               SizedBox(height: size.height * 0.07),
               Text(
                 getTranslated(context, 'signup'),

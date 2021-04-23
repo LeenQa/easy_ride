@@ -1,7 +1,7 @@
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
+import 'package:easy_ride/Screens/Rides_List/rides_list.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/info_container.dart';
-import 'package:easy_ride/components/rides_list.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
@@ -13,7 +13,7 @@ import '../../text_style.dart';
 class HomeScreen extends StatelessWidget {
   DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
   Ride ride1 = new Ride(
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
+    TimeOfDay.now(),
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
     ["Jericho", "Ebediye"],
   );
   Ride ride2 = new Ride(
-    DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00PM'),
+    TimeOfDay.now(),
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",

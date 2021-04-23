@@ -1,11 +1,14 @@
 import 'dart:async' show Future;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Map/map_screen.dart';
 import 'package:easy_ride/Screens/Search/components/prediction_tile.dart';
 import 'package:easy_ride/components/configMaps.dart';
 import 'package:easy_ride/models/address.dart';
+import 'package:easy_ride/models/direction_details.dart';
 import 'package:easy_ride/models/place_prediction.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -34,21 +37,32 @@ List<PlacePrediction> pickUpPlacePredictionList = [];
 List<PlacePrediction> dropOffPlacePredictionList = [];
 TextEditingController pickUpController = TextEditingController();
 TextEditingController dropOffController = TextEditingController();
+TextEditingController priceController = TextEditingController();
+TextEditingController numOfPassengersController = TextEditingController();
+TextEditingController rideDescriptionController = TextEditingController();
 List<LatLng> pLineCoordinates = [];
 Set<Polyline> polylineSet = {};
 LatLngBounds latLngBounds;
 Set<Marker> markersSet = {};
 Set<Circle> circlesSet = {};
-List<String> stopOvers = [];
+List<String> _stopOvers = [];
 TextEditingController stopOverController = TextEditingController();
 List<PlacePrediction> stopOverPredictionList = [];
+DirectionsDetails directionsDetails;
 
 class _OfferRideScreenState extends State<OfferRideScreen> {
+  final _formKey = GlobalKey<FormState>();
+  bool isValid = true;
+  bool isDate = true;
+  bool isTime = true;
+
   String _fromChosenValue;
   String _toChosenValue;
   DateTime _selectedDate;
   TimeOfDay _selectedTime;
   String _numOfPassengers;
+  String _rideDescription;
+  String _price;
 
   List<Place> places;
   AutoCompleteTextField searchTextFieldFrom;
@@ -57,6 +71,22 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   GlobalKey<AutoCompleteTextFieldState<Place>> keyTo = new GlobalKey();
 
   bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  User user;
+  getUser() {
+    final User user = auth.currentUser;
+    uid = user.uid;
+    this.user = user;
+  }
 
   void _presentDatePicker() {
     showDatePicker(
@@ -71,6 +101,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
       }
       setState(() {
         _selectedDate = value;
+        isDate = true;
       });
     });
   }
@@ -85,6 +116,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
       }
       setState(() {
         _selectedTime = value;
+        isTime = true;
       });
     });
   }
@@ -125,7 +157,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                   title: getTranslated(context, "add"), color: kPrimaryColor),
               onPressed: () {
                 setState(() {
-                  stopOvers.add(stopOverController.text);
+                  _stopOvers.add(stopOverController.text);
                   stopOverController.text = "";
                 });
                 Navigator.pop(context);
@@ -135,12 +167,6 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadJsonData();
   }
 
   Widget row(Place place) {
@@ -195,6 +221,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
         elevation: 5,
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         child: Form(
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -206,6 +233,12 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Specify the initial location";
+                              } else
+                                return null;
+                            },
                             controller: pickUpController,
                             decoration: InputDecoration(
                               icon: Icon(Icons.local_taxi_rounded,
@@ -242,6 +275,12 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Specify the drop location";
+                              } else
+                                return null;
+                            },
                             controller: dropOffController,
                             decoration: InputDecoration(
                               icon: Icon(Icons.local_taxi_rounded,
@@ -340,7 +379,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   child: getTitle(
                                       title:
                                           getTranslated(context, 'choosedate'),
-                                      color: Colors.grey[700],
+                                      color: isDate
+                                          ? Colors.grey[700]
+                                          : ThemeData().errorColor,
                                       fontSize: 14),
                                 ),
                               ],
@@ -375,7 +416,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   child: getTitle(
                                       title:
                                           getTranslated(context, 'choosetime'),
-                                      color: Colors.grey[700],
+                                      color: isTime
+                                          ? Colors.grey[700]
+                                          : ThemeData().errorColor,
                                       fontSize: 14),
                                 ),
                               ],
@@ -385,6 +428,16 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Specify the number of passengers";
+                              } else if (int.parse(value) > 8 ||
+                                  int.parse(value) < 1) {
+                                return "Passengers must be between 1-8";
+                              } else
+                                return null;
+                            },
+                            controller: numOfPassengersController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               icon: Icon(Icons.person, color: kPrimaryColor),
@@ -404,6 +457,16 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                               Expanded(
                                 child: Container(
                                   child: TextFormField(
+                                    controller: priceController,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return "Specify the price";
+                                      } else if (int.parse(value) > 50 ||
+                                          int.parse(value) < 1) {
+                                        return "Price range 1-50";
+                                      } else
+                                        return null;
+                                    },
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       icon: Icon(Icons.monetization_on,
@@ -412,13 +475,10 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                           getTranslated(context, 'price'),
                                     ),
                                     onChanged: (value) {
-                                      _numOfPassengers = value;
+                                      _price = value;
                                     },
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 3,
                               ),
                               Expanded(
                                 child: Text(getTranslated(context, 'nis')),
@@ -438,19 +498,19 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                         child: Text(
                                             getTranslated(context, 'stopovers'),
                                             style: blueSubHeadingTextStyle)),
-                                    if (stopOvers.isNotEmpty)
+                                    if (_stopOvers.isNotEmpty)
                                       SizedBox(
                                         height: 80.0,
                                         child: ListView.builder(
                                             scrollDirection: Axis.vertical,
-                                            itemCount: stopOvers.length,
+                                            itemCount: _stopOvers.length,
                                             itemBuilder: (ctx, index) {
                                               return Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   getTitle(
-                                                      title: stopOvers[index]),
+                                                      title: _stopOvers[index]),
                                                 ],
                                               );
                                             }),
@@ -482,6 +542,21 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           ),
                         ),
+                        Padding(
+                          padding: padding,
+                          child: TextFormField(
+                            controller: rideDescriptionController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.description_rounded,
+                                  color: kPrimaryColor),
+                              labelText: "Ride Description",
+                            ),
+                            onChanged: (value) {
+                              _rideDescription = value;
+                            },
+                          ),
+                        ),
                         Center(
                           child: TextButton(
                             style: ButtonStyle(
@@ -501,11 +576,86 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                         vertical: 10, horizontal: 20)),
                                 textStyle: MaterialStateProperty.all(
                                     TextStyle(fontSize: 30))),
-                            onPressed: () {
-                              /*  setState(() {
-                                results = Search(searched.startLocation,
-                                    searched.arrivalLocation, _selectedDate, rides);
-                              }); */
+                            onPressed: () async {
+                              isValid = _formKey.currentState.validate();
+                              if (_selectedDate == null) {
+                                setState(() {
+                                  isDate = false;
+                                  isValid = false;
+                                });
+                              }
+                              if (_selectedTime == null) {
+                                setState(() {
+                                  isTime = false;
+                                  isValid = false;
+                                });
+                              }
+
+                              FocusScope.of(context).unfocus();
+                              if (isValid) {
+                                var firstname = await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(uid)
+                                    .get()
+                                    .then((value) => value.data()['firstName']);
+                                var lastname = await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(uid)
+                                    .get()
+                                    .then((value) => value.data()['lastName']);
+
+                                await FirebaseFirestore.instance
+                                    .collection('rides')
+                                    .doc(uid)
+                                    .collection('userrides')
+                                    .doc()
+                                    .set({
+                                  'startTime': MaterialLocalizations.of(context)
+                                      .formatTimeOfDay(_selectedTime),
+                                  'startLocation': pickUpController.text,
+                                  'arrivalLocation': dropOffController.text,
+                                  'numOfPassengers': _numOfPassengers,
+                                  'date': DateFormat('EEE, MMM d')
+                                      .format(_selectedDate),
+                                  'price': _price,
+                                  'stopovers': _stopOvers,
+                                  'driver': uid,
+                                  'description': _rideDescription
+                                }).then((_) async {
+                                  setState(() {
+                                    _selectedDate = null;
+                                    _selectedTime = null;
+                                    priceController.clear();
+                                    numOfPassengersController.clear();
+                                    rideDescriptionController.clear();
+                                    dropOffController.clear();
+                                    pickUpController.clear();
+                                    _stopOvers.clear();
+                                    _rideDescription = null;
+                                  });
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) => new AlertDialog(
+                                      title: new Text('Success!'),
+                                      content: Text(
+                                          'You offered a new ride successfully.'),
+                                      actions: [
+                                        new TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop(); // dismisses only the dialog and returns nothing
+                                          },
+                                          child: new Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  ).catchError((onError) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(onError)));
+                                  });
+                                });
+                              }
                             },
                             child: getTitle(
                                 title: getTranslated(context, 'offernewride'),
@@ -586,6 +736,10 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
 
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLnt);
+
+    setState(() {
+      directionsDetails = details;
+    });
 
     print("encoded points");
     print(details.encodingPoints);
