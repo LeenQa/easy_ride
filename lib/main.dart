@@ -3,7 +3,6 @@ import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
-import 'package:easy_ride/Screens/Profile_Pic_Screen/edit_profile_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
@@ -14,25 +13,36 @@ import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Screens/Edit_Profile_Screen/edit_profile_screen.dart';
 import 'Screens/Map/map_screen.dart';
 import 'Screens/Signup/signup_screen.dart';
 import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
 import 'package:provider/provider.dart';
-
 import 'models/address.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  // static getLocalNotificationsPlugin() {
+  //   return flutterLocalNotificationsPlugin;
+  // }
+
+  // static getchannel() {
+  //   return channel;
+  // }
+
   @override
   _MyAppState createState() => _MyAppState();
 

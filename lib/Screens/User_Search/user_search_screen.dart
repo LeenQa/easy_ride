@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
@@ -15,22 +14,16 @@ class UserSearchScreen extends StatefulWidget {
 class _UserSearchScreenState extends State<UserSearchScreen> {
   String query = "";
 
-  Stream<List<QuerySnapshot>> getUserList() {
-    Stream<QuerySnapshot> documentList1;
-    Stream<QuerySnapshot> documentList2;
+  Stream<QuerySnapshot> getUserList() {
+    Stream<QuerySnapshot> documentList;
     if (query == "") {
       return null;
     } else {
-      documentList1 = FirebaseFirestore.instance
+      documentList = FirebaseFirestore.instance
           .collection("users")
-          .where("firstName", isEqualTo: query)
+          .where("searchIndex", arrayContains: query.toLowerCase())
           .snapshots();
-
-      documentList2 = FirebaseFirestore.instance
-          .collection("users")
-          .where("lastName", isEqualTo: query)
-          .snapshots();
-      return StreamZip([documentList1, documentList2]);
+      return documentList;
     }
   }
 
@@ -55,10 +48,9 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                   });
                 },
               ),
-              StreamBuilder(
+              StreamBuilder<QuerySnapshot>(
                   stream: getUserList(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+                  builder: (context, snapshot) {
                     if (snapshot.hasError)
                       return new Text('Error: ${snapshot.error}');
                     switch (snapshot.connectionState) {
@@ -72,58 +64,52 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                           ),
                         );
                       default:
-                        List<QuerySnapshot> querySnapshotData;
                         if (snapshot.data == null) {
                           return Container();
                         } else
-                          querySnapshotData = snapshot.data.toList();
-                        List<QueryDocumentSnapshot> query =
-                            querySnapshotData[0].docs +
-                                querySnapshotData[1].docs;
-                        return Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListView.separated(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.all(10.0),
-                                itemCount: query.length,
-                                itemBuilder: (context, index) {
-                                  var user = query[index];
-                                  // return buildUserRow(snapshot.data.documents[index]);
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).pushNamed(
-                                          ProfileScreen.routeName,
-                                          arguments: {
-                                            'id': user.id,
-                                            'name': user.data()["firstName"] +
-                                                " " +
-                                                user.data()["lastName"],
-                                            'urlAvatar':
-                                                user.data()["urlAvatar"],
-                                            'isMe': false,
-                                          });
-                                    },
-                                    child: ListTile(
-                                      leading: CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage: NetworkImage(
-                                            user.data()["urlAvatar"]),
+                          return Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.all(10.0),
+                                  itemCount: snapshot.data.docs.length,
+                                  itemBuilder: (context, index) {
+                                    var user = snapshot.data.docs[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            ProfileScreen.routeName,
+                                            arguments: {
+                                              'id': user.id,
+                                              'name': user.data()["firstName"] +
+                                                  " " +
+                                                  user.data()["lastName"],
+                                              'urlAvatar':
+                                                  user.data()["urlAvatar"],
+                                              'isMe': false,
+                                            });
+                                      },
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage: NetworkImage(
+                                              user.data()["urlAvatar"]),
+                                        ),
+                                        title: Text(user.data()["firstName"] +
+                                            " " +
+                                            user.data()["lastName"]),
                                       ),
-                                      title: Text(user.data()["firstName"] +
-                                          " " +
-                                          user.data()["lastName"]),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (context, index) {
-                                  return Divider();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return Divider();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
                     }
                   }),
             ],

@@ -14,6 +14,24 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   var _isLoading = false;
   final _auth = FirebaseAuth.instance;
+  List<String> searchIndex(String firstname, String lastname) {
+    List<String> indexList = [];
+    String name = firstname + " " + lastname;
+
+    for (int i = 1; i <= name.length; i++) {
+      if (i <= firstname.length) {
+        indexList.add(firstname.substring(0, i).toLowerCase());
+      }
+      if (i <= lastname.length) {
+        indexList.add(lastname.substring(0, i).toLowerCase());
+      }
+      if (i > firstname.length - 1) {
+        indexList.add(name.substring(0, i).toLowerCase());
+      }
+    }
+    return indexList;
+  }
+
   _signUpForm(
     User.User _user,
   ) async {
@@ -35,6 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'phone': _user.phone,
         'email': _user.email,
         'location': _user.location,
+        'searchIndex': searchIndex(_user.firstName, _user.lastName),
         'urlAvatar':
             "https://firebasestorage.googleapis.com/v0/b/easyride-8fdc3.appspot.com/o/profilepics%2Fuser.png?alt=media&token=089e3870-577e-4339-a79e-1489d54db07e",
       });

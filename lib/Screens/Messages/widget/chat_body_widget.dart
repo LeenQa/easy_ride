@@ -1,5 +1,7 @@
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/main_drawer.dart';
+import 'package:intl/intl.dart';
 import '../page/chat_page.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +52,7 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
         physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           final userId = widget.conversations[index].data()["receiverId"];
+          final time = widget.conversations[index].data()["lastMessageTime"];
           return Container(
             height: 75,
             child: FutureBuilder(
@@ -95,7 +98,16 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                                 backgroundImage:
                                     NetworkImage(urlAvatar), //urlavatar
                               ),
-                              title: Text(name), //name
+                              title: getTitle(
+                                  title: name, color: Colors.black), //name
+                              subtitle: getTitle(
+                                  title: DateFormat(
+                                          'EEE, MMM d y \'at\' H:mm:s')
+                                      .format(
+                                          DateTime.fromMicrosecondsSinceEpoch(
+                                              time.microsecondsSinceEpoch))
+                                      .toString(),
+                                  fontSize: 13),
                             ),
                           ],
                         );

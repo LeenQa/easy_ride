@@ -10,3 +10,4 @@ const kPrimaryLightColor = Color(0xFFffefe6);
 final Color greenColor = Colors.green.shade400;
 const Color blueColor = Colors.blueAccent;
 const Color redColor = Color(0xffff5d6e);
+const Color watermelonColor = Color(0xffffa771);

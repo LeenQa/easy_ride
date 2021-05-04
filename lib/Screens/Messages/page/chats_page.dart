@@ -30,6 +30,7 @@ class _ChatsPageState extends State<ChatsPage> {
                 .collection('users')
                 .doc(uid)
                 .collection('conversations')
+                .orderBy("lastMessageTime", descending: true)
                 .get(),
             builder: (BuildContext context, snapshot) {
               switch (snapshot.connectionState) {

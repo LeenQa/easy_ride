@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Messages/page/chat_page.dart';
-import 'package:easy_ride/Screens/Profile_Pic_Screen/edit_profile_screen.dart';
+import 'package:easy_ride/Screens/Edit_Profile_Screen/edit_profile_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';

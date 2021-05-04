@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
-import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';

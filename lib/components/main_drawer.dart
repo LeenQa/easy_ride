@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
+import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
@@ -31,23 +32,23 @@ Widget getTitle({String title, Color color, double fontSize}) {
 }
 
 class _MainDrawerState extends State<MainDrawer> {
-  Locale locale;
-  void _changeLanguage(Language language) async {
-    Locale _locale = await setLocale(language.languageCode);
-    MyApp.setLocale(context, _locale);
-  }
+  // Locale locale;
+  // void _changeLanguage(Language language) async {
+  //   Locale _locale = await setLocale(language.languageCode);
+  //   MyApp.setLocale(context, _locale);
+  // }
 
-  bool langValue;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getLocale().then((locale) {
-      if (locale.languageCode.contains('en')) {
-        langValue = true;
-      }
-      langValue = false;
-    });
-  }
+  // bool langValue;
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   getLocale().then((locale) {
+  //     if (locale.languageCode.contains('en')) {
+  //       langValue = true;
+  //     }
+  //     langValue = false;
+  //   });
+  // }
 
   Widget buildListTile(
       BuildContext context, IconData icon, Function tabHandler, Widget title) {
@@ -66,13 +67,30 @@ class _MainDrawerState extends State<MainDrawer> {
   void initState() {
     super.initState();
     getUser();
+    checkDone();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   String uid;
+  bool already;
   getUser() {
     final User user = auth.currentUser;
     uid = user.uid;
+  }
+
+  checkDone() async {
+    var data = await FirebaseFirestore.instance
+        .collection("driver_requests")
+        .doc(uid)
+        .get();
+    print(data);
+    if (data != null) {
+      already = true;
+      print("true");
+    } else {
+      already = false;
+      print("false");
+    }
   }
 
   @override
@@ -118,111 +136,105 @@ class _MainDrawerState extends State<MainDrawer> {
                 SizedBox(
                   height: 20,
                 ),
-                buildListTile(
-                  context,
-                  Icons.person_pin_rounded,
-                  () {
-                    Navigator.of(context)
-                        .pushNamed(ProfileScreen.routeName, arguments: {
-                      'name':
-                          "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
-                      'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
-                      'isMe': true,
-                    });
-                  },
-                  getTitle(title: getTranslated(context, 'profile')),
-                ),
-                Divider(
-                  thickness: 1,
-                ),
-                buildListTile(
-                  context,
-                  Icons.person_search_outlined,
-                  () {
-                    Navigator.of(context).pushNamed(UserSearchScreen.routeName);
-                  },
-                  getTitle(title: getTranslated(context, 'srchforausr')),
-                ),
-                buildListTile(
-                  context,
-                  Icons.add_circle_outline_outlined,
-                  () {
-                    Navigator.of(context).pushNamed(OfferRideScreen.routeName);
-                  },
-                  getTitle(title: getTranslated(context, 'offrard')),
-                ),
-                buildListTile(
-                  context,
-                  Icons.check_circle_outline_outlined,
-                  () {
-                    Navigator.of(context)
-                        .pushNamed(BecomeDriverScreen.routeName);
-                  },
-                  getTitle(title: getTranslated(context, 'bcmadriver')),
-                ),
-                Divider(
-                  thickness: 1,
-                ),
-                buildListTile(context, Icons.settings, () {
-                  Navigator.of(context).pushNamed(SettingsScreen.routeName);
-                }, getTitle(title: getTranslated(context, 'settings'))),
-                Divider(
-                  thickness: 1,
-                ),
-                buildListTile(
-                  context,
-                  Icons.language,
-                  () {},
-                  DropdownButton<Language>(
-                    underline: SizedBox(),
-                    hint: Text(getTranslated(context, "switchlang")),
-                    onChanged: (Language language) {
-                      _changeLanguage(language);
-                    },
-                    items: Language.languageList()
-                        .map<DropdownMenuItem<Language>>(
-                          (e) => DropdownMenuItem<Language>(
-                            value: e,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Text(
-                                  e.flag,
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                Text(e.name)
-                              ],
-                            ),
-                          ),
-                        )
-                        .toList(),
+                if (uid != "fjsrQq4AmdVWHK8Z7vSHlFRelBV2")
+                  Column(
+                    children: [
+                      buildListTile(
+                        context,
+                        Icons.person_pin_rounded,
+                        () {
+                          Navigator.of(context)
+                              .pushNamed(ProfileScreen.routeName, arguments: {
+                            'name':
+                                "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
+                            'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
+                            'isMe': true,
+                          });
+                        },
+                        getTitle(title: getTranslated(context, 'profile')),
+                      ),
+                      Divider(
+                        thickness: 1,
+                      ),
+                      buildListTile(
+                        context,
+                        Icons.person_search_outlined,
+                        () {
+                          Navigator.of(context)
+                              .pushNamed(UserSearchScreen.routeName);
+                        },
+                        getTitle(title: getTranslated(context, 'srchforausr')),
+                      ),
+                      buildListTile(
+                        context,
+                        Icons.add_circle_outline_outlined,
+                        () {
+                          Navigator.of(context)
+                              .pushNamed(OfferRideScreen.routeName);
+                        },
+                        getTitle(title: getTranslated(context, 'offrard')),
+                      ),
+                      buildListTile(
+                        context,
+                        Icons.check_circle_outline_outlined,
+                        () {
+                          Navigator.of(context).pushNamed(
+                              BecomeDriverScreen.routeName,
+                              arguments: {"already": already});
+                        },
+                        getTitle(title: getTranslated(context, 'bcmadriver')),
+                      ),
+                      Divider(
+                        thickness: 1,
+                      ),
+                      buildListTile(context, Icons.settings, () {
+                        Navigator.of(context)
+                            .pushNamed(SettingsScreen.routeName);
+                      }, getTitle(title: getTranslated(context, 'settings'))),
+                      Divider(
+                        thickness: 1,
+                      ),
+                    ],
                   ),
-                ),
-                Divider(
-                  thickness: 1,
-                ),
+                // buildListTile(
+                //   context,
+                //   Icons.language,
+                //   () {},
+                //   DropdownButton<Language>(
+                //     underline: SizedBox(),
+                //     hint: Text(getTranslated(context, "switchlang")),
+                //     onChanged: (Language language) {
+                //       _changeLanguage(language);
+                //     },
+                //     items: Language.languageList()
+                //         .map<DropdownMenuItem<Language>>(
+                //           (e) => DropdownMenuItem<Language>(
+                //             value: e,
+                //             child: Row(
+                //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //               children: <Widget>[
+                //                 Text(
+                //                   e.flag,
+                //                   style: TextStyle(fontSize: 30),
+                //                 ),
+                //                 Text(e.name)
+                //               ],
+                //             ),
+                //           ),
+                //         )
+                //         .toList(),
+                //   ),
+                // ),
+                // Divider(
+                //   thickness: 1,
+                // ),
                 buildListTile(context, Icons.logout, () {
                   FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushNamed(LoginScreen.routeName);
                 }, getTitle(title: getTranslated(context, 'logout'))),
               ],
             ),
           );
         });
-  }
-}
-
-class Language {
-  final int id;
-  final String flag;
-  final String name;
-  final String languageCode;
-
-  Language(this.id, this.flag, this.name, this.languageCode);
-
-  static List<Language> languageList() {
-    return <Language>[
-      Language(1, "", "English", "en"),
-      Language(2, "", "اَلْعَرَبِيَّةُ‎", "ar"),
-    ];
   }
 }

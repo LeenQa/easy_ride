@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Rides_List/rides_list.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -5,13 +6,50 @@ import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../components/main_drawer.dart';
 import '../../text_style.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+    checkDone();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  bool already;
+  getUser() {
+    final User user = auth.currentUser;
+    uid = user.uid;
+  }
+
+  checkDone() async {
+    var data = await FirebaseFirestore.instance
+        .collection("driver_requests")
+        .doc(uid)
+        .get();
+    print(data);
+    if (data != null) {
+      already = true;
+      print("true");
+    } else {
+      already = false;
+      print("false");
+    }
+  }
+
   DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
+
   Ride ride1 = new Ride(
     TimeOfDay.now(),
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
@@ -22,6 +60,7 @@ class HomeScreen extends StatelessWidget {
     20.00,
     ["Jericho", "Ebediye"],
   );
+
   Ride ride2 = new Ride(
     TimeOfDay.now(),
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
@@ -32,7 +71,9 @@ class HomeScreen extends StatelessWidget {
     20.00,
     ["Jericho", "Ebediye"],
   );
+
   List<Ride> transactions = [];
+
   @override
   Widget build(BuildContext context) {
     transactions = [ride1, ride2];
@@ -75,8 +116,9 @@ class HomeScreen extends StatelessWidget {
                     fontSize: 15),
                 CustomElevatedButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(BecomeDriverScreen.routeName);
+                    Navigator.of(context).pushNamed(
+                        BecomeDriverScreen.routeName,
+                        arguments: {"already": already});
                   },
                   title: getTranslated(context, "bcmadriver"),
                   color: redColor,

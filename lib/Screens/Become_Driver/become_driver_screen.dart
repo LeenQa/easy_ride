@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
 
@@ -53,6 +52,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
   String _uploadedFileURL;
   String _carModel;
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _textFieldController = TextEditingController();
 
   Future chooseFile(Picture picture) async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
@@ -63,8 +63,10 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
   }
 
   Future uploadFile() async {
+    int count = 0;
     List<String> pictures = [];
     String _uploadedImage;
+    bool successful = false;
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
@@ -129,9 +131,22 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               'pictures': pictures,
               'carModel': _carModel,
             }).then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text('Your request is sent successfully')));
+              count++;
+              if (count == 4) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('Your request is sent successfully')));
+                setState(() {
+                  _image.clear();
+                  _textFieldController.clear();
+                });
+              } else if (count == 1) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.orange,
+                  content: Text('Please wait'),
+                  duration: Duration(seconds: 3),
+                ));
+              }
             });
           });
         });
@@ -141,6 +156,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Map args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: getTitle(
@@ -149,126 +165,136 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
             fontSize: 20),
         backgroundColor: Colors.white,
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                getTitle(
-                    title: 'Upload a picture of your driving license',
-                    fontSize: 15),
-                _image[Picture.DriverLicense] != null
-                    ? Image.file(
-                        File(_image[Picture.DriverLicense].path),
-                        height: 100,
-                        width: 100,
-                      )
-                    : Container(height: 20),
-                CustomElevatedButton(
-                  title: "Choose photo",
-                  onPressed: () => chooseFile(Picture.DriverLicense),
-                  backgroundColor: kPrimaryColor,
-                ),
-                Container(height: 20),
-                getTitle(
-                    title: 'Upload a picture of your car\'s license',
-                    fontSize: 15),
-                _image[Picture.CarLicense] != null
-                    ? Image.file(
-                        File(_image[Picture.CarLicense].path),
-                        height: 100,
-                        width: 100,
-                      )
-                    : Container(height: 20),
-                CustomElevatedButton(
-                  title: "Choose photo",
-                  onPressed: () => chooseFile(Picture.CarLicense),
-                  backgroundColor: kPrimaryColor,
-                ),
-                Container(height: 20),
-                getTitle(
-                    title: 'Upload a picture of your car\'s insurance',
-                    fontSize: 15),
-                _image[Picture.CarInsurance] != null
-                    ? Image.file(
-                        File(_image[Picture.CarInsurance].path),
-                        height: 100,
-                        width: 100,
-                      )
-                    : Container(height: 20),
-                CustomElevatedButton(
-                  title: "Choose photo",
-                  onPressed: () => chooseFile(Picture.CarInsurance),
-                  backgroundColor: kPrimaryColor,
-                ),
-                Container(height: 20),
-                getTitle(
-                    title: 'Upload a picture of your identity', fontSize: 15),
-                _image[Picture.DriverIdentity] != null
-                    ? Image.file(
-                        File(_image[Picture.DriverIdentity].path),
-                        height: 100,
-                        width: 100,
-                      )
-                    : Container(height: 20),
-                CustomElevatedButton(
-                  title: "Choose photo",
-                  onPressed: () => chooseFile(Picture.DriverIdentity),
-                  backgroundColor: kPrimaryColor,
-                ),
-                Container(height: 20),
-                getTitle(title: 'Upload a picture of your car', fontSize: 15),
-                _image[Picture.Car] != null
-                    ? Image.file(
-                        File(_image[Picture.Car].path),
-                        height: 100,
-                        width: 100,
-                      )
-                    : Container(height: 20),
-                CustomElevatedButton(
-                  title: "Choose photo",
-                  onPressed: () => chooseFile(Picture.Car),
-                  backgroundColor: kPrimaryColor,
-                ),
-                Container(height: 20),
+      body: args["already"]
+          ? Center(
+              child: getTitle(
+                  title: "You've already submited your request",
+                  color: Colors.blue),
+            )
+          : Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      getTitle(
+                          title: 'Upload a picture of your driving license',
+                          fontSize: 15),
+                      _image[Picture.DriverLicense] != null
+                          ? Image.file(
+                              File(_image[Picture.DriverLicense].path),
+                              height: 100,
+                              width: 100,
+                            )
+                          : Container(height: 20),
+                      CustomElevatedButton(
+                        title: "Choose photo",
+                        onPressed: () => chooseFile(Picture.DriverLicense),
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      Container(height: 20),
+                      getTitle(
+                          title: 'Upload a picture of your car\'s license',
+                          fontSize: 15),
+                      _image[Picture.CarLicense] != null
+                          ? Image.file(
+                              File(_image[Picture.CarLicense].path),
+                              height: 100,
+                              width: 100,
+                            )
+                          : Container(height: 20),
+                      CustomElevatedButton(
+                        title: "Choose photo",
+                        onPressed: () => chooseFile(Picture.CarLicense),
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      Container(height: 20),
+                      getTitle(
+                          title: 'Upload a picture of your car\'s insurance',
+                          fontSize: 15),
+                      _image[Picture.CarInsurance] != null
+                          ? Image.file(
+                              File(_image[Picture.CarInsurance].path),
+                              height: 100,
+                              width: 100,
+                            )
+                          : Container(height: 20),
+                      CustomElevatedButton(
+                        title: "Choose photo",
+                        onPressed: () => chooseFile(Picture.CarInsurance),
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      Container(height: 20),
+                      getTitle(
+                          title: 'Upload a picture of your identity',
+                          fontSize: 15),
+                      _image[Picture.DriverIdentity] != null
+                          ? Image.file(
+                              File(_image[Picture.DriverIdentity].path),
+                              height: 100,
+                              width: 100,
+                            )
+                          : Container(height: 20),
+                      CustomElevatedButton(
+                        title: "Choose photo",
+                        onPressed: () => chooseFile(Picture.DriverIdentity),
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      Container(height: 20),
+                      getTitle(
+                          title: 'Upload a picture of your car', fontSize: 15),
+                      _image[Picture.Car] != null
+                          ? Image.file(
+                              File(_image[Picture.Car].path),
+                              height: 100,
+                              width: 100,
+                            )
+                          : Container(height: 20),
+                      CustomElevatedButton(
+                        title: "Choose photo",
+                        onPressed: () => chooseFile(Picture.Car),
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      Container(height: 20),
 
-                RoundedInputField(
-                  hintText: "What's your car model",
-                  icon: Icons.car_repair,
-                  onSaved: (value) {
-                    _carModel = value.trim();
-                  },
-                ),
+                      RoundedInputField(
+                        controller: _textFieldController,
+                        hintText: "What's your car model",
+                        icon: Icons.car_repair,
+                        onSaved: (value) {
+                          _carModel = value.trim();
+                        },
+                      ),
 
-                // _image != null
-                //     ? RaisedButton(
-                //         child: Text('Clear Selection'),
-                //         //onPressed: (clearSelection),
-                //       )
-                //     : Container(height: 20),
-                // Text('Uploaded Image'),
-                // _uploadedFileURL != null
-                //     ? Image.network(
-                //         _uploadedFileURL,
-                //         height: 150,
-                //       )
-                //     : Container(),
-                Center(
-                  child: CustomElevatedButton(
-                    title: 'Send Request',
-                    onPressed: _image.containsValue(null) ? null : uploadFile,
-                    backgroundColor: kPrimaryColor,
+                      // _image != null
+                      //     ? RaisedButton(
+                      //         child: Text('Clear Selection'),
+                      //         //onPressed: (clearSelection),
+                      //       )
+                      //     : Container(height: 20),
+                      // Text('Uploaded Image'),
+                      // _uploadedFileURL != null
+                      //     ? Image.network(
+                      //         _uploadedFileURL,
+                      //         height: 150,
+                      //       )
+                      //     : Container(),
+                      Center(
+                        child: CustomElevatedButton(
+                          title: 'Send Request',
+                          onPressed:
+                              _image.containsValue(null) ? null : uploadFile,
+                          backgroundColor: kPrimaryColor,
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

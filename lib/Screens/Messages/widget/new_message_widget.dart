@@ -24,19 +24,29 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
 
   void sendMessage() async {
     // FocusScope.of(context).unfocus();
+    if (message != "") {
+      await FirebaseFirestore.instance
+          .collection("conversationmsgs")
+          .doc(widget.convId.trim())
+          .collection("messages")
+          .doc()
+          .set({
+        "content": message,
+        "dateTime": DateTime.now(),
+        "senderId": widget.userId,
+      });
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.userId)
+          .collection("conversations")
+          .doc(widget.convId.trim())
+          .update({
+        "lastMessageTime": DateTime.now(),
+      });
 
-    await FirebaseFirestore.instance
-        .collection("conversationmsgs")
-        .doc(widget.convId.trim())
-        .collection("messages")
-        .doc()
-        .set({
-      "content": message,
-      "dateTime": DateTime.now(),
-      "senderId": widget.userId,
-    });
-
-    _controller.clear();
+      _controller.clear();
+      message = "";
+    }
   }
 
   @override
@@ -68,7 +78,7 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
             ),
             SizedBox(width: 20),
             GestureDetector(
-              onTap: message.trim().isEmpty ? null : sendMessage,
+              onTap: message.trim() == "" ? null : sendMessage,
               child: Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(

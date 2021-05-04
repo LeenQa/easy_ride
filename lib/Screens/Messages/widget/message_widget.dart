@@ -25,7 +25,8 @@ class MessageWidget extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(16),
           margin: EdgeInsets.all(16),
-          constraints: BoxConstraints(maxWidth: 140),
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
           decoration: BoxDecoration(
             color: isMe ? Colors.grey[100] : kPrimaryColor,
             borderRadius: isMe

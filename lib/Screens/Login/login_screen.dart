@@ -29,9 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (authResult.user.uid.startsWith("fjsrQq4AmdVWHK8Z7vSHlFRelBV2")) {
         Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
+      } else {
+        Navigator.pushReplacementNamed(context, TabsScreen.routeName);
       }
       //  if (authResult.user.emailVerified) {
-      Navigator.pushReplacementNamed(context, TabsScreen.routeName);
+
       // } else {
       //   Navigator.pushNamed(context, EmailConfirmationScreen.routeName);
       // }
