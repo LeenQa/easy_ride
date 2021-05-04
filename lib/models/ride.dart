@@ -1,19 +1,26 @@
+import 'package:easy_ride/models/searched_ride.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'driver.dart';
 
 class Ride with ChangeNotifier {
-  TimeOfDay _startTime;
+  String _startTime;
   // DateTime _arrivalTime;
   String _startLocation;
   String _arrivalLocation;
-  DateTime _date;
+  String _date;
   int _numOfPassengers;
-  double _price;
-  List<String> _stopOvers;
-  Driver _driver;
+  String _price;
+  List _stopOvers;
+  String _driver;
   String _description;
+  List<String> _requests;
+  String _id;
+  String _status;
+
+  /* List<Ride> exactRides = [];
+  List<Ride> otherRides = []; */
 
   Ride(
       [this._startTime,
@@ -25,10 +32,13 @@ class Ride with ChangeNotifier {
       this._price,
       this._stopOvers,
       this._driver,
-      this._description]);
+      this._description,
+      this._requests,
+      this._id,
+      this._status]);
 
   set startTime(value) => this._startTime = value;
-  TimeOfDay get startTime => this._startTime;
+  String get startTime => this._startTime;
   // set arrivalTime(value) => this._arrivalTime = value;
   // DateTime get arrivalTime => this._arrivalTime;
   set startLocation(value) => this._startLocation = value;
@@ -36,17 +46,23 @@ class Ride with ChangeNotifier {
   set arrivalLocation(value) => this._arrivalLocation = value;
   String get arrivalLocation => this._arrivalLocation;
   set date(value) => this._date = value;
-  DateTime get date => this._date;
+  String get date => this._date;
   set numOfPassengers(value) => this._numOfPassengers = value;
   int get numOfPassengers => this._numOfPassengers;
   set price(value) => this._price = value;
-  double get price => this._price;
+  String get price => this._price;
   set stopOvers(value) => this._stopOvers = value;
-  List<String> get stopOvers => this._stopOvers;
+  List get stopOvers => this._stopOvers;
   set driver(value) => this._driver = value;
-  Driver get driver => this._driver;
+  String get driver => this._driver;
   set description(value) => this._description = value;
-  Driver get description => this.description;
+  String get description => this._description;
+  set requests(value) => this._requests = value;
+  List<String> get requests => this._requests;
+  set id(value) => this._id = value;
+  String get id => this._id;
+  set status(value) => this._status = value;
+  String get status => this._status;
   // int getDuration() {
   //   return this._arrivalTime.difference(this._startTime).inHours;
   // }

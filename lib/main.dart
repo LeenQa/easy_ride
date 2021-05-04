@@ -19,13 +19,16 @@ import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Screens/Driver_Rides/driver_rides.dart';
 import 'Screens/Edit_Profile_Screen/edit_profile_screen.dart';
 import 'Screens/Map/map_screen.dart';
+import 'Screens/Rides_List/rides_list.dart';
 import 'Screens/Signup/signup_screen.dart';
 import 'localization/demo_localization.dart';
 import 'localization/language_constants.dart';
 import 'package:provider/provider.dart';
 import 'models/address.dart';
+import 'models/searched_ride.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,6 +94,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<Address>(
           create: (_) => Address(),
+        ),
+        ChangeNotifierProvider<SearchedRide>(
+          create: (_) => SearchedRide(),
         )
       ],
       child: MaterialApp(
@@ -161,6 +167,8 @@ class _MyAppState extends State<MyApp> {
           AdminPanelScreen.routeName: (ctx) => AdminPanelScreen(),
           ProfilePicScreen.routeName: (ctx) => ProfilePicScreen(),
           MapScreen.routeName: (ctx) => MapScreen(),
+          RidesList.routeName: (ctx) => RidesList(),
+          DriverRides.routeName: (ctx) => DriverRides(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) {

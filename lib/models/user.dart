@@ -13,6 +13,7 @@ class User with ChangeNotifier {
   String _lastName;
   int _phone;
   String _location;
+  String _urlAvatar;
 
   User(
       [this._email,
@@ -20,7 +21,8 @@ class User with ChangeNotifier {
       this._firstName,
       this._lastName,
       this._phone,
-      this._location]);
+      this._location,
+      this._urlAvatar]);
 
   set email(value) => this._email = value;
 
@@ -45,4 +47,8 @@ class User with ChangeNotifier {
   set location(value) => this._location = value;
 
   String get location => this._location;
+
+  set urlAvatar(value) => this._urlAvatar = value;
+
+  String get urlAvatar => this._urlAvatar;
 }

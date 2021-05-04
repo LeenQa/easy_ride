@@ -17,7 +17,8 @@ import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:easy_ride/models/places.dart';
 import 'package:easy_ride/models/ride.dart';
-import 'package:easy_ride/models/user.dart' as User;
+import 'package:easy_ride/models/searched_ride.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -46,16 +47,21 @@ bool searchFound = false;
 var result;
 var _res;
 DirectionsDetails directionsDetails;
+List<Ride> exactRides = [];
+List<Ride> otherRides = [];
+SearchedRide searchedRide;
 
 List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
   List<Ride> matches = [];
   for (int i = 0; i < rides.length; i++) {
     print(rides[0].startLocation);
     if (rides[i].startLocation.toLowerCase().contains(from.toLowerCase()) &&
-        rides[i].arrivalLocation.toLowerCase().contains(to.toLowerCase()) &&
+        rides[i].arrivalLocation.toLowerCase().contains(to
+            .toLowerCase())) /* &&
         time.year == rides[i].date.year &&
         time.month == rides[i].date.month &&
-        time.day == rides[i].date.day) {
+        time.day == rides[i].date.day) */
+    {
       print("passed");
       matches.add(rides[i]);
     }
@@ -71,39 +77,51 @@ class _MulticityInputState extends State<MulticityInput> {
 
   DateTime _selectedDate;
   Ride ride1 = new Ride(
-    TimeOfDay.now(),
-    //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-    "Bethlehem",
-    "Ramallah",
-    DateTime.now(),
-    2,
-    20.00,
-    ["Jericho", "Ebediye"],
-    new Driver(
+      "TimeOfDay.now()",
+      //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+      "Bethlehem",
+      "Ramallah",
+      "DateTime.now()",
+      2,
+      "20.00",
+      ["Jericho", "Ebediye"],
+      "driver"
+      /* new Driver(
       new User.User("email", "password", "Leen", "Qazaha", 059473232),
       "Alfa Romeo giulia",
       ["No smoking", "No pets"],
-    ),
-  );
+    ), */
+      );
   Ride ride2 = new Ride(
-    TimeOfDay.now(),
-    //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-    "Bethlehem",
-    "Ramallah",
-    DateTime.now(),
-    2,
-    20.00,
-    ["Jericho", "Ebediye"],
-    new Driver(
+      "TimeOfDay.now()",
+      //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
+      "Bethlehem",
+      "Ramallah",
+      "DateTime.now()",
+      2,
+      "20.00",
+      ["Jericho", "Ebediye"],
+      "driver"
+      /* new Driver(
       new User.User("email", "password", "Leen", "Qazaha", 059473232),
       "Alfa Romeo giulia",
       ["No smoking", "No pets"],
-    ),
-  );
+    ), */
+      );
 
   @override
   void initState() {
     super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  User user;
+  getUser() {
+    final User user = auth.currentUser;
+    uid = user.uid;
+    this.user = user;
   }
 
   callback(String pd) {
@@ -139,6 +157,7 @@ class _MulticityInputState extends State<MulticityInput> {
   Widget build(BuildContext context) {
     var localizations = MaterialLocalizations.of(context).toString();
     var padding;
+
     setState(() {
       if (localizations.contains("En")) {
         padding = EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0);
@@ -303,7 +322,9 @@ class _MulticityInputState extends State<MulticityInput> {
                               labelText: getTranslated(context, 'numofpass'),
                             ),
                             onChanged: (value) {
-                              searched.numOfPassengers = int.parse(value);
+                              try {
+                                searched.numOfPassengers = int.parse(value);
+                              } catch (exp) {}
                             },
                           ),
                         ),
@@ -315,7 +336,7 @@ class _MulticityInputState extends State<MulticityInput> {
                             child: Column(
                               children: [
                                 Row(
-                                  children: <Widget>[
+                                  children: [
                                     Icon(Icons.date_range,
                                         color: kPrimaryColor),
                                     SizedBox(
@@ -367,36 +388,91 @@ class _MulticityInputState extends State<MulticityInput> {
                                         vertical: 10, horizontal: 20)),
                                 textStyle: MaterialStateProperty.all(
                                     TextStyle(fontSize: 30))),
-                            onPressed: () {
-                              FirebaseFirestore.instance
+                            onPressed: () async {
+                              exactRides.clear();
+                              otherRides.clear();
+                              await FirebaseFirestore.instance
                                   .collection("users")
                                   .get()
                                   .then((querySnapshot) {
-                                print("result.data()3");
-                                print(querySnapshot.size);
-                                querySnapshot.docs.forEach((result) {
-                                  print("result.data()2");
-                                  FirebaseFirestore.instance
+                                querySnapshot.docs.forEach((result) async {
+                                  await FirebaseFirestore.instance
                                       .collection("rides")
                                       .doc(result.id)
                                       .collection("userrides")
+                                      .where("arrivalLocation",
+                                          isEqualTo: searched.arrivalLocation)
+                                      .where("date",
+                                          isEqualTo: DateFormat('EEE, MMM d')
+                                              .format(_selectedDate))
                                       .get()
                                       .then((querySnapshot) {
                                     querySnapshot.docs.forEach((result) {
-                                      print(result.data());
+                                      print("${querySnapshot.size} size");
+                                      print(result.data()['startLocation']);
+                                      String startTime =
+                                          result.data()['startTime'];
+                                      String startLocation =
+                                          result.data()['startLocation'];
+                                      String arrivalLocation =
+                                          result.data()['arrivalLocation'];
+                                      String date = result.data()['date'];
+                                      int numOfPassengers =
+                                          result.data()['numOfPassengers'];
+                                      String price = result.data()['price'];
+                                      List stopovers =
+                                          result.data()['stopovers'];
+                                      String driver = result.data()['driver'];
+                                      String description =
+                                          result.data()['description'];
+                                      String id = result.id;
+                                      Ride ride = new Ride(
+                                          startTime,
+                                          startLocation,
+                                          arrivalLocation,
+                                          date,
+                                          numOfPassengers,
+                                          price,
+                                          stopovers,
+                                          driver,
+                                          description,
+                                          [],
+                                          id);
+                                      searchedRide = SearchedRide(
+                                          pickUpLocation:
+                                              searched.startLocation,
+                                          dropOffLocation:
+                                              searched.arrivalLocation,
+                                          date: DateFormat('EEE, MMM d')
+                                              .format(_selectedDate),
+                                          numOfPassengers:
+                                              searched.numOfPassengers,
+                                          currentUser: uid);
+                                      if (ride.numOfPassengers >=
+                                          searched.numOfPassengers) {
+                                        if (ride.startLocation ==
+                                                searched.startLocation ||
+                                            ride.stopOvers.contains(
+                                                searched.startLocation)) {
+                                          exactRides.add(ride);
+                                          print(searchedRide.date);
+                                          print(
+                                              "exactrides: ${exactRides.length}");
+                                        } else {
+                                          otherRides.add(ride);
+                                          print(
+                                              "otherrides: ${otherRides.length}");
+                                        }
+                                      }
                                     });
                                   });
                                 });
                               });
-                              setState(() {
-                                results = Search(
-                                    searched.startLocation,
-                                    searched.arrivalLocation,
-                                    _selectedDate,
-                                    rides);
-                                pickUpController.clear();
-                                dropOffController.clear();
-                                print(results.isEmpty);
+
+                              Future.delayed(const Duration(seconds: 1))
+                                  .then((_) {
+                                Navigator.of(context)
+                                    .pushNamed(RidesList.routeName);
                               });
                             },
                             child: getTitle(

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class SearchedRide {
+class SearchedRide with ChangeNotifier {
   String pickUpLocation;
   String dropOffLocation;
-  DateTime date;
+  String date;
   int numOfPassengers;
+  String currentUser;
+  String ride;
+  String status;
 
+  //SearchedRide searchedRide;
   SearchedRide(
       {this.pickUpLocation,
       this.dropOffLocation,
       this.date,
-      this.numOfPassengers});
+      this.numOfPassengers,
+      this.currentUser,
+      this.ride,
+      this.status});
 }
-/* 
-
-                          SearchedRide searchRide = SearchedRide(
-                              pickUpLocation: searched.startLocation,
-                              dropOffLocation: searched.arrivalLocation,
-                              date: _selectedDate,
-                              numOfPassengers: searched.numOfPassengers); */

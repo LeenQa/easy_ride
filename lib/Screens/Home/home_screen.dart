@@ -51,24 +51,24 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
 
   Ride ride1 = new Ride(
-    TimeOfDay.now(),
+    "TimeOfDay.now()",
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
-    DateTime.now(),
+    "DateTime.now()",
     2,
-    20.00,
+    "20.00",
     ["Jericho", "Ebediye"],
   );
 
   Ride ride2 = new Ride(
-    TimeOfDay.now(),
+    "TimeOfDay.now()",
     // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
     "Bethlehem",
     "Ramallah",
-    DateTime.now(),
+    "DateTime.now()",
     2,
-    20.00,
+    "20.00",
     ["Jericho", "Ebediye"],
   );
 
@@ -80,10 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          RidesList(
+          /* RidesList(
             transactions: transactions,
             title: getTranslated(context, "nearyou"),
-          ),
+          ), */
           InfoContainer(
             colors: [
               kAccentDarkColor,

@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
+import 'package:easy_ride/Screens/Driver_Rides/driver_rides.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 
@@ -15,20 +18,30 @@ class MainDrawer extends StatefulWidget {
   _MainDrawerState createState() => _MainDrawerState();
 }
 
-Widget getTitle({String title, Color color, double fontSize}) {
+Widget getTitle(
+    {String title,
+    Color color,
+    double fontSize,
+    TextDecoration decoration,
+    Color decorationColor}) {
   if (color == null) {
     color = Colors.black54;
   }
   if (fontSize == null) {
     fontSize = 17;
   }
+
+  if (decoration == null) {
+    decoration = TextDecoration.none;
+  }
   return Text(title,
       style: TextStyle(
-        color: color,
-        fontFamily: 'Quicksand',
-        fontWeight: FontWeight.w600,
-        fontSize: fontSize,
-      ));
+          color: color,
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w600,
+          fontSize: fontSize,
+          decoration: decoration,
+          decorationColor: Colors.blueGrey));
 }
 
 class _MainDrawerState extends State<MainDrawer> {
@@ -91,6 +104,50 @@ class _MainDrawerState extends State<MainDrawer> {
       already = false;
       print("false");
     }
+  }
+
+  Future<void> _showDriverRides(BuildContext ctx) async {
+    List<Ride> driverRides = [];
+    await FirebaseFirestore.instance
+        .collection("rides")
+        .doc(uid)
+        .collection("userrides")
+        .orderBy('date', descending: true)
+        .get()
+        .then((querySnapshot) async {
+      querySnapshot.docs.forEach((result) {
+        String startTime = result.data()['startTime'];
+        String startLocation = result.data()['startLocation'];
+        String arrivalLocation = result.data()['arrivalLocation'];
+        String date = result.data()['date'];
+        int numOfPassengers = result.data()['numOfPassengers'];
+        String price = result.data()['price'];
+        List stopovers = result.data()['stopovers'];
+        String driver = result.data()['driver'];
+        String description = result.data()['description'];
+        String id = result.id;
+        driverRides.add(new Ride(
+            startTime,
+            startLocation,
+            arrivalLocation,
+            date,
+            numOfPassengers,
+            price,
+            stopovers,
+            driver,
+            description,
+            [],
+            id));
+      });
+    });
+    showCupertinoModalPopup(
+      context: ctx,
+      builder: (_) {
+        return DriverRides(
+          driverRides: driverRides,
+        );
+      },
+    );
   }
 
   @override
@@ -183,6 +240,12 @@ class _MainDrawerState extends State<MainDrawer> {
                               arguments: {"already": already});
                         },
                         getTitle(title: getTranslated(context, 'bcmadriver')),
+                      ),
+                      buildListTile(
+                        context,
+                        Icons.add_circle_outline_outlined,
+                        () => _showDriverRides(context),
+                        getTitle(title: "My Rides"),
                       ),
                       Divider(
                         thickness: 1,

@@ -60,7 +60,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   String _toChosenValue;
   DateTime _selectedDate;
   TimeOfDay _selectedTime;
-  String _numOfPassengers;
+  int _numOfPassengers;
   String _rideDescription;
   String _price;
 
@@ -444,7 +444,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                               labelText: getTranslated(context, 'numofpass'),
                             ),
                             onChanged: (value) {
-                              _numOfPassengers = value;
+                              _numOfPassengers = int.parse(value);
                             },
                           ),
                         ),
@@ -620,7 +620,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   'price': _price,
                                   'stopovers': _stopOvers,
                                   'driver': uid,
-                                  'description': _rideDescription
+                                  'description': _rideDescription,
                                 }).then((_) async {
                                   setState(() {
                                     _selectedDate = null;
