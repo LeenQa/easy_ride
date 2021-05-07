@@ -2,8 +2,6 @@ import 'package:easy_ride/models/searched_ride.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'driver.dart';
-
 class Ride with ChangeNotifier {
   String _startTime;
   // DateTime _arrivalTime;
@@ -17,25 +15,21 @@ class Ride with ChangeNotifier {
   String _description;
   List<String> _requests;
   String _id;
-  String _status;
 
-  /* List<Ride> exactRides = [];
-  List<Ride> otherRides = []; */
-
-  Ride(
-      [this._startTime,
-      // this._arrivalTime,
-      this._startLocation,
-      this._arrivalLocation,
-      this._date,
-      this._numOfPassengers,
-      this._price,
-      this._stopOvers,
-      this._driver,
-      this._description,
-      this._requests,
-      this._id,
-      this._status]);
+  Ride([
+    this._startTime,
+    // this._arrivalTime,
+    this._startLocation,
+    this._arrivalLocation,
+    this._date,
+    this._numOfPassengers,
+    this._price,
+    this._stopOvers,
+    this._driver,
+    this._description,
+    this._requests,
+    this._id,
+  ]);
 
   set startTime(value) => this._startTime = value;
   String get startTime => this._startTime;
@@ -61,8 +55,6 @@ class Ride with ChangeNotifier {
   List<String> get requests => this._requests;
   set id(value) => this._id = value;
   String get id => this._id;
-  set status(value) => this._status = value;
-  String get status => this._status;
   // int getDuration() {
   //   return this._arrivalTime.difference(this._startTime).inHours;
   // }

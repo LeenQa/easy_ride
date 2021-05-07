@@ -282,56 +282,84 @@ class _RideRequestsState extends State<RideRequests> {
                                             icon: Icon(Icons
                                                 .check_circle_outline_rounded),
                                             onPressed: () async {
-                                              widget.driverRide
-                                                          .numOfPassengers >=
-                                                      widget.rideRequests[index]
-                                                          .numOfPassengers
-                                                  ? await FirebaseFirestore
-                                                      .instance
-                                                      .collection('requests')
-                                                      .doc(widget
+                                              DateTime now = DateTime.now();
+                                              DateTime rideDate =
+                                                  new DateFormat('EEE, MMM d')
+                                                      .parse(widget
                                                           .rideRequests[index]
-                                                          .ride)
-                                                      .update({
-                                                      'status': 'accepted'
-                                                    }).then((_) async {
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection('rides')
-                                                          .doc(widget.driverRide
-                                                              .driver)
-                                                          .collection(
-                                                              'userrides')
-                                                          .doc(widget
-                                                              .driverRide.id)
-                                                          .update({
-                                                        'numOfPassengers': widget
-                                                                .driverRide
-                                                                .numOfPassengers -
-                                                            widget
-                                                                .rideRequests[
-                                                                    index]
-                                                                .numOfPassengers
-                                                      });
-                                                      setState(() {
-                                                        widget.driverRide
-                                                                .numOfPassengers -=
-                                                            widget
-                                                                .rideRequests[
-                                                                    index]
-                                                                .numOfPassengers;
+                                                          .date);
+                                              print(rideDate.day);
+                                              print(rideDate);
+                                              print(now.day);
+                                              print(now);
+                                              if (rideDate.month > now.month ||
+                                                  (rideDate.day >= now.day &&
+                                                      rideDate.month ==
+                                                          now.month)) {
+                                                widget.driverRide
+                                                            .numOfPassengers >=
                                                         widget
                                                             .rideRequests[index]
-                                                            .status = 'accepted';
-                                                      });
-                                                    })
-                                                  : ScaffoldMessenger.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                          backgroundColor:
-                                                              Theme.of(context)
-                                                                  .errorColor,
-                                                          content: Text(
-                                                              "Number of passengers is bigger than the number of seats left")));
+                                                            .numOfPassengers
+                                                    ? await FirebaseFirestore
+                                                        .instance
+                                                        .collection('requests')
+                                                        .doc(widget
+                                                            .rideRequests[index]
+                                                            .request)
+                                                        .update({
+                                                        'status': 'accepted'
+                                                      }).then((_) async {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection('rides')
+                                                            .doc(widget
+                                                                .driverRide
+                                                                .driver)
+                                                            .collection(
+                                                                'userrides')
+                                                            .doc(widget
+                                                                .driverRide.id)
+                                                            .update({
+                                                          'numOfPassengers': widget
+                                                                  .driverRide
+                                                                  .numOfPassengers -
+                                                              widget
+                                                                  .rideRequests[
+                                                                      index]
+                                                                  .numOfPassengers
+                                                        });
+                                                        setState(() {
+                                                          widget.driverRide
+                                                                  .numOfPassengers -=
+                                                              widget
+                                                                  .rideRequests[
+                                                                      index]
+                                                                  .numOfPassengers;
+                                                          widget
+                                                                  .rideRequests[
+                                                                      index]
+                                                                  .status =
+                                                              'accepted';
+                                                        });
+                                                      })
+                                                    : ScaffoldMessenger.of(context)
+                                                        .showSnackBar(SnackBar(
+                                                            backgroundColor:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .errorColor,
+                                                            content: Text(
+                                                                "Number of passengers is bigger than the number of seats left")));
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        backgroundColor:
+                                                            Theme.of(context)
+                                                                .errorColor,
+                                                        content: Text(
+                                                            "This ride is old, you can't accept it now!")));
+                                              }
                                             },
                                             iconSize: 45,
                                             color: Colors.green,

@@ -56,6 +56,7 @@ class _PredictionTileState extends State<PredictionTile> {
   Future<void> getPlaceAddressDetails(String placeId, context) async {
     String placeDetailsUrl =
         "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+    print(placeDetailsUrl);
 
     var response =
         await RequestAssistant.getRequest(Uri.parse(placeDetailsUrl));
@@ -66,7 +67,8 @@ class _PredictionTileState extends State<PredictionTile> {
 
     if (response["status"] == "OK") {
       Address address = Address();
-      address.placeName = response["result"]["name"];
+      address.placeName =
+          response["result"]["address_components"][0]["short_name"];
       address.placeId = placeId;
       address.latitude = response["result"]["geometry"]["location"]["lat"];
       address.longitude = response["result"]["geometry"]["location"]["lng"];

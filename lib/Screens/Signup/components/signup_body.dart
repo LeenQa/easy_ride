@@ -91,6 +91,7 @@ class _SingupBodyState extends State<SingupBody> {
                 onSaved: (value) {
                   _user.firstName = value.trim();
                 },
+                textCapitalization: TextCapitalization.sentences,
               ),
               RoundedInputField(
                 icon: Icons.person,
@@ -98,6 +99,7 @@ class _SingupBodyState extends State<SingupBody> {
                 onSaved: (value) {
                   _user.lastName = value.trim();
                 },
+                textCapitalization: TextCapitalization.sentences,
               ),
               RoundedInputField(
                 icon: Icons.email,
@@ -106,6 +108,7 @@ class _SingupBodyState extends State<SingupBody> {
                 onSaved: (value) {
                   _user.email = value.trim();
                 },
+                textCapitalization: TextCapitalization.none,
               ),
               RoundedInputField(
                 icon: Icons.phone,
@@ -114,6 +117,7 @@ class _SingupBodyState extends State<SingupBody> {
                 onSaved: (value) {
                   _user.phone = int.parse(value.trim());
                 },
+                textCapitalization: TextCapitalization.none,
               ),
               RoundedPasswordField(
                 hintText: getTranslated(context, 'password'),
@@ -152,6 +156,7 @@ class _SingupBodyState extends State<SingupBody> {
                 controller: userLocationController,
                 margin: 0,
                 radius: (userLocationPredictionList.length > 0 ? 0 : null),
+                textCapitalization: TextCapitalization.sentences,
               ),
               (userLocationPredictionList.length > 0)
                   ? Padding(

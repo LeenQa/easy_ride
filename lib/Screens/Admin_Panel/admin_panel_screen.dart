@@ -1,3 +1,4 @@
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
@@ -17,6 +18,7 @@ class AdminPanelScreen extends StatefulWidget {
 class _AdminPanelScreenState extends State<AdminPanelScreen> {
   @override
   Widget build(BuildContext context) {
+    uid = "CjaDPZMqhpQD9j4rs33tqhROVS63";
     return Scaffold(
       appBar: AppBar(
         title: getTitle(

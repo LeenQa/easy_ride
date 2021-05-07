@@ -8,6 +8,7 @@ class SearchedRide with ChangeNotifier {
   String currentUser;
   String ride;
   String status;
+  String request;
 
   //SearchedRide searchedRide;
   SearchedRide(
@@ -17,5 +18,6 @@ class SearchedRide with ChangeNotifier {
       this.numOfPassengers,
       this.currentUser,
       this.ride,
-      this.status});
+      this.status,
+      this.request});
 }

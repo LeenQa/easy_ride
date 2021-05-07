@@ -5,9 +5,13 @@ import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
+import 'package:easy_ride/Screens/User_Rides/user_rides_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:easy_ride/models/user.dart' as UserModel;
 import 'package:easy_ride/models/ride.dart';
+import 'package:easy_ride/models/searched_ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -150,6 +154,100 @@ class _MainDrawerState extends State<MainDrawer> {
     );
   }
 
+  Future<void> _showUserRides(BuildContext ctx) async {
+    List<Ride> userRidesDetails = [];
+    List<SearchedRide> userRides = [];
+    List<UserModel.User> drivers = [];
+    await FirebaseFirestore.instance
+        .collection("requests")
+        .orderBy('date', descending: true)
+        .get()
+        .then((querySnapshot) async {
+      querySnapshot.docs.forEach((result) async {
+        if (result.data()['user'] == uid) {
+          int numOfPassengers = result.data()['numOfPassengers'];
+          String status = result.data()['status'];
+          String ride = result.data()['ride'];
+          String meetingPoint = result.data()['startLocation'];
+          String request = result.id;
+          String requestDate = result.data()['date'];
+
+          await FirebaseFirestore.instance
+              .collection("users")
+              .get()
+              .then((querySnapshot) {
+            querySnapshot.docs.forEach((result) async {
+              await FirebaseFirestore.instance
+                  .collection("rides")
+                  .doc(result.id)
+                  .collection("userrides")
+                  .doc(ride)
+                  .get()
+                  .then((value) async {
+                if (value.exists) {
+                  String startTime = value.data()['startTime'];
+                  String startLocation = value.data()['startLocation'];
+                  String arrivalLocation = value.data()['arrivalLocation'];
+                  String date = value.data()['date'];
+                  int numOfRidePassengers = value.data()['numOfPassengers'];
+                  String price = value.data()['price'];
+                  List stopovers = value.data()['stopovers'];
+                  String driverid = value.data()['driver'];
+                  String description = value.data()['description'];
+
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(driverid)
+                      .get()
+                      .then((value) {
+                    UserModel.User driver = new UserModel.User();
+                    driver.firstName = value.data()["firstName"];
+                    driver.lastName = value.data()["lastName"];
+                    driver.urlAvatar = value.data()["urlAvatar"];
+                    drivers.add(driver);
+
+                    userRidesDetails.add(new Ride(
+                        startTime,
+                        startLocation,
+                        arrivalLocation,
+                        date,
+                        numOfRidePassengers,
+                        price,
+                        stopovers,
+                        driverid,
+                        description));
+
+                    userRides.add(new SearchedRide(
+                      numOfPassengers: numOfPassengers,
+                      ride: ride,
+                      status: status,
+                      request: request,
+                      pickUpLocation: meetingPoint,
+                      date: requestDate,
+                    ));
+                  });
+                }
+              });
+            });
+          });
+        }
+      });
+    }).then((_) {
+      Future.delayed(const Duration(milliseconds: 1500)).then((_) {
+        showCupertinoModalPopup(
+          context: ctx,
+          builder: (_) {
+            return UserRides(
+              userRidesDetails: userRidesDetails,
+              userRides: userRides,
+              drivers: drivers,
+            );
+          },
+        );
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -193,7 +291,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 SizedBox(
                   height: 20,
                 ),
-                if (uid != "fjsrQq4AmdVWHK8Z7vSHlFRelBV2")
+                if (uid != "CjaDPZMqhpQD9j4rs33tqhROVS63")
                   Column(
                     children: [
                       buildListTile(
@@ -229,29 +327,42 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                       buildListTile(
                         context,
-                        Icons.add_circle_outline_outlined,
-                        () {
-                          Navigator.of(context)
-                              .pushNamed(OfferRideScreen.routeName);
-                        },
-                        getTitle(title: getTranslated(context, 'offrard')),
+                        Icons.person_search_outlined,
+                        () => _showUserRides(context),
+                        getTitle(title: "My Requested Rides"),
                       ),
-                      buildListTile(
-                        context,
-                        Icons.check_circle_outline_outlined,
-                        () {
-                          Navigator.of(context).pushNamed(
-                              BecomeDriverScreen.routeName,
-                              arguments: {"already": already});
-                        },
-                        getTitle(title: getTranslated(context, 'bcmadriver')),
-                      ),
-                      buildListTile(
-                        context,
-                        Icons.add_circle_outline_outlined,
-                        () => _showDriverRides(context),
-                        getTitle(title: "My Rides"),
-                      ),
+                      isDriver
+                          ? Column(
+                              children: [
+                                buildListTile(
+                                  context,
+                                  Icons.add_circle_outline_outlined,
+                                  () {
+                                    Navigator.of(context)
+                                        .pushNamed(OfferRideScreen.routeName);
+                                  },
+                                  getTitle(
+                                      title: getTranslated(context, 'offrard')),
+                                ),
+                                buildListTile(
+                                  context,
+                                  Icons.list_rounded,
+                                  () => _showDriverRides(context),
+                                  getTitle(title: "My Offered Rides"),
+                                ),
+                              ],
+                            )
+                          : buildListTile(
+                              context,
+                              Icons.check_circle_outline_outlined,
+                              () {
+                                Navigator.of(context).pushNamed(
+                                    BecomeDriverScreen.routeName,
+                                    arguments: {"already": already});
+                              },
+                              getTitle(
+                                  title: getTranslated(context, 'bcmadriver')),
+                            ),
                       Divider(
                         thickness: 1,
                       ),

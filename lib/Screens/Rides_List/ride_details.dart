@@ -182,7 +182,6 @@ class RideDetails extends StatelessWidget {
                                         'ride': ride.id,
                                         'status': 'pending',
                                       }).then((_) async {
-                                        List requests = [];
                                         await FirebaseFirestore.instance
                                             .collection('rides')
                                             .doc(ride.driver)
@@ -190,17 +189,6 @@ class RideDetails extends StatelessWidget {
                                             .doc(ride.id)
                                             .get()
                                             .then((value) {
-                                          if (requests.isEmpty) {
-                                          } else
-                                            requests = value.data()['requests'];
-                                        }).then((_) async {
-                                          requests.add(id);
-                                          await FirebaseFirestore.instance
-                                              .collection('rides')
-                                              .doc(ride.driver)
-                                              .collection('userrides')
-                                              .doc(ride.id)
-                                              .update({'requests': requests});
                                           Navigator.of(context,
                                                   rootNavigator: true)
                                               .pop();

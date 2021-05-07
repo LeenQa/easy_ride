@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: user.email,
         password: user.password,
       );
-      if (authResult.user.uid.startsWith("fjsrQq4AmdVWHK8Z7vSHlFRelBV2")) {
+      if (authResult.user.uid.startsWith("CjaDPZMqhpQD9j4rs33tqhROVS63")) {
         Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
       } else {
         Navigator.pushReplacementNamed(context, TabsScreen.routeName);

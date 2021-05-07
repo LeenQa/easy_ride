@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
+
+import '../../constants.dart';
 
 class UserSearchScreen extends StatefulWidget {
   static const routeName = '/user_search';
@@ -31,8 +34,11 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(getTranslated(context, 'srchforausr')),
         backgroundColor: Colors.white,
+        title: getTitle(
+            title: getTranslated(context, 'srchforausr'),
+            color: kPrimaryColor,
+            fontSize: 20),
       ),
       body: Container(
         padding: const EdgeInsets.all(10.0),
@@ -47,6 +53,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                     this.query = srchquery;
                   });
                 },
+                textCapitalization: TextCapitalization.sentences,
               ),
               StreamBuilder<QuerySnapshot>(
                   stream: getUserList(),

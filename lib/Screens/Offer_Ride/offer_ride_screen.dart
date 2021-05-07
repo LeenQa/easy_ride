@@ -56,8 +56,6 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   bool isDate = true;
   bool isTime = true;
 
-  String _fromChosenValue;
-  String _toChosenValue;
   DateTime _selectedDate;
   TimeOfDay _selectedTime;
   int _numOfPassengers;
@@ -214,8 +212,11 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(getTranslated(context, 'offrard')),
         backgroundColor: Colors.white,
+        title: getTitle(
+            title: getTranslated(context, 'offrard'),
+            color: kPrimaryColor,
+            fontSize: 20),
       ),
       body: Card(
         elevation: 5,
@@ -248,6 +249,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             onChanged: (value) {
                               findPickUp(value);
                             },
+                            textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         (pickUpPlacePredictionList.length > 0)
@@ -290,6 +292,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             onChanged: (value) {
                               findDropOff(value);
                             },
+                            textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         (dropOffPlacePredictionList.length > 0)
@@ -431,9 +434,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             validator: (value) {
                               if (value.isEmpty) {
                                 return "Specify the number of passengers";
-                              } else if (int.parse(value) > 8 ||
+                              } else if (int.parse(value) > 7 ||
                                   int.parse(value) < 1) {
-                                return "Passengers must be between 1-8";
+                                return "Passengers must be between 1-7";
                               } else
                                 return null;
                             },
@@ -555,6 +558,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             onChanged: (value) {
                               _rideDescription = value;
                             },
+                            textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         Center(

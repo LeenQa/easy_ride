@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Messages/messages_screen.dart';
@@ -6,6 +7,7 @@ import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -14,7 +16,39 @@ class TabsScreen extends StatefulWidget {
   _TabsScreenState createState() => _TabsScreenState();
 }
 
+bool isDriver = false;
+String uid = "";
+
 class _TabsScreenState extends State<TabsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+    isDriverMethod(uid);
+  }
+
+  isDriverMethod(String uid) async {
+    await FirebaseFirestore.instance
+        .collection('drivers')
+        .doc(uid)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        isDriver = true;
+      } else {
+        isDriver = false;
+      }
+    });
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  bool already;
+  getUser() {
+    final User user = auth.currentUser;
+    uid = user.uid;
+  }
+
   int _selectedPageIndex = 0;
 
   void selectPage(int index) {

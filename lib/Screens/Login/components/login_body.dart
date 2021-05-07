@@ -67,6 +67,7 @@ class _LoginBodyState extends State<LoginBody> {
                 onSaved: (value) {
                   _user.email = value.trim();
                 },
+                textCapitalization: TextCapitalization.none,
               ),
               RoundedPasswordField(
                 hintText: getTranslated(context, 'password'),

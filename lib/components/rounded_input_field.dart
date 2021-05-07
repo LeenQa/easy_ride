@@ -18,6 +18,7 @@ class RoundedInputField extends StatelessWidget {
   final ValueChanged<String> onSaved;
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
+  final TextCapitalization textCapitalization;
   const RoundedInputField(
       {Key key,
       this.hintText,
@@ -32,7 +33,8 @@ class RoundedInputField extends StatelessWidget {
       this.textAlign,
       this.inputDecoration,
       this.autofocus,
-      this.color})
+      this.color,
+      this.textCapitalization})
       : super(key: key);
 
   @override
@@ -67,6 +69,9 @@ class RoundedInputField extends StatelessWidget {
           controller: controller,
           cursorColor: kPrimaryColor,
           keyboardType: keyboardType,
+          textCapitalization: textCapitalization == null
+              ? TextCapitalization.none
+              : textCapitalization,
           autofocus: autofocus == null ? false : autofocus,
           textAlign: textAlign == null ? TextAlign.start : textAlign,
           decoration: inputDecoration == null

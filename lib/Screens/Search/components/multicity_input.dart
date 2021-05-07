@@ -210,6 +210,7 @@ class _MulticityInputState extends State<MulticityInput> {
                             onChanged: (value) {
                               findPickUp(value);
                             },
+                            textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         (pickUpPlacePredictionList.length > 0)
@@ -246,6 +247,7 @@ class _MulticityInputState extends State<MulticityInput> {
                             onChanged: (value) {
                               findDropOff(value);
                             },
+                            textCapitalization: TextCapitalization.sentences,
                           ),
                         ),
                         (dropOffPlacePredictionList.length > 0)

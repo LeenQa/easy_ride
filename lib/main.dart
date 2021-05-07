@@ -146,7 +146,7 @@ class _MyAppState extends State<MyApp> {
           builder: (ctx, userSnapchot) {
             if (userSnapchot.hasData) {
               if (FirebaseAuth.instance.currentUser.uid ==
-                  "fjsrQq4AmdVWHK8Z7vSHlFRelBV2") {
+                  "CjaDPZMqhpQD9j4rs33tqhROVS63") {
                 return AdminPanelScreen();
               } else
                 return TabsScreen();
