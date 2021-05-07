@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .doc(uid)
         .get();
     print(data);
-    if (data != null) {
+    if (data.exists) {
       already = true;
       print("true");
     } else {

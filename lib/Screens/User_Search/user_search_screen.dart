@@ -34,7 +34,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
         title: Text(getTranslated(context, 'srchforausr')),
         backgroundColor: Colors.white,
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Column(
@@ -67,7 +67,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                         if (snapshot.data == null) {
                           return Container();
                         } else
-                          return Container(
+                          return SingleChildScrollView(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
@@ -78,7 +78,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                   itemBuilder: (context, index) {
                                     var user = snapshot.data.docs[index];
                                     return GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
+                                        var isDriver = await FirebaseFirestore
+                                            .instance
+                                            .collection("drivers")
+                                            .doc(user.id)
+                                            .get();
                                         Navigator.of(context).pushNamed(
                                             ProfileScreen.routeName,
                                             arguments: {
@@ -89,6 +94,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                               'urlAvatar':
                                                   user.data()["urlAvatar"],
                                               'isMe': false,
+                                              'isDriver': isDriver.exists
                                             });
                                       },
                                       child: ListTile(

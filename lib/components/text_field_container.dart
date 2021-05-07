@@ -5,11 +5,13 @@ class TextFieldContainer extends StatelessWidget {
   final Widget child;
   final double margin;
   final double radius;
+  final Color color;
   const TextFieldContainer({
     Key key,
     this.child,
     this.margin,
     this.radius,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class TextFieldContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       width: size.width * 0.8,
       decoration: BoxDecoration(
-        color: kPrimaryLightColor,
+        color: color == null ? kPrimaryLightColor : color,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(29),
             topRight: Radius.circular(29),

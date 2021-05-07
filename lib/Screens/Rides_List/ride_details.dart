@@ -86,7 +86,11 @@ class RideDetails extends StatelessWidget {
                     ),
                   ),
                   title: InkWell(
-                    onTap: () {
+                    onTap: () async {
+                      var isDriver = await FirebaseFirestore.instance
+                          .collection("drivers")
+                          .doc(ride.driver)
+                          .get();
                       Navigator.of(context)
                           .pushNamed(ProfileScreen.routeName, arguments: {
                         'id': ride.driver,
@@ -96,6 +100,7 @@ class RideDetails extends StatelessWidget {
                         'isMe': searchedRide.currentUser == ride.driver
                             ? true
                             : false,
+                        'isDriver': isDriver.exists
                       });
                     },
                     child: getTitle(

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
 import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as Path;
 
 enum Picture {
@@ -51,14 +52,36 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
   };
   String _uploadedFileURL;
   String _carModel;
+  List<String> paymentMethods = ["Master Card", "PayPal"];
+  String chosenMethod;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _textFieldController = TextEditingController();
+  TextEditingController _textFieldController2 = TextEditingController();
+  TextEditingController _textFieldController3 = TextEditingController();
+  TextEditingController _textFieldController4 = TextEditingController();
 
   Future chooseFile(Picture picture) async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image.update(picture, (value) => value = image);
       });
+    });
+  }
+
+  DateTime _selectedDate;
+  void _presentDatePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2022))
+        .then((pickedDate) {
+      if (pickedDate != null) {
+        setState(() {
+          _selectedDate = pickedDate;
+        });
+      } else
+        return;
     });
   }
 
@@ -139,6 +162,9 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                 setState(() {
                   _image.clear();
                   _textFieldController.clear();
+                  _textFieldController2.clear();
+                  _textFieldController3.clear();
+                  _textFieldController4.clear();
                 });
               } else if (count == 1) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -268,7 +294,97 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                           _carModel = value.trim();
                         },
                       ),
-
+                      Container(height: 20),
+                      getTitle(
+                          title: 'Fill your payment information', fontSize: 15),
+                      RoundedInputField(
+                        controller: _textFieldController2,
+                        hintText: "Enter the cardholder name",
+                        icon: Icons.car_repair,
+                        onSaved: (value) {},
+                      ),
+                      RoundedInputField(
+                        controller: _textFieldController3,
+                        hintText: "Enter the card number",
+                        icon: Icons.car_repair,
+                        onSaved: (value) {},
+                      ),
+                      Container(
+                        height: 70,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.date_range, color: kPrimaryColor),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 0)),
+                                      textStyle: MaterialStateProperty.all(
+                                          TextStyle(fontSize: 30))),
+                                  onPressed: _presentDatePicker,
+                                  child: getTitle(
+                                      title: "Choose card's expiry date",
+                                      color: Colors.grey[700],
+                                      fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            Expanded(
+                              child: Text(_selectedDate == null
+                                  ? ''
+                                  : DateFormat('\'Picked date: \' EEE, MMM d')
+                                      .format(_selectedDate)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownButton(
+                        dropdownColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: "Quicksand",
+                          fontWeight: FontWeight.w500,
+                        ),
+                        icon: Icon(
+                          Icons.payment,
+                          color: kPrimaryColor,
+                        ),
+                        hint: getTitle(
+                          title: "Select Payment Method",
+                        ),
+                        value: chosenMethod,
+                        onChanged: (String value) {
+                          setState(() {
+                            chosenMethod = value;
+                          });
+                        },
+                        items: paymentMethods.map((String method) {
+                          return DropdownMenuItem<String>(
+                            value: method,
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  method,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      RoundedInputField(
+                        controller: _textFieldController4,
+                        hintText: "Enter the CVV",
+                        icon: Icons.car_repair,
+                        onSaved: (value) {},
+                      ),
                       // _image != null
                       //     ? RaisedButton(
                       //         child: Text('Clear Selection'),

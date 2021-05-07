@@ -1,16 +1,17 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Driver_Rides/requests.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/rounded_input_field.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/searched_ride.dart';
 import 'package:easy_ride/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 import '../../constants.dart';
 
 class DriverRides extends StatefulWidget {
@@ -24,6 +25,7 @@ class DriverRides extends StatefulWidget {
 
 class _DriverRidesState extends State<DriverRides> {
   var backBtnRes;
+
   @override
   Widget build(BuildContext context) {
     List<SearchedRide> requests = [];

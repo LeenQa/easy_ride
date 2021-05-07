@@ -97,7 +97,7 @@ class _MainDrawerState extends State<MainDrawer> {
         .doc(uid)
         .get();
     print(data);
-    if (data != null) {
+    if (data.exists) {
       already = true;
       print("true");
     } else {
@@ -199,13 +199,18 @@ class _MainDrawerState extends State<MainDrawer> {
                       buildListTile(
                         context,
                         Icons.person_pin_rounded,
-                        () {
+                        () async {
+                          var driver = await FirebaseFirestore.instance
+                              .collection("drivers")
+                              .doc(uid)
+                              .get();
                           Navigator.of(context)
                               .pushNamed(ProfileScreen.routeName, arguments: {
                             'name':
                                 "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
                             'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
                             'isMe': true,
+                            'isDriver': driver.exists,
                           });
                         },
                         getTitle(title: getTranslated(context, 'profile')),

@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Messages/page/chat_page.dart';
 import 'package:easy_ride/Screens/Edit_Profile_Screen/edit_profile_screen.dart';
+import 'package:easy_ride/Screens/Profile/components/user_review.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import '../../text_style.dart';
 import 'components/my_info.dart';
 import 'components/opaque_image.dart';
@@ -22,9 +24,24 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    super.initState();
     getUser();
+    super.initState();
   }
+
+  // putnotifications() async {
+  //   var docs = await FirebaseFirestore.instance.collection("users").get();
+  //   docs.docs.forEach((element) async {
+  //     await FirebaseFirestore.instance
+  //         .collection("users")
+  //         .doc(element.id)
+  //         .update({
+  //       "getChatNotifications": true,
+  //       "getReminderNotifications": true,
+  //       "getRequestNotifications": true,
+  //       "showPhone": true,
+  //     });
+  //   });
+  // }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   String uid;
@@ -56,38 +73,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Column(
             children: [
               Expanded(
-                flex: 4,
-                child: Stack(
-                  children: [
-                    // OpaqueImage(
-                    //   //make dynamic
-                    //   imageUrl: _urlAvatar,
-                    // ),
-                    SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            FutureBuilder<DocumentSnapshot>(
-                                future: FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(uid)
-                                    .get(),
-                                builder: (BuildContext context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                  return MyInfo(
-                                      args['name'], args['urlAvatar']);
-                                }),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                flex: 3,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: MyInfo(args['name'], args['urlAvatar'], args['id'],
+                        args['isDriver']),
+                  ),
                 ),
               ),
               Expanded(
@@ -97,30 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.only(bottom: 10, top: 6),
                     child: Column(
                       children: [
-                        // TextButton.icon(
-                        //   style: ButtonStyle(
-                        //     backgroundColor:
-                        //         MaterialStateProperty.resolveWith<Color>(
-                        //       (Set<MaterialState> states) {
-                        //         return Colors.white;
-                        //       },
-                        //     ),
-                        //     shape: MaterialStateProperty.all<
-                        //         RoundedRectangleBorder>(
-                        //       RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(18.0),
-                        //         side: BorderSide(color: blueColor),
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   icon: Icon(
-                        //     Icons.message_rounded,
-                        //   ),
-                        //   label: Text(getTranslated(context, 'sendmessage'),
-                        //       style: blueSubHeadingTextStyle),
-                        //   onPressed: () {},
-                        // ),
-                        // Divider(),
                         ListTile(
                           leading: Icon(
                             Icons.location_pin,
@@ -135,58 +103,145 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           indent: 10,
                           endIndent: 10,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 25, horizontal: 10)),
-                            Icon(
-                              Icons.rate_review,
-                              color: Colors.red,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.08,
-                            ),
-                            Title(
-                              color: Colors.pink,
-                              child: Text(
-                                getTranslated(context, 'rating'),
-                                style: blackTextStyle,
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            SmoothStarRating(
-                              rating: 3.5,
-                              isReadOnly: true,
-                              size: 25,
-                              filledIconData: Icons.star,
-                              halfFilledIconData: Icons.star_half,
-                              defaultIconData: Icons.star_border,
-                              starCount: 5,
-                              //allowHalfRating: true,
-                              spacing: 1.0,
-                              onRated: (value) {
-                                print("rating value -> $value");
-                              },
-                            ),
-                          ],
+                        FutureBuilder<QuerySnapshot>(
+                          future: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(args['id'])
+                              .collection('reviews')
+                              //.orderBy("dateTime", descending: true)
+                              .get(),
+                          builder: (BuildContext context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              default:
+                                if (snapshot.hasError) {
+                                  print(snapshot.error);
+                                  return Text('Something Went Wrong Try later');
+                                } else {
+                                  final reviews = snapshot.data.docs;
+                                  double numofRatings =
+                                      reviews.length.toDouble();
+                                  double sumRatings = 0;
+                                  for (int i = 0; i < reviews.length; i++) {
+                                    sumRatings += reviews[i].data()["rating"];
+                                  }
+
+                                  if (reviews.isEmpty) {
+                                    return Container();
+                                  } else
+                                    return Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 25,
+                                                    horizontal: 10)),
+                                            Icon(
+                                              Icons.star_rate,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.08,
+                                            ),
+                                            Title(
+                                              color: Colors.pink,
+                                              child: Text(
+                                                getTranslated(
+                                                    context, 'rating'),
+                                                style: blackTextStyle,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05,
+                                            ),
+                                            SmoothStarRating(
+                                              rating: sumRatings / numofRatings,
+                                              isReadOnly: true,
+                                              size: 25,
+                                              filledIconData: Icons.star,
+                                              halfFilledIconData:
+                                                  Icons.star_half,
+                                              defaultIconData:
+                                                  Icons.star_border,
+                                              starCount: 5,
+                                              //allowHalfRating: true,
+                                              spacing: 1.0,
+                                              onRated: (value) {
+                                                print("rating value -> $value");
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        Divider(
+                                          indent: 10,
+                                          endIndent: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 25,
+                                                    horizontal: 10)),
+                                            Icon(
+                                              Icons.comment,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.08,
+                                            ),
+                                            Title(
+                                              color: Colors.pink,
+                                              child: Text(
+                                                'Reviews',
+                                                style: blackTextStyle,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        ListView.separated(
+                                            separatorBuilder: (context, index) {
+                                              return Divider();
+                                            },
+                                            shrinkWrap: true,
+                                            itemCount: reviews.length,
+                                            itemBuilder: (ctx, index) {
+                                              final review = reviews[index];
+                                              return UserReview(
+                                                date: DateFormat('EEE, MMM d y')
+                                                    .format(DateTime
+                                                        .fromMicrosecondsSinceEpoch(
+                                                            review
+                                                                .data()[
+                                                                    "dateTime"]
+                                                                .microsecondsSinceEpoch))
+                                                    .toString(),
+                                                review: review.data()["review"],
+                                                reviewerId:
+                                                    review.data()["reviewerId"],
+                                              );
+                                            })
+                                      ],
+                                    );
+                                }
+                            }
+                          },
                         ),
-                        Divider(
-                          indent: 10,
-                          endIndent: 10,
-                        ),
-                        /* ProfileInfoBigCard(
-                            firstText: "13",
-                            secondText: "New matches",
-                            icon: Icon(
-                              Icons.star,
-                              size: 32,
-                              color: blueColor,
-                            ),
-                          ), */
                       ],
                     ),
                   ),

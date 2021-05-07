@@ -9,14 +9,17 @@ import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/searched_ride.dart';
-import 'package:easy_ride/models/user.dart';
+import 'package:easy_ride/models/user.dart' as User;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../text_style.dart';
 
 class RideRequests extends StatefulWidget {
   final List<SearchedRide> rideRequests;
-  final List<User> users;
+  final List<User.User> users;
   final Ride driverRide;
   RideRequests(this.rideRequests, this.users, this.driverRide);
   @override
@@ -24,8 +27,159 @@ class RideRequests extends StatefulWidget {
 }
 
 class _RideRequestsState extends State<RideRequests> {
+  double rating;
+  String review;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _textFieldController = TextEditingController();
+
+  _trySubmit(BuildContext ctx, String reviewdId) async {
+    print(rating);
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid) {
+      _formKey.currentState.save();
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(reviewdId)
+          .collection("reviews")
+          .doc()
+          .set({
+        "rating": rating,
+        "review": review,
+        "dateTime": DateTime.now(),
+        "reviewerId": uid
+      });
+      _textFieldController.clear();
+    }
+  }
+
+  void _modalBottomSheetMenu(String reviewedId) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (builder) {
+          return Form(
+            key: _formKey,
+            child: new Container(
+              height: 350.0,
+              color:
+                  Color(0xFF737373), //could change this to Color(0xFF737373),
+              //so you don't have to change MaterialApp canvasColor
+              child: new Container(
+                decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: new BorderRadius.only(
+                        topLeft: const Radius.circular(30.0),
+                        topRight: const Radius.circular(30.0))),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.edit,
+                              color: redColor,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            getTitle(title: "Write a Review", fontSize: 14),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Title(
+                                  color: Colors.pink,
+                                  child: getTitle(
+                                      title: getTranslated(context, 'rating'),
+                                      fontSize: 15),
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                SmoothStarRating(
+                                  size: 25,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  defaultIconData: Icons.star_border,
+                                  starCount: 5,
+                                  //allowHalfRating: true,
+                                  spacing: 1.0,
+                                  onRated: (value) {
+                                    rating = value;
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.98,
+                                child: RoundedInputField(
+                                  controller: _textFieldController,
+                                  color: Colors.white,
+                                  maxLines: 4,
+                                  textAlign: TextAlign.start,
+                                  inputDecoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Write your review here..',
+                                    hintStyle: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  onSaved: (value) {
+                                    review = value.trim();
+                                  },
+                                  autofocus: false,
+                                )),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            CustomElevatedButton(
+                              title: "Post",
+                              backgroundColor: redColor,
+                              color: Colors.white,
+                              onPressed: () => _trySubmit(context, reviewedId),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   khara() {
     ;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  bool already;
+  getUser() {
+    uid = auth.currentUser.uid;
   }
 
   @override
@@ -64,8 +218,16 @@ class _RideRequestsState extends State<RideRequests> {
                         padding: EdgeInsets.all(10.0),
                         itemCount: widget.rideRequests.length,
                         itemBuilder: (context, index) {
+                          bool isBefore = DateFormat("EEE, MMM d")
+                              .parse(widget.rideRequests[index].date)
+                              .isBefore(DateTime.now());
                           return GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              var driver = await FirebaseFirestore.instance
+                                  .collection("drivers")
+                                  .doc(widget.rideRequests[index].currentUser)
+                                  .get();
+
                               Navigator.of(context).pushNamed(
                                   ProfileScreen.routeName,
                                   arguments: {
@@ -76,6 +238,7 @@ class _RideRequestsState extends State<RideRequests> {
                                         widget.users[index].lastName,
                                     'urlAvatar': widget.users[index].urlAvatar,
                                     'isMe': false,
+                                    'isDriver': driver.exists
                                   });
                             },
                             child: Column(
@@ -168,7 +331,7 @@ class _RideRequestsState extends State<RideRequests> {
                                                               Theme.of(context)
                                                                   .errorColor,
                                                           content: Text(
-                                                              "Number of request passengers is bigger than left seats")));
+                                                              "Number of passengers is bigger than the number of seats left")));
                                             },
                                             iconSize: 45,
                                             color: Colors.green,
@@ -202,21 +365,38 @@ class _RideRequestsState extends State<RideRequests> {
                                                   0.02),
                                         ],
                                       )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                    : Column(
                                         children: [
-                                          SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.05,
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.05,
+                                              ),
+                                              Text(
+                                                'Ride Accepted',
+                                                style: blueSubHeadingTextStyle,
+                                                textAlign: TextAlign.center,
+                                              )
+                                            ],
                                           ),
-                                          Text(
-                                            'Ride Accepted',
-                                            style: blueSubHeadingTextStyle,
-                                            textAlign: TextAlign.center,
-                                          )
+                                          isBefore
+                                              ? CustomElevatedButton(
+                                                  backgroundColor: redColor,
+                                                  title: "Write a Review",
+                                                  color: Colors.white,
+                                                  onPressed: () =>
+                                                      _modalBottomSheetMenu(
+                                                          widget
+                                                              .rideRequests[
+                                                                  index]
+                                                              .currentUser),
+                                                )
+                                              : Container()
                                         ],
                                       ),
                               ],
