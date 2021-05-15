@@ -1,16 +1,24 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Assistants/assistantMethods.dart';
+import 'package:easy_ride/components/keys.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class NewMessageWidget extends StatefulWidget {
   final String convId;
   final String userId;
+  final String chatUser;
 
   const NewMessageWidget({
     @required this.convId,
     @required this.userId,
+    @required this.chatUser,
     Key key,
   }) : super(key: key);
 
@@ -21,7 +29,11 @@ class NewMessageWidget extends StatefulWidget {
 class _NewMessageWidgetState extends State<NewMessageWidget> {
   final _controller = TextEditingController();
   String message = '';
-
+  String token = '';
+  String firstName = '';
+  String lastName = '';
+  String urlAvatar = '';
+  bool areChatNotificationsTurnedOn = true;
   void sendMessage() async {
     // FocusScope.of(context).unfocus();
     if (message != "") {
@@ -35,6 +47,7 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
         "dateTime": DateTime.now(),
         "senderId": widget.userId,
       });
+      _controller.clear();
       await FirebaseFirestore.instance
           .collection("users")
           .doc(widget.userId)
@@ -44,8 +57,35 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
         "lastMessageTime": DateTime.now(),
       });
 
-      _controller.clear();
-      message = "";
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.userId)
+          .get()
+          .then((value) {
+        firstName = value.data()['firstName'];
+        lastName = value.data()['lastName'];
+        urlAvatar = value.data()['urlAvatar'];
+      });
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.chatUser)
+          .get()
+          .then((value) {
+        token = value.data()['token'];
+        areChatNotificationsTurnedOn = value.data()['getChatNotifications'];
+        if (token != '') {
+          print(token);
+          OneSignal.shared.setNotificationWillShowInForegroundHandler(
+              (OSNotificationReceivedEvent event) {
+            event.complete(null);
+          });
+          if (areChatNotificationsTurnedOn) {
+            AssistantMethods.sendNotification(
+                [token], message, firstName + " " + lastName, urlAvatar);
+          }
+        }
+        message = "";
+      });
     }
   }
 

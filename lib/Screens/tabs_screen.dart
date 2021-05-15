@@ -9,6 +9,7 @@ import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class TabsScreen extends StatefulWidget {
   static const routeName = '/tabs';
@@ -25,6 +26,16 @@ class _TabsScreenState extends State<TabsScreen> {
     super.initState();
     getUser();
     isDriverMethod(uid);
+    getToken();
+  }
+
+  getToken() async {
+    var status = await OneSignal.shared.getDeviceState();
+    String tokenId = status.userId;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'token': tokenId});
   }
 
   isDriverMethod(String uid) async {

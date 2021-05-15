@@ -9,11 +9,13 @@ class ChatPage extends StatefulWidget {
   final String convId;
   final String name;
   final String urlAvatar;
+  final String chatUser;
 
   const ChatPage({
     @required this.convId,
     @required this.name,
     @required this.urlAvatar,
+    @required this.chatUser,
     Key key,
   }) : super(key: key);
 
@@ -61,6 +63,7 @@ class _ChatPageState extends State<ChatPage> {
               NewMessageWidget(
                 convId: widget.convId,
                 userId: uid,
+                chatUser: widget.chatUser,
               )
             ],
           ),

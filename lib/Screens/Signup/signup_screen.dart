@@ -54,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'email': _user.email,
         'location': _user.location,
         'searchIndex': searchIndex(_user.firstName, _user.lastName),
+        'token': '',
         'urlAvatar':
             "https://firebasestorage.googleapis.com/v0/b/easyride-8fdc3.appspot.com/o/profilepics%2Fuser.png?alt=media&token=089e3870-577e-4339-a79e-1489d54db07e",
       });

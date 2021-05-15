@@ -90,6 +90,7 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                                     convId: widget.conversations[index].id,
                                     name: name,
                                     urlAvatar: urlAvatar,
+                                    chatUser: userId,
                                   ),
                                 ));
                               },

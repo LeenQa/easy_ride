@@ -1,5 +1,5 @@
 import 'package:easy_ride/Assistants/requestAssistant.dart';
-import 'package:easy_ride/components/configMaps.dart';
+import 'package:easy_ride/components/keys.dart';
 import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:flutter/material.dart';

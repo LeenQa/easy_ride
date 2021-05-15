@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/custom_container.dart';
@@ -11,6 +12,7 @@ import 'package:easy_ride/models/searched_ride.dart';
 import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../constants.dart';
 
@@ -152,6 +154,12 @@ class RideDetails extends StatelessWidget {
                                 ),
                                 new TextButton(
                                   onPressed: () async {
+                                    String firstName = "";
+                                    String lastName = "";
+                                    String urlAvatar = "";
+                                    String token = "";
+                                    bool areRequestsNotificationsTurnedOn =
+                                        true;
                                     bool isRequested = false;
                                     await FirebaseFirestore.instance
                                         .collection('requests')
@@ -183,12 +191,43 @@ class RideDetails extends StatelessWidget {
                                         'status': 'pending',
                                       }).then((_) async {
                                         await FirebaseFirestore.instance
-                                            .collection('rides')
+                                            .collection('users')
                                             .doc(ride.driver)
-                                            .collection('userrides')
-                                            .doc(ride.id)
                                             .get()
-                                            .then((value) {
+                                            .then((value) async {
+                                          token = value.data()['token'];
+
+                                          areRequestsNotificationsTurnedOn =
+                                              value.data()[
+                                                  'getRequestNotifications'];
+                                          if (token != '') {
+                                            print(token);
+                                            OneSignal.shared
+                                                .setNotificationWillShowInForegroundHandler(
+                                                    (OSNotificationReceivedEvent
+                                                        event) {
+                                              event.complete(null);
+                                            });
+                                            if (areRequestsNotificationsTurnedOn) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(searchedRide.currentUser)
+                                                  .get()
+                                                  .then((value) {
+                                                firstName =
+                                                    value.data()['firstName'];
+                                                lastName =
+                                                    value.data()['lastName'];
+                                                urlAvatar =
+                                                    value.data()['urlAvatar'];
+                                                AssistantMethods.sendNotification(
+                                                    [token],
+                                                    "I sent you a ride request!",
+                                                    firstName + " " + lastName,
+                                                    urlAvatar);
+                                              });
+                                            }
+                                          }
                                           Navigator.of(context,
                                                   rootNavigator: true)
                                               .pop();

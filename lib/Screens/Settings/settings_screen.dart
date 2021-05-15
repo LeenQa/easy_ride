@@ -128,7 +128,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }
                 var setting = snapshot.data;
                 bool chatNotif = setting.data()["getChatNotifications"];
-                bool reminderNotif = setting.data()["getReminderNotifications"];
                 bool requestNotif = setting.data()["getRequestNotifications"];
                 bool showPhone = setting.data()["showPhone"];
 
@@ -150,22 +149,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               .update({"getChatNotifications": chatNotif});
                         }),
                     SwitchListTile.adaptive(
-                        title: Text('Receive Reminder Notifications'),
-                        activeColor: kPrimaryColor,
-                        secondary: const Icon(
-                          Icons.notifications,
-                          color: kPrimaryColor,
-                        ),
-                        value: reminderNotif,
-                        onChanged: (bool value) async {
-                          reminderNotif = !reminderNotif;
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(uid)
-                              .update(
-                                  {"getReminderNotifications": reminderNotif});
-                        }),
-                    SwitchListTile.adaptive(
                         title: Text('Receive Request Notifications'),
                         activeColor: kPrimaryColor,
                         secondary: const Icon(
@@ -178,8 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           await FirebaseFirestore.instance
                               .collection("users")
                               .doc(uid)
-                              .update(
-                                  {"getRequestNotifications": reminderNotif});
+                              .update({"getRequestNotifications": chatNotif});
                         }),
                     SwitchListTile.adaptive(
                         title: Text('Show phone number in profile'),

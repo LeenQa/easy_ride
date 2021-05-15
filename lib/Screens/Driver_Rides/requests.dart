@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Screens/Driver_Rides/driver_rides.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -13,6 +14,7 @@ import 'package:easy_ride/models/user.dart' as User;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../text_style.dart';
@@ -165,10 +167,6 @@ class _RideRequestsState extends State<RideRequests> {
         });
   }
 
-  khara() {
-    ;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -182,8 +180,33 @@ class _RideRequestsState extends State<RideRequests> {
     uid = auth.currentUser.uid;
   }
 
+  /* String driverFirstName = "";
+  String driverLastName = "";
+  String driverUrlAvatar = "";
+  String token = "";
+  bool areRequestsNotificationsTurnedOn = true;
+  getDriverDetails(String uid, String driverFirstName, String driverLastName,
+      String driverUrlAvatar) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((value) {
+      driverFirstName = value.data()['firstName'];
+      driverLastName = value.data()['lastName'];
+      driverUrlAvatar = value.data()['urlAvatar'];
+    });
+  } */
+
   @override
   Widget build(BuildContext context) {
+    print(uid);
+    String driverFirstName = "";
+    String driverLastName = "";
+    String driverUrlAvatar = "";
+    String token = "";
+    bool areRequestsNotificationsTurnedOn = true;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, widget.driverRide.numOfPassengers);
@@ -328,7 +351,66 @@ class _RideRequestsState extends State<RideRequests> {
                                                                   .rideRequests[
                                                                       index]
                                                                   .numOfPassengers
+                                                        }).then((_) async {
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .doc(uid)
+                                                              .get()
+                                                              .then((value) {
+                                                            driverFirstName =
+                                                                value.data()[
+                                                                    'firstName'];
+                                                            driverLastName =
+                                                                value.data()[
+                                                                    'lastName'];
+                                                            driverUrlAvatar =
+                                                                value.data()[
+                                                                    'urlAvatar'];
+                                                          });
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .doc(widget
+                                                                  .rideRequests[
+                                                                      index]
+                                                                  .currentUser)
+                                                              .get()
+                                                              .then(
+                                                                  (value) async {
+                                                            token =
+                                                                value.data()[
+                                                                    'token'];
+
+                                                            areRequestsNotificationsTurnedOn =
+                                                                value.data()[
+                                                                    'getRequestNotifications'];
+                                                            if (token != '') {
+                                                              print(token);
+                                                              OneSignal.shared
+                                                                  .setNotificationWillShowInForegroundHandler(
+                                                                      (OSNotificationReceivedEvent
+                                                                          event) {
+                                                                event.complete(
+                                                                    null);
+                                                              });
+                                                              if (areRequestsNotificationsTurnedOn) {
+                                                                AssistantMethods.sendNotification(
+                                                                    [
+                                                                      token
+                                                                    ],
+                                                                    "A ride request you sent had been accepted!",
+                                                                    driverFirstName +
+                                                                        " " +
+                                                                        driverLastName,
+                                                                    driverUrlAvatar);
+                                                              }
+                                                            }
+                                                          });
                                                         });
+
                                                         setState(() {
                                                           widget.driverRide
                                                                   .numOfPassengers -=
@@ -372,10 +454,74 @@ class _RideRequestsState extends State<RideRequests> {
                                                     .collection('requests')
                                                     .doc(widget
                                                         .rideRequests[index]
-                                                        .ride)
+                                                        .request)
                                                     .update({
                                                   'status': 'rejected'
-                                                }).then((_) {
+                                                }).then((_) async {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('rides')
+                                                      .doc(widget
+                                                          .driverRide.driver)
+                                                      .collection('userrides')
+                                                      .doc(widget.driverRide.id)
+                                                      .update({
+                                                    'numOfPassengers': widget
+                                                            .driverRide
+                                                            .numOfPassengers -
+                                                        widget
+                                                            .rideRequests[index]
+                                                            .numOfPassengers
+                                                  }).then((_) async {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('users')
+                                                        .doc(uid)
+                                                        .get()
+                                                        .then((value) {
+                                                      driverFirstName = value
+                                                          .data()['firstName'];
+                                                      driverLastName = value
+                                                          .data()['lastName'];
+                                                      driverUrlAvatar = value
+                                                          .data()['urlAvatar'];
+                                                    });
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('users')
+                                                        .doc(widget
+                                                            .rideRequests[index]
+                                                            .currentUser)
+                                                        .get()
+                                                        .then((value) async {
+                                                      token =
+                                                          value.data()['token'];
+
+                                                      areRequestsNotificationsTurnedOn =
+                                                          value.data()[
+                                                              'getRequestNotifications'];
+                                                      if (token != '') {
+                                                        print(token);
+                                                        OneSignal.shared
+                                                            .setNotificationWillShowInForegroundHandler(
+                                                                (OSNotificationReceivedEvent
+                                                                    event) {
+                                                          event.complete(null);
+                                                        });
+                                                        if (areRequestsNotificationsTurnedOn) {
+                                                          AssistantMethods.sendNotification(
+                                                              [
+                                                                token
+                                                              ],
+                                                              "A ride request you sent had been rejected!",
+                                                              driverFirstName +
+                                                                  " " +
+                                                                  driverLastName,
+                                                              driverUrlAvatar);
+                                                        }
+                                                      }
+                                                    });
+                                                  });
                                                   setState(() {
                                                     widget.users
                                                         .removeAt(index);

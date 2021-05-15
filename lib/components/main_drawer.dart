@@ -407,7 +407,11 @@ class _MainDrawerState extends State<MainDrawer> {
                 // Divider(
                 //   thickness: 1,
                 // ),
-                buildListTile(context, Icons.logout, () {
+                buildListTile(context, Icons.logout, () async {
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(uid)
+                      .update({'token': ''});
                   FirebaseAuth.instance.signOut();
                   Navigator.of(context).pushNamed(LoginScreen.routeName);
                 }, getTitle(title: getTranslated(context, 'logout'))),

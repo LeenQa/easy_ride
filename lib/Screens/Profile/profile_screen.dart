@@ -279,6 +279,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Map args = ModalRoute.of(context).settings.arguments;
                           final auth = FirebaseAuth.instance.currentUser.uid;
                           String convId = null;
+                          String chatUser = "";
                           await FirebaseFirestore.instance
                               .collection("users")
                               .doc(auth)
@@ -297,6 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   convId: convId,
                                   name: args['name'],
                                   urlAvatar: args['urlAvatar'],
+                                  chatUser: args['id'],
                                 ),
                               ));
                             } else {
@@ -336,6 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       convId: path,
                                       name: args['name'],
                                       urlAvatar: args['urlAvatar'],
+                                      chatUser: args['id'],
                                     ),
                                   ));
                                 });

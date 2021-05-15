@@ -7,6 +7,7 @@ import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/components/keys.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/request.dart';
 import 'package:easy_ride/models/ride.dart';
@@ -19,6 +20,7 @@ import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'Screens/Driver_Rides/driver_rides.dart';
 import 'Screens/Edit_Profile_Screen/edit_profile_screen.dart';
 import 'Screens/Map/map_screen.dart';
@@ -74,6 +76,16 @@ class _MyAppState extends State<MyApp> {
         this._locale = locale;
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    configOneSignel();
+  }
+
+  void configOneSignel() {
+    OneSignal.shared.setAppId(oneSignalKey);
   }
 
   @override
