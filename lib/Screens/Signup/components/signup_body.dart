@@ -1,7 +1,5 @@
 import 'package:easy_ride/Assistants/requestAssistant.dart';
-import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
-import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/keys.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
@@ -12,8 +10,6 @@ import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Signup/components/background.dart';
-import 'package:easy_ride/Screens/Signup/components/or_divider.dart';
-import 'package:easy_ride/Screens/Signup/components/social_icon.dart';
 import 'package:easy_ride/components/already_have_an_account_acheck.dart';
 import 'package:easy_ride/components/rounded_button.dart';
 import 'package:provider/provider.dart';
@@ -115,7 +111,7 @@ class _SingupBodyState extends State<SingupBody> {
                 keyboardType: TextInputType.phone,
                 hintText: getTranslated(context, 'phone'),
                 onSaved: (value) {
-                  _user.phone = int.parse(value.trim());
+                  _user.phone = value.trim();
                 },
                 textCapitalization: TextCapitalization.none,
               ),
@@ -198,6 +194,7 @@ class _SingupBodyState extends State<SingupBody> {
                 CircularProgressIndicator(
                   backgroundColor: kPrimaryColor,
                 ),
+              SizedBox(height: size.height * 0.03),
               if (!widget._isLoading)
                 RoundedButton(
                   text: getTranslated(context, 'signup'),
@@ -217,21 +214,7 @@ class _SingupBodyState extends State<SingupBody> {
                   );
                 },
               ),
-              OrDivider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SocalIcon(
-                    iconSrc: "assets/icons/facebook.svg",
-                    press: () {},
-                  ),
-                  SocalIcon(
-                    iconSrc: "assets/icons/google-plus.svg",
-                    press: () {},
-                  ),
-                  SizedBox(height: size.height * 0.19),
-                ],
-              )
+              SizedBox(height: size.height * 0.03),
             ],
           ),
         ),

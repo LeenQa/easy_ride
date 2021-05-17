@@ -3,10 +3,10 @@ import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
-import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/Screens/User_Reports/user_reports.dart';
 import 'package:easy_ride/components/keys.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/request.dart';
@@ -14,11 +14,8 @@ import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_ride/Screens/Welcome/welcome_screen.dart';
 import 'package:easy_ride/constants.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'Screens/Driver_Rides/driver_rides.dart';
@@ -132,7 +129,7 @@ class _MyAppState extends State<MyApp> {
           return supportedLocales.first;
         },
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Auth',
+        title: 'Easy Ride',
         theme: ThemeData(
           fontFamily: 'Quicksand',
           primaryColor: kPrimaryColor,
@@ -181,6 +178,7 @@ class _MyAppState extends State<MyApp> {
           MapScreen.routeName: (ctx) => MapScreen(),
           RidesList.routeName: (ctx) => RidesList(),
           DriverRides.routeName: (ctx) => DriverRides(),
+          UserReportsScreen.routeName: (ctx) => UserReportsScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (ctx) {

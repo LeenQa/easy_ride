@@ -55,11 +55,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'location': _user.location,
         'searchIndex': searchIndex(_user.firstName, _user.lastName),
         'token': '',
+        'isDriver': false,
+        'getChatNotifications': true,
+        'getRequestNotifications': true,
+        'showPhone': false,
         'urlAvatar':
             "https://firebasestorage.googleapis.com/v0/b/easyride-8fdc3.appspot.com/o/profilepics%2Fuser.png?alt=media&token=089e3870-577e-4339-a79e-1489d54db07e",
       });
     } on PlatformException catch (err) {
-      var message = 'An error occured, please check your credentials!';
+      var message = 'An error occured, please check the provided information!';
       if (err.message != null) {
         message = err.message;
       }
@@ -72,6 +76,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     } catch (err) {
       print(err);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(err.toString().substring(30)),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
       setState(() {
         _isLoading = false;
       });

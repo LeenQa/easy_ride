@@ -11,7 +11,7 @@ class User with ChangeNotifier {
   String _password;
   String _firstName;
   String _lastName;
-  int _phone;
+  String _phone;
   String _location;
   String _urlAvatar;
 
@@ -40,9 +40,9 @@ class User with ChangeNotifier {
 
   String get password => this._password;
 
-  set phone(int value) => this._phone = value;
+  set phone(String value) => this._phone = value;
 
-  int get phone => this._phone;
+  String get phone => this._phone;
 
   set location(value) => this._location = value;
 

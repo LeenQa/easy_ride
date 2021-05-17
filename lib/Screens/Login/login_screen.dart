@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
@@ -6,7 +5,6 @@ import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "/login";
@@ -16,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
+  var message = "";
   bool _isLoading = false;
   _loginForm(
     User.User user,
@@ -25,22 +24,20 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
       UserCredential authResult;
-      authResult = await _auth.signInWithEmailAndPassword(
+      authResult = await _auth
+          .signInWithEmailAndPassword(
         email: user.email,
         password: user.password,
-      );
-      if (authResult.user.uid.startsWith("CjaDPZMqhpQD9j4rs33tqhROVS63")) {
-        Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
-      } else {
-        Navigator.pushReplacementNamed(context, TabsScreen.routeName);
-      }
-      //  if (authResult.user.emailVerified) {
-
-      // } else {
-      //   Navigator.pushNamed(context, EmailConfirmationScreen.routeName);
-      // }
+      )
+          .then((value) {
+        if (value.user.uid.startsWith("CjaDPZMqhpQD9j4rs33tqhROVS63")) {
+          Navigator.pushReplacementNamed(context, AdminPanelScreen.routeName);
+        } else {
+          Navigator.pushReplacementNamed(context, TabsScreen.routeName);
+        }
+      });
     } on PlatformException catch (err) {
-      var message = 'An error occured, please check your credentials!';
+      message = 'An error occured, please check your credentials!';
       if (err.message != null) {
         message = err.message;
       }
@@ -55,6 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (err) {
       print(err);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(err.toString().substring(30)),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
       if (this.mounted) {
         setState(() {
           _isLoading = false;

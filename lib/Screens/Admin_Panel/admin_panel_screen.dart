@@ -112,6 +112,12 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                           'pictures': document['pictures'],
                                         }).then((value) async {
                                           await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(document.id)
+                                              .update({
+                                            'isDriver': true,
+                                          });
+                                          await FirebaseFirestore.instance
                                               .collection("driver_requests")
                                               .doc(document.id)
                                               .delete()

@@ -1,7 +1,5 @@
-import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/assistantMethods.dart';
-import 'package:easy_ride/Screens/Driver_Rides/driver_rides.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
@@ -16,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-
 import '../../text_style.dart';
 
 class RideRequests extends StatefulWidget {
@@ -241,9 +238,6 @@ class _RideRequestsState extends State<RideRequests> {
                         padding: EdgeInsets.all(10.0),
                         itemCount: widget.rideRequests.length,
                         itemBuilder: (context, index) {
-                          bool isBefore = DateFormat("EEE, MMM d")
-                              .parse(widget.rideRequests[index].date)
-                              .isBefore(DateTime.now());
                           return GestureDetector(
                             onTap: () async {
                               var driver = await FirebaseFirestore.instance
@@ -558,19 +552,15 @@ class _RideRequestsState extends State<RideRequests> {
                                               )
                                             ],
                                           ),
-                                          isBefore
-                                              ? CustomElevatedButton(
-                                                  backgroundColor: redColor,
-                                                  title: "Write a Review",
-                                                  color: Colors.white,
-                                                  onPressed: () =>
-                                                      _modalBottomSheetMenu(
-                                                          widget
-                                                              .rideRequests[
-                                                                  index]
-                                                              .currentUser),
-                                                )
-                                              : Container()
+                                          CustomElevatedButton(
+                                            backgroundColor: redColor,
+                                            title: "Write a Review",
+                                            color: Colors.white,
+                                            onPressed: () =>
+                                                _modalBottomSheetMenu(widget
+                                                    .rideRequests[index]
+                                                    .currentUser),
+                                          )
                                         ],
                                       ),
                               ],

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/Screens/Messages/messages_screen.dart';
-import 'package:easy_ride/Screens/Notifications/notifications_screen.dart';
 import 'package:easy_ride/Screens/Search/search_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
@@ -73,10 +72,7 @@ class _TabsScreenState extends State<TabsScreen> {
     final List<Map<String, Object>> _pages = [
       {'page': HomeScreen(), 'title': 'EasyRide'},
       {'page': MessagesScreen(), 'title': getTranslated(context, 'messages')},
-      {
-        'page': NotificationsScreen(),
-        'title': getTranslated(context, 'notifications')
-      },
+      {'page': HomeScreen(), 'title': getTranslated(context, 'notifications')},
       {'page': SearchScreen(), 'title': getTranslated(context, 'search')},
     ];
     return Scaffold(

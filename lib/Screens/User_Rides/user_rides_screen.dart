@@ -6,12 +6,16 @@ import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/rounded_input_field.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/searched_ride.dart';
-import 'package:easy_ride/models/user.dart';
+import 'package:easy_ride/models/user.dart' as User;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../constants.dart';
 import '../../text_style.dart';
@@ -20,7 +24,7 @@ class UserRides extends StatefulWidget {
   static const routeName = '/userrides';
   final List<Ride> userRidesDetails;
   final List<SearchedRide> userRides;
-  final List<User> drivers;
+  final List<User.User> drivers;
   const UserRides(
       {Key key, this.userRidesDetails, this.userRides, this.drivers})
       : super(key: key);
@@ -29,7 +33,7 @@ class UserRides extends StatefulWidget {
   _UserRidesState createState() => _UserRidesState();
 }
 
-Widget driverProfile(User driver, Ride ride, BuildContext ctx) {
+Widget driverProfile(User.User driver, Ride ride, BuildContext ctx) {
   return GestureDetector(
     onTap: () {
       Navigator.of(ctx).pushNamed(ProfileScreen.routeName, arguments: {
@@ -48,6 +52,192 @@ Widget driverProfile(User driver, Ride ride, BuildContext ctx) {
 }
 
 class _UserRidesState extends State<UserRides> {
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  double rating;
+  String review;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _textFieldController = TextEditingController();
+  checkReviewed(String driverId, String rideId) async {
+    var reviews = await FirebaseFirestore.instance
+        .collection("drivers")
+        .doc(driverId)
+        .collection("reviews")
+        .get();
+
+    reviews.docs.forEach((element) {
+      if (uid == element.data()["reviewerId"] &&
+          rideId == element.data()["rideId"]) {
+        print("true");
+        return true;
+      }
+    });
+    return false;
+  }
+
+  _trySubmit(BuildContext ctx, String reviewdId, String rideId) async {
+    print(rating);
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(ctx).unfocus();
+    if (isValid) {
+      _formKey.currentState.save();
+      await FirebaseFirestore.instance
+          .collection("drivers")
+          .doc(reviewdId)
+          .collection("reviews")
+          .doc()
+          .set({
+        "rating": rating,
+        "review": review,
+        "dateTime": DateTime.now(),
+        "reviewerId": uid,
+        "rideId": rideId
+      });
+      _textFieldController.clear();
+      await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: new Text('Confirmation'),
+                content: Text('Your review has been submitted!'),
+                actions: [
+                  new TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: new Text('ok'),
+                  ),
+                ],
+              ));
+      Navigator.pop(context);
+    }
+  }
+
+  void _modalBottomSheetMenu(
+      BuildContext context, String reviewedId, String rideId) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (builder) {
+          return Form(
+            key: _formKey,
+            child: new Container(
+              height: 350.0,
+              color:
+                  Color(0xFF737373), //could change this to Color(0xFF737373),
+              //so you don't have to change MaterialApp canvasColor
+              child: new Container(
+                decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: new BorderRadius.only(
+                        topLeft: const Radius.circular(30.0),
+                        topRight: const Radius.circular(30.0))),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.edit,
+                              color: redColor,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            getTitle(title: "Write a Review", fontSize: 14),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Title(
+                                  color: Colors.pink,
+                                  child: getTitle(
+                                      title: getTranslated(context, 'rating'),
+                                      fontSize: 15),
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                SmoothStarRating(
+                                  size: 25,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  defaultIconData: Icons.star_border,
+                                  starCount: 5,
+                                  //allowHalfRating: true,
+                                  spacing: 1.0,
+                                  onRated: (value) {
+                                    rating = value;
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.98,
+                              child: RoundedInputField(
+                                controller: _textFieldController,
+                                color: Colors.white,
+                                maxLines: 4,
+                                textAlign: TextAlign.start,
+                                inputDecoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'Write your review here..',
+                                  hintStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                onSaved: (value) {
+                                  review = value.trim();
+                                },
+                                autofocus: false,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            CustomElevatedButton(
+                              title: "Post",
+                              backgroundColor: redColor,
+                              color: Colors.white,
+                              onPressed: () =>
+                                  _trySubmit(context, reviewedId, rideId),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  bool already;
+  getUser() {
+    uid = auth.currentUser.uid;
+  }
+
   var backBtnRes;
   @override
   Widget build(BuildContext context) {
@@ -72,6 +262,9 @@ class _UserRidesState extends State<UserRides> {
             : ListView.builder(
                 itemCount: widget.userRides.length,
                 itemBuilder: (ctx, index) {
+                  bool isBefore = DateFormat("EEE, MMM d")
+                      .parse(widget.userRides[index].date)
+                      .isBefore(DateTime.now());
                   return CustomContainer(
                     child: Column(
                       children: [
@@ -346,6 +539,18 @@ class _UserRidesState extends State<UserRides> {
                             }
                           },
                         ),
+                        checkReviewed(widget.userRidesDetails[index].driver,
+                                widget.userRides[index].ride)
+                            ? CustomElevatedButton(
+                                backgroundColor: redColor,
+                                title: "Write a Review",
+                                color: Colors.white,
+                                onPressed: () => _modalBottomSheetMenu(
+                                    context,
+                                    widget.userRidesDetails[index].driver,
+                                    widget.userRides[index].ride),
+                              )
+                            : Container()
                       ],
                     ),
                   );

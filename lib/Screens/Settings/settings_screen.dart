@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_ride/components/custom_container.dart';
-import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -80,108 +78,111 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          ListTile(
-            leading: Icon(
-              Icons.language,
-              color: kPrimaryColor,
-            ),
-            title: DropdownButton<Language>(
-              underline: SizedBox(),
-              hint: Text(getTranslated(context, "switchlang"),
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-              onChanged: (Language language) {
-                _changeLanguage(language);
-              },
-              items: Language.languageList()
-                  .map<DropdownMenuItem<Language>>(
-                    (e) => DropdownMenuItem<Language>(
-                      value: e,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text(
-                            e.flag,
-                            style: TextStyle(fontSize: 30),
-                          ),
-                          Text(e.name)
-                        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.language,
+                color: kPrimaryColor,
+              ),
+              title: DropdownButton<Language>(
+                underline: SizedBox(),
+                hint: Text(getTranslated(context, "switchlang"),
+                    style: TextStyle(fontWeight: FontWeight.w500)),
+                onChanged: (Language language) {
+                  _changeLanguage(language);
+                },
+                items: Language.languageList()
+                    .map<DropdownMenuItem<Language>>(
+                      (e) => DropdownMenuItem<Language>(
+                        value: e,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(
+                              e.flag,
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            Text(e.name)
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
-          ),
-          // CustomElevatedButton(
-          //     title: "settings", color: Colors.white, onPressed: () {}),
-          StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(uid)
-                  .snapshots(),
-              builder: (BuildContext context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                var setting = snapshot.data;
-                bool chatNotif = setting.data()["getChatNotifications"];
-                bool requestNotif = setting.data()["getRequestNotifications"];
-                bool showPhone = setting.data()["showPhone"];
+            // CustomElevatedButton(
+            //     title: "settings", color: Colors.white, onPressed: () {}),
+            StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .snapshots(),
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  var setting = snapshot.data;
+                  bool chatNotif = setting.data()["getChatNotifications"];
+                  bool requestNotif = setting.data()["getRequestNotifications"];
+                  bool showPhone = setting.data()["showPhone"];
 
-                return Column(
-                  children: [
-                    SwitchListTile.adaptive(
-                        title: Text('Receive Chat Notifications'),
-                        activeColor: kPrimaryColor,
-                        secondary: const Icon(
-                          Icons.notifications,
-                          color: kPrimaryColor,
-                        ),
-                        value: chatNotif,
-                        onChanged: (bool value) async {
-                          chatNotif = !chatNotif;
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(uid)
-                              .update({"getChatNotifications": chatNotif});
-                        }),
-                    SwitchListTile.adaptive(
-                        title: Text('Receive Request Notifications'),
-                        activeColor: kPrimaryColor,
-                        secondary: const Icon(
-                          Icons.notifications,
-                          color: kPrimaryColor,
-                        ),
-                        value: requestNotif,
-                        onChanged: (bool value) async {
-                          chatNotif = !chatNotif;
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(uid)
-                              .update({"getRequestNotifications": chatNotif});
-                        }),
-                    SwitchListTile.adaptive(
-                        title: Text('Show phone number in profile'),
-                        activeColor: kPrimaryColor,
-                        secondary: const Icon(
-                          Icons.phone,
-                          color: kPrimaryColor,
-                        ),
-                        value: showPhone,
-                        onChanged: (bool value) async {
-                          showPhone = !showPhone;
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(uid)
-                              .update({"showPhone": showPhone});
-                        }),
-                  ],
-                );
-              }),
-        ],
+                  return Column(
+                    children: [
+                      SwitchListTile.adaptive(
+                          title: Text('Receive Chat Notifications'),
+                          activeColor: kPrimaryColor,
+                          secondary: const Icon(
+                            Icons.notifications,
+                            color: kPrimaryColor,
+                          ),
+                          value: chatNotif,
+                          onChanged: (bool value) async {
+                            chatNotif = !chatNotif;
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .update({"getChatNotifications": chatNotif});
+                          }),
+                      SwitchListTile.adaptive(
+                          title: Text('Receive Request Notifications'),
+                          activeColor: kPrimaryColor,
+                          secondary: const Icon(
+                            Icons.notifications,
+                            color: kPrimaryColor,
+                          ),
+                          value: requestNotif,
+                          onChanged: (bool value) async {
+                            chatNotif = !chatNotif;
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .update(
+                                    {"getRequestNotifications": requestNotif});
+                          }),
+                      SwitchListTile.adaptive(
+                          title: Text('Show phone number in profile'),
+                          activeColor: kPrimaryColor,
+                          secondary: const Icon(
+                            Icons.phone,
+                            color: kPrimaryColor,
+                          ),
+                          value: showPhone,
+                          onChanged: (bool value) async {
+                            showPhone = !showPhone;
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .update({"showPhone": showPhone});
+                          }),
+                    ],
+                  );
+                }),
+          ],
+        ),
       ),
     );
   }

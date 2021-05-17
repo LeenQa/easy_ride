@@ -5,6 +5,7 @@ import 'package:easy_ride/Screens/Login/login_screen.dart';
 import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/Settings/settings_screen.dart';
+import 'package:easy_ride/Screens/User_Reports/user_reports.dart';
 import 'package:easy_ride/Screens/User_Rides/user_rides_screen.dart';
 import 'package:easy_ride/Screens/User_Search/user_search_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
@@ -15,7 +16,6 @@ import 'package:easy_ride/models/searched_ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../main.dart';
 
 class MainDrawer extends StatefulWidget {
   @override
@@ -304,6 +304,7 @@ class _MainDrawerState extends State<MainDrawer> {
                               .get();
                           Navigator.of(context)
                               .pushNamed(ProfileScreen.routeName, arguments: {
+                            'id': uid,
                             'name':
                                 "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
                             'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
@@ -407,6 +408,10 @@ class _MainDrawerState extends State<MainDrawer> {
                 // Divider(
                 //   thickness: 1,
                 // ),
+                buildListTile(context, Icons.logout, () {
+                  Navigator.of(context).pushNamed(UserReportsScreen.routeName);
+                }, getTitle(title: 'User Reports')),
+
                 buildListTile(context, Icons.logout, () async {
                   await FirebaseFirestore.instance
                       .collection('users')

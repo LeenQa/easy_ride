@@ -2,13 +2,16 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
+import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
 
@@ -25,6 +28,89 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
   String _uploadedFileURL;
   TextEditingController _textFieldController = TextEditingController();
   TextEditingController _textFieldController2 = TextEditingController();
+  final _formKeyPhone = GlobalKey<FormState>();
+  final _formKeyName = GlobalKey<FormState>();
+  final _formKeyPassword = GlobalKey<FormState>();
+  String currValidatorResponse = null;
+  String newValidatorResponse = null;
+
+  String valid() {
+    Map args = ModalRoute.of(context).settings.arguments;
+    if (_textFieldController.text.trim() == "" ||
+        _textFieldController.text == null ||
+        _textFieldController2.text.trim() == "" ||
+        _textFieldController2.text == null) {
+      return "please provide a value";
+    } else
+      return null;
+  }
+
+  Future<String> validPass() async {
+    Map args = ModalRoute.of(context).settings.arguments;
+    if (_textFieldController.text.trim() == "" ||
+        _textFieldController.text == null ||
+        _textFieldController2.text.trim() == "" ||
+        _textFieldController2.text == null) {
+      if (_textFieldController.text.trim() == "" ||
+          _textFieldController.text == null) {
+        setState(() {
+          currValidatorResponse = "please provide a value";
+        });
+      }
+      if (_textFieldController2.text.trim() == "" ||
+          _textFieldController2.text == null) {
+        setState(() {
+          newValidatorResponse = "please provide a value";
+        });
+      }
+    } else {
+      String valid =
+          FieldValidation.validatePassword(_textFieldController2.text, context);
+      if (valid == null) {
+        var message;
+        var user = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(args["id"])
+            .get();
+        String email = user.data()["email"];
+        try {
+          final curruser = (await FirebaseAuth.instance
+                  .signInWithEmailAndPassword(
+                      email: email, password: _textFieldController.text))
+              .user;
+
+          await curruser.updatePassword(_textFieldController2.text);
+          message = 'true';
+        } on PlatformException catch (err) {
+          message = 'An error occurred, pelase check your credentials!';
+          if (err.message != null) {
+            message = err.message;
+          }
+        } on FirebaseException catch (err) {
+          message = err.code;
+        }
+        if (message == 'wrong-password') {
+          setState(() {
+            currValidatorResponse =
+                'make sure to write the current password correctly';
+          });
+        } else if (message == 'true') {
+          setState(() {
+            currValidatorResponse = null;
+            newValidatorResponse = null;
+          });
+        } else {
+          setState(() {
+            newValidatorResponse = message;
+          });
+        }
+      } else
+        setState(() {
+          newValidatorResponse =
+              "Make sure your password contains numbers, special characters & capital letter";
+        });
+    }
+  }
 
   Future<void> _changePhoneDialog(BuildContext context, String text) async {
     Map args = ModalRoute.of(context).settings.arguments;
@@ -33,8 +119,22 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
       builder: (context) {
         return AlertDialog(
           title: getTitle(title: text),
-          content: TextField(
-            controller: _textFieldController,
+          content: Form(
+            key: _formKeyPhone,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    controller: _textFieldController,
+                    validator: (value) {
+                      return valid();
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
           actions: <Widget>[
             FlatButton(
@@ -45,25 +145,84 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
               },
             ),
             FlatButton(
+                child: getTitle(title: 'Change', color: kPrimaryColor),
+                onPressed: () async {
+                  final isValid = _formKeyPhone.currentState.validate();
+                  if (isValid) {
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(args["id"])
+                        .update({"phone": _textFieldController.text});
+                    _textFieldController.text = "";
+                    Navigator.pop(context);
+                  }
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _changeNameDialog(BuildContext context, String text) async {
+    Map args = ModalRoute.of(context).settings.arguments;
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: getTitle(title: text),
+          content: Container(
+            height: 150,
+            child: Form(
+              key: _formKeyName,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        return valid();
+                      },
+                      controller: _textFieldController,
+                      decoration: InputDecoration(hintText: "first name"),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        return valid();
+                      },
+                      controller: _textFieldController2,
+                      decoration: InputDecoration(hintText: "last name"),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: getTitle(title: 'Cancel', color: kPrimaryColor),
+              onPressed: () {
+                _textFieldController.text = "";
+                _textFieldController2.text = "";
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
               child: getTitle(title: 'Change', color: kPrimaryColor),
               onPressed: () async {
-                if (_textFieldController.text.trim() != "" &&
-                    _textFieldController.text != null) {
-                  if (text.toLowerCase().contains("phone")) {
-                    var phone = int.tryParse(_textFieldController.text);
-                    if (phone == null) {
-                      print("NAN");
-                    } else {
-                      await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(args["id"])
-                          .update({"phone": _textFieldController.text});
-                      _textFieldController.text = "";
-                      Navigator.pop(context);
-                    }
-                  }
-                } else
-                  print("please provide a value");
+                final isValid = _formKeyName.currentState.validate();
+                if (isValid) {
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(args["id"])
+                      .update({"firstName": _textFieldController.text});
+                  _textFieldController.text = "";
+                  Navigator.pop(context);
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(args["id"])
+                      .update({"lastName": _textFieldController2.text});
+                  _textFieldController2.text = "";
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -72,91 +231,66 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     );
   }
 
-  Future<void> _changeNameOrPassDialog(
-      BuildContext context, String text, bool pass) async {
+  Future<void> _currPass(BuildContext context, String text) async {
     Map args = ModalRoute.of(context).settings.arguments;
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: getTitle(title: text),
-          content: pass
-              ? Container(
-                  height: 100,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _textFieldController,
-                        decoration:
-                            InputDecoration(hintText: "current password"),
-                      ),
-                      TextField(
-                        controller: _textFieldController2,
-                        decoration: InputDecoration(hintText: "new password"),
-                      )
-                    ],
-                  ),
-                )
-              : Container(
-                  height: 100,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _textFieldController,
-                        decoration: InputDecoration(hintText: "first name"),
-                      ),
-                      TextField(
-                        controller: _textFieldController2,
-                        decoration: InputDecoration(hintText: "last name"),
-                      )
-                    ],
-                  ),
+          content: Container(
+            height: 150,
+            child: Form(
+              key: _formKeyPassword,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        return currValidatorResponse;
+                      },
+                      controller: _textFieldController,
+                      decoration: InputDecoration(
+                          hintText: "write your current password"),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        return newValidatorResponse;
+                      },
+                      controller: _textFieldController2,
+                      decoration:
+                          InputDecoration(hintText: "write a new password"),
+                    ),
+                  ],
                 ),
+              ),
+            ),
+          ),
           actions: <Widget>[
             FlatButton(
               child: getTitle(title: 'Cancel', color: kPrimaryColor),
               onPressed: () {
                 _textFieldController.text = "";
+                _textFieldController2.text = "";
+                currValidatorResponse = null;
+                newValidatorResponse = null;
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-              child: getTitle(title: 'Change', color: kPrimaryColor),
-              onPressed: () async {
-                if (_textFieldController.text.trim() != "" &&
-                    _textFieldController.text != null &&
-                    _textFieldController2.text.trim() != "" &&
-                    _textFieldController2.text != null) {
-                  if (text.toLowerCase().contains("password")) {
-                    String valid = FieldValidation.validatePassword(
-                        _textFieldController.text, context);
-                    if (valid == null) {
-                      final auth = FirebaseAuth.instance.currentUser;
-
-                      auth.updatePassword(_textFieldController.text);
-                      _textFieldController.text = "";
-                      Navigator.pop(context);
-                    } else {
-                      print(valid);
-                    }
-                  } else if (text.toLowerCase().contains("name")) {
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(args["id"])
-                        .update({"firstName": _textFieldController.text});
+                child: getTitle(title: 'Ok', color: kPrimaryColor),
+                onPressed: () async {
+                  validPass();
+                  final isValid = _formKeyPassword.currentState.validate();
+                  if (isValid) {
+                    ReturnMessage.success(context, 'password updated');
                     _textFieldController.text = "";
-                    Navigator.pop(context);
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(args["id"])
-                        .update({"lastName": _textFieldController2.text});
                     _textFieldController2.text = "";
+                    currValidatorResponse = null;
+                    newValidatorResponse = null;
                     Navigator.pop(context);
                   }
-                } else
-                  print("please provide a value");
-              },
-            ),
+                }),
           ],
         );
       },
@@ -185,42 +319,27 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                 onPressed: () {
                   _showSelectionDialog();
                 },
-
-                //   child: Container(
-                //     height: 150,
-                //     width: 150,
-                //     child: _image == null
-                //         ? Image.asset(
-                //             'assets/images/user.png') // set a placeholder image when no photo is set
-                //         : Image.file(_image),
-                //   ),
-                // ),
-                // SizedBox(height: 50),
                 title: 'Change profile photo',
+                color: Colors.white,
               ),
               SizedBox(height: 20),
               CustomElevatedButton(
                 title: "Change full name",
-                onPressed: () =>
-                    _changeNameOrPassDialog(context, "type a new name", false),
+                color: Colors.white,
+                onPressed: () => _changeNameDialog(context, "type a new name"),
               ),
               SizedBox(height: 20),
-              // CustomElevatedButton(
-              //   title: "Change last name",
-              //   onPressed: () =>
-              //       _displayTextInputDialog(context, "type a new last name"),
-              // ),
-              // SizedBox(height: 20),
               CustomElevatedButton(
                 title: "Change phone number",
+                color: Colors.white,
                 onPressed: () =>
                     _changePhoneDialog(context, "type a new phone number"),
               ),
               SizedBox(height: 20),
               CustomElevatedButton(
                 title: "Change password",
-                onPressed: () => _changeNameOrPassDialog(
-                    context, "type a new password", true),
+                color: Colors.white,
+                onPressed: () => _currPass(context, "type a new password"),
               ),
               SizedBox(height: 20),
             ],
@@ -230,7 +349,6 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     );
   }
 
-  /// Method for sending a selected or taken photo to the EditPage
   Future selectOrTakePhoto(ImageSource imageSource) async {
     final pickedFile = await picker.getImage(source: imageSource);
     Map args = ModalRoute.of(context).settings.arguments;
@@ -262,7 +380,6 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     });
   }
 
-  /// Selection dialog that prompts the user to select an existing photo or take a new one
   Future _showSelectionDialog() async {
     await showDialog(
       builder: (context) => SimpleDialog(

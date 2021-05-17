@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class CustomContainer extends StatelessWidget {
   final Widget child;
+  final Color boxShadowColor;
+  final EdgeInsetsGeometry padding;
 
   const CustomContainer({
     Key key,
     this.child,
+    this.boxShadowColor,
+    this.padding,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,9 @@ class CustomContainer extends StatelessWidget {
             //border: Border.all(color: kAccentColor, width: 2),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
+                color: boxShadowColor == null
+                    ? Colors.grey.withOpacity(0.2)
+                    : boxShadowColor,
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: Offset(0, 3), // changes position of shadow
@@ -29,7 +35,7 @@ class CustomContainer extends StatelessWidget {
             ],
           ),
           margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          padding: const EdgeInsets.all(10.0),
+          padding: padding == null ? const EdgeInsets.all(10.0) : padding,
           child: child,
         ),
       ],
