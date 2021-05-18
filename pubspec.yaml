@@ -49,6 +49,7 @@ dependencies:
   firebase_messaging: ^9.1.2
   flutter_local_notifications: ^5.0.0
   onesignal_flutter: ^3.0.0-beta3
+  flutter_credit_card: ^2.0.0
   
 dev_dependencies:
   flutter_test:

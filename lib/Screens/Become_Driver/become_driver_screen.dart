@@ -8,6 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
+import 'package:flutter/services.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as Path;
@@ -86,98 +90,121 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
   }
 
   Future uploadFile() async {
-    int count = 0;
-    List<String> pictures = [];
-    String _uploadedImage;
-    bool successful = false;
-    final isValid = _formKey.currentState.validate();
-    FocusScope.of(context).unfocus();
-    if (isValid) {
-      _formKey.currentState.save();
-      print("carmodel: $_carModel");
-      print("entered here");
-      _image.forEach((key, value) async {
-        Reference storageReference;
-        switch (key) {
-          case Picture.DriverLicense:
-            storageReference = FirebaseStorage.instance.ref().child(
-                'becomeadriver/driverlicence/${Path.basename(value.path)}}');
-            break;
-          case Picture.CarLicense:
-            storageReference = FirebaseStorage.instance.ref().child(
-                'becomeadriver/carlicense/${Path.basename(value.path)}}');
-            break;
-          case Picture.CarInsurance:
-            storageReference = FirebaseStorage.instance.ref().child(
-                'becomeadriver/carinsurance/${Path.basename(value.path)}}');
-            break;
-          case Picture.DriverIdentity:
-            storageReference = FirebaseStorage.instance.ref().child(
-                'becomeadriver/driveridentity/${Path.basename(value.path)}}');
-            break;
-          case Picture.Car:
-            storageReference = FirebaseStorage.instance
-                .ref()
-                .child('becomeadriver/car/${Path.basename(value.path)}}');
-            break;
-          default:
-            storageReference = FirebaseStorage.instance
-                .ref()
-                .child('becomeadriver/${Path.basename(value.path)}}');
-        }
+    if (formKey.currentState.validate()) {
+      int count = 0;
+      List<String> pictures = [];
+      String _uploadedImage;
+      bool successful = false;
+      final isValid = _formKey.currentState.validate();
+      FocusScope.of(context).unfocus();
+      if (isValid) {
+        _formKey.currentState.save();
+        print("carmodel: $_carModel");
+        print("entered here");
+        _image.forEach((key, value) async {
+          Reference storageReference;
+          switch (key) {
+            case Picture.DriverLicense:
+              storageReference = FirebaseStorage.instance.ref().child(
+                  'becomeadriver/driverlicence/${Path.basename(value.path)}}');
+              break;
+            case Picture.CarLicense:
+              storageReference = FirebaseStorage.instance.ref().child(
+                  'becomeadriver/carlicense/${Path.basename(value.path)}}');
+              break;
+            case Picture.CarInsurance:
+              storageReference = FirebaseStorage.instance.ref().child(
+                  'becomeadriver/carinsurance/${Path.basename(value.path)}}');
+              break;
+            case Picture.DriverIdentity:
+              storageReference = FirebaseStorage.instance.ref().child(
+                  'becomeadriver/driveridentity/${Path.basename(value.path)}}');
+              break;
+            case Picture.Car:
+              storageReference = FirebaseStorage.instance
+                  .ref()
+                  .child('becomeadriver/car/${Path.basename(value.path)}}');
+              break;
+            default:
+              storageReference = FirebaseStorage.instance
+                  .ref()
+                  .child('becomeadriver/${Path.basename(value.path)}}');
+          }
 
-        UploadTask uploadTask = storageReference.putFile(File(value.path));
-        await uploadTask.whenComplete(() {
-          print('File Uploaded');
-          storageReference.getDownloadURL().then((fileURL) async {
-            _uploadedFileURL = fileURL;
-            _uploadedImage = fileURL;
-            pictures.add(_uploadedFileURL);
-            var firstname = await FirebaseFirestore.instance
-                .collection('users')
-                .doc(uid)
-                .get()
-                .then((value) => value.data()['firstName']);
-            var lastname = await FirebaseFirestore.instance
-                .collection('users')
-                .doc(uid)
-                .get()
-                .then((value) => value.data()['lastName']);
-            await FirebaseFirestore.instance
-                .collection('driver_requests')
-                .doc(uid)
-                .set({
-              'userId': user.uid,
-              'firstName': firstname,
-              'lastName': lastname,
-              'userEmail': user.email,
-              'pictures': pictures,
-              'carModel': _carModel,
-            }).then((value) {
-              count++;
-              if (count == 4) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Your request is sent successfully')));
-                setState(() {
-                  _image.clear();
-                  _textFieldController.clear();
-                  _textFieldController2.clear();
-                  _textFieldController3.clear();
-                  _textFieldController4.clear();
+          UploadTask uploadTask = storageReference.putFile(File(value.path));
+          await uploadTask.whenComplete(() {
+            print('File Uploaded');
+            storageReference.getDownloadURL().then((fileURL) async {
+              _uploadedFileURL = fileURL;
+              _uploadedImage = fileURL;
+              pictures.add(_uploadedFileURL);
+              String firstName = "";
+              String lastName = "";
+              String urlAvatar = "";
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uid)
+                  .get()
+                  .then((value) {
+                firstName = value.data()['firstName'];
+                lastName = value.data()['lastName'];
+                urlAvatar = value.data()['urlAvatar'];
+              }).then((_) async {
+                await FirebaseFirestore.instance
+                    .collection('driver_requests')
+                    .doc(uid)
+                    .set({
+                  'userId': user.uid,
+                  'firstName': firstName,
+                  'lastName': lastName,
+                  'userEmail': user.email,
+                  'pictures': pictures,
+                  'carModel': _carModel,
+                  'urlAvatar': urlAvatar,
+                }).then((value) {
+                  count++;
+                  if (count == 4) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Your request is sent successfully')));
+                    setState(() {
+                      _image.clear();
+                      _textFieldController.clear();
+                      _textFieldController2.clear();
+                      _textFieldController3.clear();
+                      _textFieldController4.clear();
+                    });
+                  } else if (count == 1) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.orange,
+                      content: Text('Please wait'),
+                      duration: Duration(seconds: 3),
+                    ));
+                  }
                 });
-              } else if (count == 1) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.orange,
-                  content: Text('Please wait'),
-                  duration: Duration(seconds: 3),
-                ));
-              }
+              });
             });
           });
         });
-      });
+      }
     }
+  }
+
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void onCreditCardModelChange(CreditCardModel creditCardModel) {
+    setState(() {
+      cardNumber = creditCardModel.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
+    });
   }
 
   @override
@@ -205,7 +232,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       getTitle(
                           title: 'Upload a picture of your driving license',
                           fontSize: 15),
@@ -285,7 +312,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                         backgroundColor: kPrimaryColor,
                       ),
                       Container(height: 20),
-
                       RoundedInputField(
                         controller: _textFieldController,
                         hintText: "What's your car model",
@@ -297,112 +323,65 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                       Container(height: 20),
                       getTitle(
                           title: 'Fill your payment information', fontSize: 15),
-                      RoundedInputField(
-                        controller: _textFieldController2,
-                        hintText: "Enter the cardholder name",
-                        icon: Icons.car_repair,
-                        onSaved: (value) {},
+                      CreditCardWidget(
+                        cardNumber: cardNumber,
+                        expiryDate: expiryDate,
+                        cardHolderName: cardHolderName,
+                        cvvCode: cvvCode,
+                        showBackView: isCvvFocused,
+                        obscureCardNumber: true,
+                        obscureCardCvv: true,
+                        cardBgColor: kPrimaryColor,
+                        cardType: CardType.visa,
                       ),
-                      RoundedInputField(
-                        controller: _textFieldController3,
-                        hintText: "Enter the card number",
-                        icon: Icons.car_repair,
-                        onSaved: (value) {},
-                      ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.date_range, color: kPrimaryColor),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                TextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 0)),
-                                      textStyle: MaterialStateProperty.all(
-                                          TextStyle(fontSize: 30))),
-                                  onPressed: _presentDatePicker,
-                                  child: getTitle(
-                                      title: "Choose card's expiry date",
-                                      color: Colors.grey[700],
-                                      fontSize: 14),
-                                ),
-                              ],
+                      Column(
+                        children: [
+                          CreditCardForm(
+                            cvvValidationMessage: "helllllo",
+                            formKey: formKey,
+                            obscureCvv: true,
+                            obscureNumber: true,
+                            cardNumber: cardNumber,
+                            cvvCode: cvvCode,
+                            cardHolderName: cardHolderName,
+                            expiryDate: expiryDate,
+                            themeColor: kPrimaryColor,
+                            cardNumberDecoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Number',
+                              hintText: 'XXXX XXXX XXXX XXXX',
                             ),
-                            Expanded(
-                              child: Text(_selectedDate == null
-                                  ? ''
-                                  : DateFormat('\'Picked date: \' EEE, MMM d')
-                                      .format(_selectedDate)),
+                            expiryDateDecoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Expired Date',
+                              hintText: 'XX/XX',
                             ),
-                          ],
-                        ),
-                      ),
-                      DropdownButton(
-                        dropdownColor: Colors.white,
-                        style: TextStyle(
-                          fontFamily: "Quicksand",
-                          fontWeight: FontWeight.w500,
-                        ),
-                        icon: Icon(
-                          Icons.payment,
-                          color: kPrimaryColor,
-                        ),
-                        hint: getTitle(
-                          title: "Select Payment Method",
-                        ),
-                        value: chosenMethod,
-                        onChanged: (String value) {
-                          setState(() {
-                            chosenMethod = value;
-                          });
-                        },
-                        items: paymentMethods.map((String method) {
-                          return DropdownMenuItem<String>(
-                            value: method,
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  method,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
+                            cvvCodeDecoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'CVV',
+                              hintText: 'XXX',
                             ),
-                          );
-                        }).toList(),
+                            cardHolderDecoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Card Holder',
+                            ),
+                            onCreditCardModelChange: onCreditCardModelChange,
+                          ),
+                        ],
                       ),
-                      RoundedInputField(
-                        controller: _textFieldController4,
-                        hintText: "Enter the CVV",
-                        icon: Icons.car_repair,
-                        onSaved: (value) {},
-                      ),
-                      // _image != null
-                      //     ? RaisedButton(
-                      //         child: Text('Clear Selection'),
-                      //         //onPressed: (clearSelection),
-                      //       )
-                      //     : Container(height: 20),
-                      // Text('Uploaded Image'),
-                      // _uploadedFileURL != null
-                      //     ? Image.network(
-                      //         _uploadedFileURL,
-                      //         height: 150,
-                      //       )
-                      //     : Container(),
                       Center(
                         child: CustomElevatedButton(
                           title: 'Send Request',
-                          onPressed:
-                              _image.containsValue(null) ? null : uploadFile,
+                          onPressed: _image.containsValue(null)
+                              ? () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          backgroundColor:
+                                              Theme.of(context).errorColor,
+                                          content: Text(
+                                              'Upload all the required documents!')));
+                                }
+                              : uploadFile,
                           backgroundColor: kPrimaryColor,
                         ),
                       )

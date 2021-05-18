@@ -1,3 +1,5 @@
+import 'package:easy_ride/Assistants/assistantMethods.dart';
+import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:full_screen_image/full_screen_image.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class AdminPanelScreen extends StatefulWidget {
   static const routeName = "/admin_panel";
@@ -52,9 +55,27 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // getTitle(
-                                //     title: "User: ${document['user']}",
-                                //     fontSize: 14),
+                                GestureDetector(
+                                  onTap: () {
+                                    print(document.id);
+                                    Navigator.of(context).pushNamed(
+                                        ProfileScreen.routeName,
+                                        arguments: {
+                                          'id': document.id,
+                                          'name':
+                                              "${document['firstName']} ${document['lastName']}",
+                                          'urlAvatar':
+                                              "${document['urlAvatar']}",
+                                          'isMe': false,
+                                          'isDriver': false
+                                        });
+                                  },
+                                  child: getTitle(
+                                      title:
+                                          "User: ${document['firstName']} ${document['lastName']}",
+                                      fontSize: 17,
+                                      decoration: TextDecoration.underline),
+                                ),
                                 getTitle(
                                     title: "Car Model: ${document['carModel']}",
                                     fontSize: 14),
@@ -86,18 +107,39 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     CustomElevatedButton(
-                                      title: "Reject",
-                                      backgroundColor: kPrimaryColor,
-                                      color: Colors.white,
-                                      onPressed: () async {
-                                        await FirebaseFirestore.instance
-                                            .collection("driver_requests")
-                                            .doc(document.id)
-                                            .delete()
-                                            .whenComplete(
-                                                () => print("deleted!"));
-                                      },
-                                    ),
+                                        title: "Reject",
+                                        backgroundColor: kPrimaryColor,
+                                        color: Colors.white,
+                                        onPressed: () async {
+                                          String token = "";
+                                          await FirebaseFirestore.instance
+                                              .collection("driver_requests")
+                                              .doc(document.id)
+                                              .delete()
+                                              .whenComplete(
+                                                  () => print("deleted!"));
+                                          await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(document.id)
+                                              .get()
+                                              .then((value) {
+                                            token = value.data()['token'];
+                                          });
+
+                                          if (token != '') {
+                                            print(token);
+                                            OneSignal.shared
+                                                .setNotificationWillShowInForegroundHandler(
+                                                    (OSNotificationReceivedEvent
+                                                        event) {
+                                              event.complete(null);
+                                            });
+                                            AssistantMethods.sendNotification([
+                                              token
+                                            ], "Your request for becoming a driver had been rejected!",
+                                                "", "");
+                                          }
+                                        }),
                                     CustomElevatedButton(
                                       title: "Accept",
                                       backgroundColor: kPrimaryColor,
@@ -111,6 +153,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                           'carModel': document['carModel'],
                                           'pictures': document['pictures'],
                                         }).then((value) async {
+                                          String token = "";
                                           await FirebaseFirestore.instance
                                               .collection('users')
                                               .doc(document.id)
@@ -123,6 +166,27 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                               .delete()
                                               .whenComplete(
                                                   () => print("deleted!"));
+                                          await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(document.id)
+                                              .get()
+                                              .then((value) {
+                                            token = value.data()['token'];
+                                          });
+
+                                          if (token != '') {
+                                            print(token);
+                                            OneSignal.shared
+                                                .setNotificationWillShowInForegroundHandler(
+                                                    (OSNotificationReceivedEvent
+                                                        event) {
+                                              event.complete(null);
+                                            });
+                                            AssistantMethods.sendNotification([
+                                              token
+                                            ], "Your request for becoming a driver had been accepted!",
+                                                "", "");
+                                          }
                                         });
                                       },
                                     )
