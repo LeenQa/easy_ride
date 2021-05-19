@@ -502,12 +502,13 @@ class _MulticityInputState extends State<MulticityInput> {
                     Icons.note,
                     color: Colors.white,
                   ),
-                  getTitle(title: "Tip", color: Colors.white, fontSize: 16),
+                  getTitle(
+                      title: "Reminder", color: Colors.white, fontSize: 16),
                 ],
               ),
               getTitle(
                   title:
-                      "If there are no results for your search you can press (notify me) to get a nontification.",
+                      "Don't forget to review the driver after the ride is finished!",
                   color: Colors.white,
                   fontSize: 14),
             ],

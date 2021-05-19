@@ -129,7 +129,10 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                     keyboardType: TextInputType.phone,
                     controller: _textFieldController,
                     validator: (value) {
-                      return valid();
+                      if (value == null) {
+                        return "please provide a value";
+                      } else
+                        return null;
                     },
                   ),
                 ],
@@ -179,14 +182,21 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                   children: [
                     TextFormField(
                       validator: (value) {
-                        return valid();
+                        if (value == null) {
+                          return "please provide a value";
+                        } else
+                          return null;
                       },
                       controller: _textFieldController,
                       decoration: InputDecoration(hintText: "first name"),
                     ),
                     TextFormField(
                       validator: (value) {
-                        return valid();
+                        if (value == null) {
+                          return "please provide a value";
+                        } else
+                          return null;
+                        ;
                       },
                       controller: _textFieldController2,
                       decoration: InputDecoration(hintText: "last name"),
