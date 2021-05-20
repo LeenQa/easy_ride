@@ -4,7 +4,6 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
-
 import '../../constants.dart';
 
 class UserSearchScreen extends StatefulWidget {
@@ -47,7 +46,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
             children: [
               RoundedInputField(
                 icon: Icons.search,
-                hintText: "type user's name",
+                hintText: getTranslated(context, "typeusername"),
                 onChanged: (String srchquery) {
                   setState(() {
                     this.query = srchquery;
@@ -59,14 +58,16 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                   stream: getUserList(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError)
-                      return new Text('Error: ${snapshot.error}');
+                      return new Text(
+                          '${getTranslated(context, "error")}: ${snapshot.error}');
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         return Center(
                           child: Column(
                             children: <Widget>[
                               CircularProgressIndicator(),
-                              Text('Loading'),
+                              getTitle(
+                                  title: getTranslated(context, "loading")),
                             ],
                           ),
                         );

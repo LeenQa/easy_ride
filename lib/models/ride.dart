@@ -1,4 +1,3 @@
-import 'package:easy_ride/models/searched_ride.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

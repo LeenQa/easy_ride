@@ -7,7 +7,6 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/address.dart';
-import 'package:easy_ride/models/direction_details.dart';
 import 'package:easy_ride/text_style.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -179,12 +178,13 @@ class _MapScreenState extends State<MapScreen> {
                       distance == null
                           ? Container()
                           : Text(
-                              "Distance between the two places: $distance km",
+                              "${getTranslated(context, "placesdistance")}: $distance ${getTranslated(context, "km")}",
                               style: blueSubHeadingTextStyle),
                       SizedBox(height: 4),
                       price == null
                           ? Container()
-                          : Text("Estimated cost: $price NIS",
+                          : Text(
+                              "${getTranslated(context, "cost")}: $price ${getTranslated(context, "nis")}",
                               style: blueSubHeadingTextStyle),
                       SizedBox(height: 10),
                       getTitle(

@@ -19,7 +19,7 @@ import 'package:easy_ride/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'Screens/Driver_Rides/driver_rides.dart';
-import 'Screens/Edit_Profile_Screen/edit_profile_screen.dart';
+import 'Screens/Edit_Profile/edit_profile_screen.dart';
 import 'Screens/Map/map_screen.dart';
 import 'Screens/Rides_List/rides_list.dart';
 import 'Screens/Signup/signup_screen.dart';

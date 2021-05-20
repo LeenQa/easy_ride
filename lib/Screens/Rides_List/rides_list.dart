@@ -3,14 +3,12 @@ import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/ride.dart';
-import 'package:easy_ride/models/searched_ride.dart';
 import 'package:easy_ride/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'ride_details.dart';
 
 class RidesList extends StatefulWidget {
@@ -117,11 +115,11 @@ class _RidesListState extends State<RidesList> {
                         ),
                         title: getTitle(
                             title:
-                                "From ${rides[index].startLocation}, To ${rides[index].arrivalLocation}",
+                                "${getTranslated(context, "from")} ${rides[index].startLocation}, ${getTranslated(context, "to")} ${rides[index].arrivalLocation}",
                             color: Colors.brown[500],
                             fontSize: 14),
                         subtitle: Text(
-                          "Number of seats left: ${rides[index].numOfPassengers}",
+                          "${getTranslated(context, "numofseats")}: ${rides[index].numOfPassengers}",
                           style:
                               TextStyle(color: Colors.blueGrey, fontSize: 12),
                         ),
@@ -146,7 +144,9 @@ class _RidesListState extends State<RidesList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rides List")),
+      appBar: AppBar(
+          title: getTitle(
+              title: getTranslated(context, "rideslist"), fontSize: 21)),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -155,7 +155,8 @@ class _RidesListState extends State<RidesList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ridesList(context, exactRides, "Rides Found"),
+                    ridesList(context, exactRides,
+                        getTranslated(context, "rideresults")),
                   ],
                 ),
               ),
@@ -167,7 +168,8 @@ class _RidesListState extends State<RidesList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ridesList(context, otherRides, "Other Rides Found"),
+                          ridesList(context, otherRides,
+                              getTranslated(context, "otherridesresults")),
                         ],
                       ),
                     ),

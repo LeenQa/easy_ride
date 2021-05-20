@@ -8,10 +8,7 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/ride.dart';
-import 'package:easy_ride/models/searched_ride.dart';
-import 'package:easy_ride/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../constants.dart';
@@ -54,19 +51,19 @@ class RideDetails extends StatelessWidget {
                   ),
                   title: getTitle(
                       title:
-                          "From ${ride.startLocation}, \nTo ${ride.arrivalLocation}",
+                          "${getTranslated(context, "from")} ${ride.startLocation}, \n${getTranslated(context, "to")} ${ride.arrivalLocation}",
                       color: Colors.brown[500],
                       fontSize: 16),
                   subtitle: Padding(
                       padding: const EdgeInsets.only(top: 12),
                       child: ride.stopOvers.length == 0
                           ? Text(
-                              "Number of seats left: ${ride.numOfPassengers}\n\nDate: ${ride.date}\n\nTime: ${ride.startTime}",
+                              "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers}\n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}",
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 14),
                             )
                           : Text(
-                              "Number of seats left: ${ride.numOfPassengers} \n\nDate: ${ride.date}\n\nTime: ${ride.startTime}\n\nStopovers: \n${ride.stopOvers.where((item) => item.contains('')).join('\n')}",
+                              "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers} \n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}\n\n${getTranslated(context, "stopovers")} \n${ride.stopOvers.where((item) => item.contains('')).join('\n')}",
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 14),
                             )),
@@ -107,7 +104,7 @@ class RideDetails extends StatelessWidget {
                     },
                     child: getTitle(
                         title:
-                            "Driver: ${driver.user.firstName} ${driver.user.lastName}",
+                            "${getTranslated(context, "driver")}: ${driver.user.firstName} ${driver.user.lastName}",
                         color: Colors.brown[500],
                         fontSize: 16,
                         decoration: TextDecoration.underline),
@@ -117,13 +114,13 @@ class RideDetails extends StatelessWidget {
                     child: ride.description == null
                         ? Text(
                             //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
-                            "Car Model: ${driver.carModel}",
+                            "${getTranslated(context, "carmodel")}: ${driver.carModel}",
                             style:
                                 TextStyle(color: Colors.blueGrey, fontSize: 14),
                           )
                         : Text(
                             //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
-                            "Car Model: ${driver.carModel}\n\nAdditional info: ${ride.description}",
+                            "${getTranslated(context, "carmodel")}: ${driver.carModel}\n\n${getTranslated(context, "additionalinfo")}: ${ride.description}",
                             style:
                                 TextStyle(color: Colors.blueGrey, fontSize: 14),
                           ),
@@ -137,20 +134,25 @@ class RideDetails extends StatelessWidget {
                     searchedRide.currentUser == ride.driver
                         ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Theme.of(context).errorColor,
-                            content: Text("You can't request your own rides")))
+                            content: getTitle(
+                                title: getTranslated(context, "ownrideerror"))))
                         : await showDialog(
                             context: context,
                             builder: (context) => new AlertDialog(
-                              title: new Text('Confirmation!'),
-                              content: Text(
-                                  'Are you sure you want to request this ride?'),
+                              title: getTitle(
+                                  title:
+                                      getTranslated(context, "confirmation")),
+                              content: getTitle(
+                                  title: getTranslated(
+                                      context, "riderequestconf")),
                               actions: [
                                 new TextButton(
                                   onPressed: () {
                                     Navigator.of(context, rootNavigator: true)
                                         .pop(); // dismisses only the dialog and returns nothing
                                   },
-                                  child: new Text('Cancel'),
+                                  child: getTitle(
+                                      title: getTranslated(context, "cancel")),
                                 ),
                                 new TextButton(
                                   onPressed: () async {
@@ -220,11 +222,15 @@ class RideDetails extends StatelessWidget {
                                                     value.data()['lastName'];
                                                 urlAvatar =
                                                     value.data()['urlAvatar'];
-                                                AssistantMethods.sendNotification(
-                                                    [token],
-                                                    "I sent you a ride request!",
-                                                    firstName + " " + lastName,
-                                                    urlAvatar);
+                                                AssistantMethods
+                                                    .sendNotification(
+                                                        [token],
+                                                        getTranslated(context,
+                                                            "riderequestsent"),
+                                                        firstName +
+                                                            " " +
+                                                            lastName,
+                                                        urlAvatar);
                                               });
                                             }
                                           }
@@ -235,8 +241,9 @@ class RideDetails extends StatelessWidget {
                                               .showSnackBar(
                                             SnackBar(
                                               backgroundColor: Colors.green,
-                                              content: Text(
-                                                  "Your request has been sent successfully!"),
+                                              content: getTitle(
+                                                  title: getTranslated(context,
+                                                      "requestsentsuccess")),
                                             ),
                                           );
                                         });
@@ -249,13 +256,15 @@ class RideDetails extends StatelessWidget {
                                         SnackBar(
                                           backgroundColor:
                                               Theme.of(context).errorColor,
-                                          content: Text(
-                                              "Your already sent a request for this ride!"),
+                                          content: getTitle(
+                                              title: getTranslated(context,
+                                                  "requestalreadysent")),
                                         ),
                                       );
                                     }
                                   },
-                                  child: new Text('Confirm'),
+                                  child: getTitle(
+                                      title: getTranslated(context, "confirm")),
                                 ),
                               ],
                             ),

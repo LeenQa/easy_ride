@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
-import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
-import 'package:easy_ride/components/rounded_input_field.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
@@ -13,7 +12,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 import '../../text_style.dart';
 
 class RideRequests extends StatefulWidget {
@@ -26,144 +24,6 @@ class RideRequests extends StatefulWidget {
 }
 
 class _RideRequestsState extends State<RideRequests> {
-  double rating;
-  String review;
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _textFieldController = TextEditingController();
-
-  _trySubmit(BuildContext ctx, String reviewdId) async {
-    print(rating);
-    final isValid = _formKey.currentState.validate();
-    FocusScope.of(context).unfocus();
-    if (isValid) {
-      _formKey.currentState.save();
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(reviewdId)
-          .collection("reviews")
-          .doc()
-          .set({
-        "rating": rating,
-        "review": review,
-        "dateTime": DateTime.now(),
-        "reviewerId": uid
-      });
-      _textFieldController.clear();
-    }
-  }
-
-  void _modalBottomSheetMenu(String reviewedId) {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (builder) {
-          return Form(
-            key: _formKey,
-            child: new Container(
-              height: 350.0,
-              color:
-                  Color(0xFF737373), //could change this to Color(0xFF737373),
-              //so you don't have to change MaterialApp canvasColor
-              child: new Container(
-                decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(30.0),
-                        topRight: const Radius.circular(30.0))),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.edit,
-                              color: redColor,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            getTitle(title: "Write a Review", fontSize: 14),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Title(
-                                  color: Colors.pink,
-                                  child: getTitle(
-                                      title: getTranslated(context, 'rating'),
-                                      fontSize: 15),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                ),
-                                SmoothStarRating(
-                                  size: 25,
-                                  filledIconData: Icons.star,
-                                  halfFilledIconData: Icons.star_half,
-                                  defaultIconData: Icons.star_border,
-                                  starCount: 5,
-                                  //allowHalfRating: true,
-                                  spacing: 1.0,
-                                  onRated: (value) {
-                                    rating = value;
-                                  },
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.98,
-                                child: RoundedInputField(
-                                  controller: _textFieldController,
-                                  color: Colors.white,
-                                  maxLines: 4,
-                                  textAlign: TextAlign.start,
-                                  inputDecoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Write your review here..',
-                                    hintStyle: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  onSaved: (value) {
-                                    review = value.trim();
-                                  },
-                                  autofocus: false,
-                                )),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            CustomElevatedButton(
-                              title: "Post",
-                              backgroundColor: redColor,
-                              color: Colors.white,
-                              onPressed: () => _trySubmit(context, reviewedId),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -211,7 +71,7 @@ class _RideRequestsState extends State<RideRequests> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Ride Requests"),
+          title: Text(getTranslated(context, "riderequests")),
           backgroundColor: Colors.white,
         ),
         body: widget.rideRequests.length == 0
@@ -220,7 +80,7 @@ class _RideRequestsState extends State<RideRequests> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    "No requests yet!",
+                    getTranslated(context, "norequests"),
                     style: blueSubHeadingTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -277,12 +137,12 @@ class _RideRequestsState extends State<RideRequests> {
                                 ),
                                 getTitle(
                                     title:
-                                        "Meeting point: ${widget.rideRequests[index].pickUpLocation}",
+                                        "${getTranslated(context, "meetingpoint")}: ${widget.rideRequests[index].pickUpLocation}",
                                     fontSize: 16,
                                     color: kPrimaryColor),
                                 getTitle(
                                     title:
-                                        "Number of passengers: ${widget.rideRequests[index].numOfPassengers}",
+                                        "${getTranslated(context, "numofpass")}: ${widget.rideRequests[index].numOfPassengers}",
                                     fontSize: 16,
                                     color: kPrimaryColor),
                                 widget.rideRequests[index].status == 'pending'
@@ -313,8 +173,7 @@ class _RideRequestsState extends State<RideRequests> {
                                                   (rideDate.day >= now.day &&
                                                       rideDate.month ==
                                                           now.month)) {
-                                                widget.driverRide
-                                                            .numOfPassengers >=
+                                                widget.driverRide.numOfPassengers >=
                                                         widget
                                                             .rideRequests[index]
                                                             .numOfPassengers
@@ -324,9 +183,8 @@ class _RideRequestsState extends State<RideRequests> {
                                                         .doc(widget
                                                             .rideRequests[index]
                                                             .request)
-                                                        .update({
-                                                        'status': 'accepted'
-                                                      }).then((_) async {
+                                                        .update({'status': 'accepted'}).then(
+                                                            (_) async {
                                                         await FirebaseFirestore
                                                             .instance
                                                             .collection('rides')
@@ -392,10 +250,10 @@ class _RideRequestsState extends State<RideRequests> {
                                                               });
                                                               if (areRequestsNotificationsTurnedOn) {
                                                                 AssistantMethods.sendNotification(
-                                                                    [
-                                                                      token
-                                                                    ],
-                                                                    "A ride request you sent had been accepted!",
+                                                                    [token],
+                                                                    getTranslated(
+                                                                        context,
+                                                                        "requestacceptnotif"),
                                                                     driverFirstName +
                                                                         " " +
                                                                         driverLastName,
@@ -422,11 +280,12 @@ class _RideRequestsState extends State<RideRequests> {
                                                     : ScaffoldMessenger.of(context)
                                                         .showSnackBar(SnackBar(
                                                             backgroundColor:
-                                                                Theme.of(
-                                                                        context)
+                                                                Theme.of(context)
                                                                     .errorColor,
-                                                            content: Text(
-                                                                "Number of passengers is bigger than the number of seats left")));
+                                                            content: ReturnMessage.fail(
+                                                                context,
+                                                                getTranslated(
+                                                                    context, "numofseatserror"))));
                                               } else {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
@@ -434,7 +293,9 @@ class _RideRequestsState extends State<RideRequests> {
                                                             Theme.of(context)
                                                                 .errorColor,
                                                         content: Text(
-                                                            "This ride is old, you can't accept it now!")));
+                                                            getTranslated(
+                                                                context,
+                                                                "oldrideerror"))));
                                               }
                                             },
                                             iconSize: 45,
@@ -504,10 +365,10 @@ class _RideRequestsState extends State<RideRequests> {
                                                         });
                                                         if (areRequestsNotificationsTurnedOn) {
                                                           AssistantMethods.sendNotification(
-                                                              [
-                                                                token
-                                                              ],
-                                                              "A ride request you sent had been rejected!",
+                                                              [token],
+                                                              getTranslated(
+                                                                  context,
+                                                                  "riderejectnotif"),
                                                               driverFirstName +
                                                                   " " +
                                                                   driverLastName,
@@ -546,21 +407,13 @@ class _RideRequestsState extends State<RideRequests> {
                                                     0.05,
                                               ),
                                               Text(
-                                                'Ride Accepted',
+                                                getTranslated(
+                                                    context, "rideaccepted"),
                                                 style: blueSubHeadingTextStyle,
                                                 textAlign: TextAlign.center,
                                               )
                                             ],
                                           ),
-                                          CustomElevatedButton(
-                                            backgroundColor: redColor,
-                                            title: "Write a Review",
-                                            color: Colors.white,
-                                            onPressed: () =>
-                                                _modalBottomSheetMenu(widget
-                                                    .rideRequests[index]
-                                                    .currentUser),
-                                          )
                                         ],
                                       ),
                               ],

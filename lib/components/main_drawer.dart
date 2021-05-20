@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
 import 'package:easy_ride/Screens/Driver_Rides/driver_rides.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
@@ -32,7 +33,7 @@ Widget getTitle(
     color = Colors.black54;
   }
   if (fontSize == null) {
-    fontSize = 17;
+    fontSize = 14;
   }
 
   if (decoration == null) {
@@ -171,6 +172,7 @@ class _MainDrawerState extends State<MainDrawer> {
           String meetingPoint = result.data()['startLocation'];
           String request = result.id;
           String requestDate = result.data()['date'];
+          bool isReviewed = result.data()['isReviewed'];
 
           await FirebaseFirestore.instance
               .collection("users")
@@ -204,6 +206,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     driver.firstName = value.data()["firstName"];
                     driver.lastName = value.data()["lastName"];
                     driver.urlAvatar = value.data()["urlAvatar"];
+                    driver.isDriver = value.data()["isDriver"];
+
                     drivers.add(driver);
 
                     userRidesDetails.add(new Ride(
@@ -224,6 +228,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       request: request,
                       pickUpLocation: meetingPoint,
                       date: requestDate,
+                      isReviewed: isReviewed,
                     ));
                   });
                 }
@@ -272,10 +277,10 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 26,
+                          leading: CircleAvatar(
+                            foregroundImage:
+                                NetworkImage(snapshot.data.data()['urlAvatar']),
+                            backgroundColor: Colors.transparent,
                           ),
                           title: getTitle(
                             title:
@@ -291,135 +296,188 @@ class _MainDrawerState extends State<MainDrawer> {
                 SizedBox(
                   height: 20,
                 ),
-                if (uid != "CjaDPZMqhpQD9j4rs33tqhROVS63")
-                  Column(
-                    children: [
-                      buildListTile(
-                        context,
-                        Icons.person_pin_rounded,
-                        () async {
-                          var driver = await FirebaseFirestore.instance
-                              .collection("drivers")
-                              .doc(uid)
-                              .get();
-                          Navigator.of(context)
-                              .pushNamed(ProfileScreen.routeName, arguments: {
-                            'id': uid,
-                            'name':
-                                "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
-                            'urlAvatar': "${snapshot.data.data()['urlAvatar']}",
-                            'isMe': true,
-                            'isDriver': driver.exists,
-                          });
-                        },
-                        getTitle(title: getTranslated(context, 'profile')),
-                      ),
-                      Divider(
-                        thickness: 1,
-                      ),
-                      buildListTile(
-                        context,
-                        Icons.person_search_outlined,
-                        () {
-                          Navigator.of(context)
-                              .pushNamed(UserSearchScreen.routeName);
-                        },
-                        getTitle(title: getTranslated(context, 'srchforausr')),
-                      ),
-                      buildListTile(
-                        context,
-                        Icons.person_search_outlined,
-                        () => _showUserRides(context),
-                        getTitle(title: "My Requested Rides"),
-                      ),
-                      isDriver
-                          ? Column(
-                              children: [
-                                buildListTile(
+                uid != "CjaDPZMqhpQD9j4rs33tqhROVS63"
+                    ? Column(
+                        children: [
+                          buildListTile(
+                            context,
+                            Icons.person_pin_rounded,
+                            () async {
+                              var driver = await FirebaseFirestore.instance
+                                  .collection("drivers")
+                                  .doc(uid)
+                                  .get();
+                              Navigator.of(context).pushNamed(
+                                  ProfileScreen.routeName,
+                                  arguments: {
+                                    'id': uid,
+                                    'name':
+                                        "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
+                                    'urlAvatar':
+                                        "${snapshot.data.data()['urlAvatar']}",
+                                    'isMe': true,
+                                    'isDriver': driver.exists,
+                                  });
+                            },
+                            getTitle(
+                                title: getTranslated(context, 'profile'),
+                                fontSize: 16),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          buildListTile(
+                            context,
+                            Icons.person_search_outlined,
+                            () {
+                              Navigator.of(context)
+                                  .pushNamed(UserSearchScreen.routeName);
+                            },
+                            getTitle(
+                                title: getTranslated(context, 'srchforausr'),
+                                fontSize: 16),
+                          ),
+                          buildListTile(
+                            context,
+                            Icons.person_search_outlined,
+                            () => _showUserRides(context),
+                            getTitle(
+                                title: getTranslated(context, "requestedrides"),
+                                fontSize: 16),
+                          ),
+                          isDriver
+                              ? Column(
+                                  children: [
+                                    buildListTile(
+                                      context,
+                                      Icons.add_circle_outline_outlined,
+                                      () {
+                                        Navigator.of(context).pushNamed(
+                                            OfferRideScreen.routeName);
+                                      },
+                                      getTitle(
+                                          title:
+                                              getTranslated(context, 'offrard'),
+                                          fontSize: 16),
+                                    ),
+                                    buildListTile(
+                                      context,
+                                      Icons.list_rounded,
+                                      () => _showDriverRides(context),
+                                      getTitle(
+                                          title: getTranslated(
+                                              context, "offeredrides"),
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                )
+                              : buildListTile(
                                   context,
-                                  Icons.add_circle_outline_outlined,
+                                  Icons.check_circle_outline_outlined,
                                   () {
-                                    Navigator.of(context)
-                                        .pushNamed(OfferRideScreen.routeName);
+                                    Navigator.of(context).pushNamed(
+                                        BecomeDriverScreen.routeName,
+                                        arguments: {"already": already});
                                   },
                                   getTitle(
-                                      title: getTranslated(context, 'offrard')),
+                                      title:
+                                          getTranslated(context, 'bcmadriver'),
+                                      fontSize: 16),
                                 ),
-                                buildListTile(
-                                  context,
-                                  Icons.list_rounded,
-                                  () => _showDriverRides(context),
-                                  getTitle(title: "My Offered Rides"),
-                                ),
-                              ],
-                            )
-                          : buildListTile(
-                              context,
-                              Icons.check_circle_outline_outlined,
-                              () {
-                                Navigator.of(context).pushNamed(
-                                    BecomeDriverScreen.routeName,
-                                    arguments: {"already": already});
-                              },
+                          Divider(
+                            thickness: 1,
+                          ),
+                          buildListTile(
+                            context,
+                            Icons.settings,
+                            () {
+                              Navigator.of(context)
+                                  .pushNamed(SettingsScreen.routeName);
+                            },
+                            getTitle(
+                                title: getTranslated(context, 'settings'),
+                                fontSize: 16),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          buildListTile(context, Icons.logout, () async {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(uid)
+                                .update({'token': ''});
+                            FirebaseAuth.instance.signOut();
+                            Navigator.of(context)
+                                .pushNamed(LoginScreen.routeName);
+                          },
                               getTitle(
-                                  title: getTranslated(context, 'bcmadriver')),
-                            ),
-                      Divider(
-                        thickness: 1,
+                                  title: getTranslated(context, 'logout'),
+                                  fontSize: 16)),
+                        ],
+                      )
+                    // buildListTile(
+                    //   context,
+                    //   Icons.language,
+                    //   () {},
+                    //   DropdownButton<Language>(
+                    //     underline: SizedBox(),
+                    //     hint: Text(getTranslated(context, "switchlang")),
+                    //     onChanged: (Language language) {
+                    //       _changeLanguage(language);
+                    //     },
+                    //     items: Language.languageList()
+                    //         .map<DropdownMenuItem<Language>>(
+                    //           (e) => DropdownMenuItem<Language>(
+                    //             value: e,
+                    //             child: Row(
+                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //               children: <Widget>[
+                    //                 Text(
+                    //                   e.flag,
+                    //                   style: TextStyle(fontSize: 30),
+                    //                 ),
+                    //                 Text(e.name)
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         )
+                    //         .toList(),
+                    //   ),
+                    // ),
+                    // Divider(
+                    //   thickness: 1,
+                    // ),
+                    : Column(
+                        children: [
+                          buildListTile(context, Icons.admin_panel_settings,
+                              () {
+                            Navigator.of(context)
+                                .pushNamed(AdminPanelScreen.routeName);
+                          },
+                              getTitle(
+                                  title: getTranslated(context, "adminpanel"),
+                                  fontSize: 16)),
+                          buildListTile(context, Icons.report, () {
+                            Navigator.of(context)
+                                .pushNamed(UserReportsScreen.routeName);
+                          },
+                              getTitle(
+                                  title: getTranslated(context, "userreports"),
+                                  fontSize: 16)),
+                          buildListTile(context, Icons.logout, () async {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(uid)
+                                .update({'token': ''});
+                            FirebaseAuth.instance.signOut();
+                            Navigator.of(context)
+                                .pushNamed(LoginScreen.routeName);
+                          },
+                              getTitle(
+                                  title: getTranslated(context, 'logout'),
+                                  fontSize: 16)),
+                        ],
                       ),
-                      buildListTile(context, Icons.settings, () {
-                        Navigator.of(context)
-                            .pushNamed(SettingsScreen.routeName);
-                      }, getTitle(title: getTranslated(context, 'settings'))),
-                      Divider(
-                        thickness: 1,
-                      ),
-                    ],
-                  ),
-                // buildListTile(
-                //   context,
-                //   Icons.language,
-                //   () {},
-                //   DropdownButton<Language>(
-                //     underline: SizedBox(),
-                //     hint: Text(getTranslated(context, "switchlang")),
-                //     onChanged: (Language language) {
-                //       _changeLanguage(language);
-                //     },
-                //     items: Language.languageList()
-                //         .map<DropdownMenuItem<Language>>(
-                //           (e) => DropdownMenuItem<Language>(
-                //             value: e,
-                //             child: Row(
-                //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //               children: <Widget>[
-                //                 Text(
-                //                   e.flag,
-                //                   style: TextStyle(fontSize: 30),
-                //                 ),
-                //                 Text(e.name)
-                //               ],
-                //             ),
-                //           ),
-                //         )
-                //         .toList(),
-                //   ),
-                // ),
-                // Divider(
-                //   thickness: 1,
-                // ),
-                buildListTile(context, Icons.logout, () {
-                  Navigator.of(context).pushNamed(UserReportsScreen.routeName);
-                }, getTitle(title: 'User Reports')),
-
-                buildListTile(context, Icons.logout, () async {
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(uid)
-                      .update({'token': ''});
-                  FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamed(LoginScreen.routeName);
-                }, getTitle(title: getTranslated(context, 'logout'))),
               ],
             ),
           );

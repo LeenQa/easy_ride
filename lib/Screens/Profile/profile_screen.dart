@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Messages/page/chat_page.dart';
-import 'package:easy_ride/Screens/Edit_Profile_Screen/edit_profile_screen.dart';
+import 'package:easy_ride/Screens/Edit_Profile/edit_profile_screen.dart';
 import 'package:easy_ride/Screens/Profile/components/user_review.dart';
-import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
@@ -12,7 +11,6 @@ import 'package:intl/intl.dart';
 import '../../text_style.dart';
 import 'components/my_info.dart';
 import 'components/opaque_image.dart';
-import 'components/profile_info_big_card.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -27,8 +25,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    getUser();
     super.initState();
+    setState(() {
+      Future.delayed(Duration.zero, () {
+        this.getUser();
+      });
+    });
   }
 
   String report;
@@ -53,14 +55,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-                title: new Text('Confirmation'),
-                content: Text('Your report has been submitted.'),
+                title: getTitle(title: getTranslated(context, "confirmation")),
+                content:
+                    getTitle(title: getTranslated(context, "reportsubmitted")),
                 actions: [
                   new TextButton(
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop();
                     },
-                    child: new Text('ok'),
+                    child: getTitle(title: getTranslated(context, "ok")),
                   ),
                 ],
               ));
@@ -101,7 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(
                               width: 8,
                             ),
-                            getTitle(title: "Report this user", fontSize: 14),
+                            getTitle(
+                                title: getTranslated(context, "reportuser"),
+                                fontSize: 14),
                           ],
                         ),
                         SizedBox(
@@ -119,7 +124,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 textAlign: TextAlign.start,
                                 inputDecoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: 'Write the reason for reporting..',
+                                  hintText: getTranslated(
+                                      context, "writereportreason"),
                                   hintStyle: TextStyle(
                                     fontSize: 13,
                                     color: Colors.grey,
@@ -135,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 12,
                             ),
                             CustomElevatedButton(
-                              title: "Submit",
+                              title: getTranslated(context, "submit"),
                               backgroundColor: redColor,
                               color: Colors.white,
                               onPressed: () =>
@@ -214,13 +220,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Column(
             children: [
               Expanded(
-                flex: 3,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: MyInfo(args['name'], args['urlAvatar'], args['id'],
-                        args['isDriver']),
-                  ),
+                flex: 5,
+                child: Stack(
+                  children: [
+                    OpaqueImage(
+                      imageUrl: args['urlAvatar'],
+                    ),
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: MyInfo(args['name'], args['urlAvatar'],
+                            args['id'], args['isDriver']),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -259,8 +272,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 default:
                                   if (snapshot.hasError) {
                                     print(snapshot.error);
-                                    return Text(
-                                        'Something Went Wrong Try later');
+                                    return getTitle(
+                                        title:
+                                            getTranslated(context, "sthwrong"));
                                   } else {
                                     return snapshot.data.data()["showPhone"]
                                         ? Row(
@@ -325,8 +339,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     default:
                                       if (snapshot.hasError) {
                                         print(snapshot.error);
-                                        return Text(
-                                            'Something Went Wrong Try later');
+                                        return getTitle(
+                                            title: getTranslated(
+                                                context, "sthwrong"));
                                       } else {
                                         final reviews = snapshot.data.docs;
                                         double numofRatings =
@@ -425,14 +440,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   ),
                                                   Title(
                                                     color: Colors.pink,
-                                                    child: Text(
-                                                      'Reviews',
-                                                      style: blackTextStyle,
+                                                    child: getTitle(
+                                                      title: getTranslated(
+                                                          context, "reviews"),
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                               ListView.separated(
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
                                                   separatorBuilder:
                                                       (context, index) {
                                                     return Divider();

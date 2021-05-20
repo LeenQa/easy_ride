@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
+import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
-import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,7 @@ import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
+import 'package:string_validator/string_validator.dart';
 
 class ProfilePicScreen extends StatefulWidget {
   static const String routeName = '/editprofilescreen';
@@ -34,15 +35,32 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
   String currValidatorResponse = null;
   String newValidatorResponse = null;
 
-  String valid() {
-    Map args = ModalRoute.of(context).settings.arguments;
-    if (_textFieldController.text.trim() == "" ||
-        _textFieldController.text == null ||
-        _textFieldController2.text.trim() == "" ||
-        _textFieldController2.text == null) {
-      return "please provide a value";
-    } else
-      return null;
+  // String valid() {
+  //   Map args = ModalRoute.of(context).settings.arguments;
+  //   if (_textFieldController.text.trim() == "" ||
+  //       _textFieldController.text == null ||
+  //       _textFieldController2.text.trim() == "" ||
+  //       _textFieldController2.text == null) {
+  //     return "please provide a value";
+  //   } else
+  //     return null;
+  // }
+  List<String> searchIndex(String firstname, String lastname) {
+    List<String> indexList = [];
+    String name = firstname + " " + lastname;
+
+    for (int i = 1; i <= name.length; i++) {
+      if (i <= firstname.length) {
+        indexList.add(firstname.substring(0, i).toLowerCase());
+      }
+      if (i <= lastname.length) {
+        indexList.add(lastname.substring(0, i).toLowerCase());
+      }
+      if (i > firstname.length - 1) {
+        indexList.add(name.substring(0, i).toLowerCase());
+      }
+    }
+    return indexList;
   }
 
   Future<String> validPass() async {
@@ -54,13 +72,13 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
       if (_textFieldController.text.trim() == "" ||
           _textFieldController.text == null) {
         setState(() {
-          currValidatorResponse = "please provide a value";
+          currValidatorResponse = getTranslated(context, "pleaseprovidevalue");
         });
       }
       if (_textFieldController2.text.trim() == "" ||
           _textFieldController2.text == null) {
         setState(() {
-          newValidatorResponse = "please provide a value";
+          newValidatorResponse = getTranslated(context, "pleaseprovidevalue");
         });
       }
     } else {
@@ -82,7 +100,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           await curruser.updatePassword(_textFieldController2.text);
           message = 'true';
         } on PlatformException catch (err) {
-          message = 'An error occurred, pelase check your credentials!';
+          message = getTranslated(context, "checkcredentials");
           if (err.message != null) {
             message = err.message;
           }
@@ -91,8 +109,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
         }
         if (message == 'wrong-password') {
           setState(() {
-            currValidatorResponse =
-                'make sure to write the current password correctly';
+            currValidatorResponse = getTranslated(context, "writepasscorrect");
           });
         } else if (message == 'true') {
           setState(() {
@@ -106,8 +123,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
         }
       } else
         setState(() {
-          newValidatorResponse =
-              "Make sure your password contains numbers, special characters & capital letter";
+          newValidatorResponse = getTranslated(context, "weakpassword");
         });
     }
   }
@@ -130,7 +146,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                     controller: _textFieldController,
                     validator: (value) {
                       if (value == null) {
-                        return "please provide a value";
+                        return getTranslated(context, "pleaseprovidevalue");
                       } else
                         return null;
                     },
@@ -141,14 +157,18 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: getTitle(title: 'Cancel', color: kPrimaryColor),
+              child: getTitle(
+                  title: getTranslated(context, "cancel"),
+                  color: kPrimaryColor),
               onPressed: () {
                 _textFieldController.text = "";
                 Navigator.pop(context);
               },
             ),
             FlatButton(
-                child: getTitle(title: 'Change', color: kPrimaryColor),
+                child: getTitle(
+                    title: getTranslated(context, "update"),
+                    color: kPrimaryColor),
                 onPressed: () async {
                   final isValid = _formKeyPhone.currentState.validate();
                   if (isValid) {
@@ -157,7 +177,9 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                         .doc(args["id"])
                         .update({"phone": _textFieldController.text});
                     _textFieldController.text = "";
-                    Navigator.pop(context);
+                    ReturnMessage.success(
+                        context, getTranslated(context, "phoneupdated"));
+                    Navigator.of(context).pushNamed(TabsScreen.routeName);
                   }
                 }),
           ],
@@ -183,23 +205,29 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                     TextFormField(
                       validator: (value) {
                         if (value == null) {
-                          return "please provide a value";
+                          return getTranslated(context, "pleaseprovidevalue");
+                        } else if (!isAlpha(value)) {
+                          return getTranslated(context, "nameerror");
                         } else
                           return null;
                       },
                       controller: _textFieldController,
-                      decoration: InputDecoration(hintText: "first name"),
+                      decoration: InputDecoration(
+                          hintText: getTranslated(context, "firstname")),
                     ),
                     TextFormField(
                       validator: (value) {
                         if (value == null) {
-                          return "please provide a value";
+                          return getTranslated(context, "pleaseprovidevalue");
+                        } else if (!isAlpha(value)) {
+                          return getTranslated(context, "nameerror");
                         } else
                           return null;
                         ;
                       },
                       controller: _textFieldController2,
-                      decoration: InputDecoration(hintText: "last name"),
+                      decoration: InputDecoration(
+                          hintText: getTranslated(context, "lastname")),
                     )
                   ],
                 ),
@@ -208,7 +236,9 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: getTitle(title: 'Cancel', color: kPrimaryColor),
+              child: getTitle(
+                  title: getTranslated(context, "cancel"),
+                  color: kPrimaryColor),
               onPressed: () {
                 _textFieldController.text = "";
                 _textFieldController2.text = "";
@@ -216,22 +246,26 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
               },
             ),
             FlatButton(
-              child: getTitle(title: 'Change', color: kPrimaryColor),
+              child: getTitle(
+                  title: getTranslated(context, "update"),
+                  color: kPrimaryColor),
               onPressed: () async {
                 final isValid = _formKeyName.currentState.validate();
                 if (isValid) {
                   await FirebaseFirestore.instance
                       .collection("users")
                       .doc(args["id"])
-                      .update({"firstName": _textFieldController.text});
+                      .update({
+                    "firstName": _textFieldController.text,
+                    "lastName": _textFieldController2.text,
+                    'searchIndex': searchIndex(
+                        _textFieldController.text, _textFieldController2.text),
+                  });
+                  ReturnMessage.success(
+                      context, getTranslated(context, "nameupdated"));
                   _textFieldController.text = "";
-                  Navigator.pop(context);
-                  await FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(args["id"])
-                      .update({"lastName": _textFieldController2.text});
                   _textFieldController2.text = "";
-                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed(TabsScreen.routeName);
                 }
               },
             ),
@@ -256,20 +290,22 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                 child: Column(
                   children: [
                     TextFormField(
+                      obscureText: true,
                       validator: (value) {
                         return currValidatorResponse;
                       },
                       controller: _textFieldController,
                       decoration: InputDecoration(
-                          hintText: "write your current password"),
+                          hintText: getTranslated(context, "currpass")),
                     ),
                     TextFormField(
+                      obscureText: true,
                       validator: (value) {
                         return newValidatorResponse;
                       },
                       controller: _textFieldController2,
-                      decoration:
-                          InputDecoration(hintText: "write a new password"),
+                      decoration: InputDecoration(
+                          hintText: getTranslated(context, "newpass")),
                     ),
                   ],
                 ),
@@ -278,7 +314,9 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: getTitle(title: 'Cancel', color: kPrimaryColor),
+              child: getTitle(
+                  title: getTranslated(context, "cancel"),
+                  color: kPrimaryColor),
               onPressed: () {
                 _textFieldController.text = "";
                 _textFieldController2.text = "";
@@ -288,17 +326,20 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
               },
             ),
             FlatButton(
-                child: getTitle(title: 'Ok', color: kPrimaryColor),
+                child: getTitle(
+                    title: getTranslated(context, "update"),
+                    color: kPrimaryColor),
                 onPressed: () async {
                   validPass();
                   final isValid = _formKeyPassword.currentState.validate();
                   if (isValid) {
-                    ReturnMessage.success(context, 'password updated');
+                    ReturnMessage.success(
+                        context, getTranslated(context, "passupdated"));
                     _textFieldController.text = "";
                     _textFieldController2.text = "";
                     currValidatorResponse = null;
                     newValidatorResponse = null;
-                    Navigator.pop(context);
+                    Navigator.of(context).pushNamed(TabsScreen.routeName);
                   }
                 }),
           ],
@@ -329,27 +370,29 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                 onPressed: () {
                   _showSelectionDialog();
                 },
-                title: 'Change profile photo',
+                title: getTranslated(context, "updatephoto"),
                 color: Colors.white,
               ),
               SizedBox(height: 20),
               CustomElevatedButton(
-                title: "Change full name",
+                title: getTranslated(context, "updatename"),
                 color: Colors.white,
-                onPressed: () => _changeNameDialog(context, "type a new name"),
+                onPressed: () => _changeNameDialog(
+                    context, getTranslated(context, "typename")),
               ),
               SizedBox(height: 20),
               CustomElevatedButton(
-                title: "Change phone number",
+                title: getTranslated(context, "updatephone"),
+                color: Colors.white,
+                onPressed: () => _changePhoneDialog(
+                    context, getTranslated(context, "typephone")),
+              ),
+              SizedBox(height: 20),
+              CustomElevatedButton(
+                title: getTranslated(context, "updatepassword"),
                 color: Colors.white,
                 onPressed: () =>
-                    _changePhoneDialog(context, "type a new phone number"),
-              ),
-              SizedBox(height: 20),
-              CustomElevatedButton(
-                title: "Change password",
-                color: Colors.white,
-                onPressed: () => _currPass(context, "type a new password"),
+                    _currPass(context, getTranslated(context, "typepassword")),
               ),
               SizedBox(height: 20),
             ],
@@ -386,7 +429,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           });
         });
       } else
-        print('No photo was selected or taken');
+        ReturnMessage.fail(context, getTranslated(context, "photoerror"));
     });
   }
 
@@ -403,7 +446,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
             },
           ),
           SimpleDialogOption(
-            child: Text('Take a photo'),
+            child: getTitle(title: getTranslated(context, "selectphoto")),
             onPressed: () {
               selectOrTakePhoto(ImageSource.camera);
               Navigator.pop(context);

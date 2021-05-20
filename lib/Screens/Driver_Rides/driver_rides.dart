@@ -5,6 +5,7 @@ import 'package:easy_ride/Screens/Driver_Rides/requests.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/searched_ride.dart';
 import 'package:easy_ride/models/user.dart';
@@ -33,7 +34,9 @@ class _DriverRidesState extends State<DriverRides> {
     return Scaffold(
         appBar: AppBar(
           title: getTitle(
-              title: "My Offered Rides", color: redColor, fontSize: 20),
+              title: getTranslated(context, "offeredrides"),
+              color: redColor,
+              fontSize: 20),
           backgroundColor: Colors.white,
         ),
         body: widget.driverRides.length == 0
@@ -42,7 +45,7 @@ class _DriverRidesState extends State<DriverRides> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    "You haven't offered any ride yet!",
+                    getTranslated(context, "noofferedrides"),
                     style: redSubHeadingTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -74,7 +77,7 @@ class _DriverRidesState extends State<DriverRides> {
                           ),
                           title: getTitle(
                               title:
-                                  "From ${widget.driverRides[index].startLocation}, \nTo ${widget.driverRides[index].arrivalLocation}",
+                                  "${getTranslated(context, "from")} ${widget.driverRides[index].startLocation}, \n${getTranslated(context, "to")} ${widget.driverRides[index].arrivalLocation}",
                               color: Colors.brown[500],
                               fontSize: 16),
                           subtitle: Padding(
@@ -84,7 +87,7 @@ class _DriverRidesState extends State<DriverRides> {
                                     widget.driverRides[index].description ==
                                         null
                                 ? Text(
-                                    "Number of seats left: ${widget.driverRides[index].numOfPassengers}\n\nDate: ${widget.driverRides[index].date}\n\nTime: ${widget.driverRides[index].startTime}",
+                                    "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}",
                                     style: TextStyle(
                                         color: Colors.blueGrey, fontSize: 14),
                                   )
@@ -93,7 +96,7 @@ class _DriverRidesState extends State<DriverRides> {
                                         widget.driverRides[index].description ==
                                             null
                                     ? Text(
-                                        "Number of seats left: ${widget.driverRides[index].numOfPassengers} \n\nDate: ${widget.driverRides[index].date}\n\nTime: ${widget.driverRides[index].startTime}\n\nStopovers: \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}",
+                                        "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}",
                                         style: TextStyle(
                                             color: Colors.blueGrey,
                                             fontSize: 14),
@@ -105,13 +108,13 @@ class _DriverRidesState extends State<DriverRides> {
                                                     .description !=
                                                 null
                                         ? Text(
-                                            "Number of seats left: ${widget.driverRides[index].numOfPassengers} \n\nDate: ${widget.driverRides[index].date}\n\nTime: ${widget.driverRides[index].startTime}\n\nAdditional info: ${widget.driverRides[index].description}",
+                                            "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
                                             style: TextStyle(
                                                 color: Colors.blueGrey,
                                                 fontSize: 14),
                                           )
                                         : Text(
-                                            "Number of seats left: ${widget.driverRides[index].numOfPassengers} \n\nDate: ${widget.driverRides[index].date}\n\nTime: ${widget.driverRides[index].startTime}\n\nStopovers: \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\nAdditional info: ${widget.driverRides[index].description}",
+                                            "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
                                             style: TextStyle(
                                                 color: Colors.blueGrey,
                                                 fontSize: 14),
@@ -123,7 +126,7 @@ class _DriverRidesState extends State<DriverRides> {
                           children: [
                             CustomElevatedButton(
                               backgroundColor: redColor,
-                              title: "Requests",
+                              title: getTranslated(context, "requests"),
                               color: Colors.white,
                               onPressed: () async {
                                 requests.clear();
@@ -185,15 +188,16 @@ class _DriverRidesState extends State<DriverRides> {
                             ),
                             CustomElevatedButton(
                               backgroundColor: redColor,
-                              title: "Delete Ride",
+                              title: getTranslated(context, "deleteride"),
                               color: Colors.white,
                               onPressed: () async {
                                 await showDialog(
                                   context: context,
                                   builder: (context) => new AlertDialog(
-                                    title: new Text('Confirmation!'),
-                                    content: Text(
-                                        'Are you sure you want to delete this ride?'),
+                                    title: new Text(
+                                        getTranslated(context, "confirmation")),
+                                    content: Text(getTranslated(
+                                        context, "confirmdeleteride")),
                                     actions: [
                                       new TextButton(
                                         onPressed: () {
@@ -237,7 +241,8 @@ class _DriverRidesState extends State<DriverRides> {
                                                   rootNavigator: true)
                                               .pop();
                                         },
-                                        child: new Text('Confirm'),
+                                        child: new Text(
+                                            getTranslated(context, "confirm")),
                                       ),
                                     ],
                                   ),

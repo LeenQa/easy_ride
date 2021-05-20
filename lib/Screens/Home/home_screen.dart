@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
-import 'package:easy_ride/Screens/Rides_List/rides_list.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/constants.dart';
@@ -10,9 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../components/main_drawer.dart';
-import '../../text_style.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String routeName = "/homescreen";
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -93,11 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 getTitle(
-                    title: "Our Services", color: Colors.white, fontSize: 15),
-                Text(
-                  "EasyRide is a carpooling service, connecting drivers with empty seats to people travelling the same way.",
-                  style: whiteSubHeadingTextStyle,
-                )
+                    title: getTranslated(context, "ourservices"),
+                    color: Colors.white,
+                    fontSize: 15),
+                getTitle(
+                    title: getTranslated(context, "servicedescription"),
+                    color: Colors.white)
               ],
             ),
           ),

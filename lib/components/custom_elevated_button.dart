@@ -1,6 +1,5 @@
 import 'package:easy_ride/constants.dart';
 import 'package:flutter/material.dart';
-
 import 'main_drawer.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -16,7 +15,10 @@ class CustomElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: getTitle(title: title, color: color, fontSize: 14),
+      child: getTitle(
+          title: title,
+          color: color == null ? Colors.white : color,
+          fontSize: 14),
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(

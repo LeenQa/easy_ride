@@ -1,6 +1,6 @@
-import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:intl/intl.dart';
 import '../page/chat_page.dart';
 import 'package:flutter/material.dart';
@@ -60,13 +60,14 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
               builder: (BuildContext context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return Center(child: CircularProgressIndicator());
+                    return Center();
                   default:
                     if (snapshot.hasError) {
                       print(snapshot.error);
-                      return Text('Something Went Wrong Try later');
+                      return getTitle(
+                          title: getTranslated(context, "sthwrong"));
                     } else if (!snapshot.hasData) {
-                      return Text('No Data');
+                      return getTitle(title: getTranslated(context, "noconvs"));
                     } else {
                       final name = snapshot.data.data()["firstName"] +
                           " " +
@@ -77,7 +78,8 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                       //     : uid1;
                       // getUserData(user.trim());
                       if (name == null) {
-                        return Text('No Conversations Found');
+                        return getTitle(
+                            title: getTranslated(context, "noconvs"));
                       } else
                         return Column(
                           children: [
@@ -100,7 +102,9 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                                     NetworkImage(urlAvatar), //urlavatar
                               ),
                               title: getTitle(
-                                  title: name, color: Colors.black), //name
+                                  title: name,
+                                  color: Colors.black,
+                                  fontSize: 16), //name
                               subtitle: getTitle(
                                   title: DateFormat(
                                           'EEE, MMM d y \'at\' H:mm:s')

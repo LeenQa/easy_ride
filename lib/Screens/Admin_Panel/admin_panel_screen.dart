@@ -5,6 +5,7 @@ import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
@@ -25,7 +26,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
     return Scaffold(
       appBar: AppBar(
         title: getTitle(
-          title: "Admin Panel",
+          title: getTranslated(context, "adminpanel"),
           color: kPrimaryColor,
         ),
         backgroundColor: Colors.white,
@@ -72,15 +73,18 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                   },
                                   child: getTitle(
                                       title:
-                                          "User: ${document['firstName']} ${document['lastName']}",
+                                          "${getTranslated(context, "user")}: ${document['firstName']} ${document['lastName']}",
                                       fontSize: 17,
                                       decoration: TextDecoration.underline),
                                 ),
                                 getTitle(
-                                    title: "Car Model: ${document['carModel']}",
+                                    title:
+                                        "${getTranslated(context, "carmodel")}: ${document['carModel']}",
                                     fontSize: 14),
                                 getTitle(
-                                    title: "Required Documents:", fontSize: 14),
+                                    title:
+                                        "${getTranslated(context, "requireddocuments")}:",
+                                    fontSize: 14),
                                 new Container(
                                   height: 150,
                                   margin: const EdgeInsets.all(10),

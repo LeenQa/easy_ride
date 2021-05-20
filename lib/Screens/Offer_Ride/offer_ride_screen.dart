@@ -127,7 +127,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
     loading = false;
     // places = json.decode(jsonText).cast<Map<String, dynamic>>());
     print(places.first.place);
-    return 'success';
+    return getTranslated(context, "success");
   }
 
   Future<void> _displayTextInputDialog(BuildContext context) async {
@@ -236,7 +236,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                           child: TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Specify the initial location";
+                                return getTranslated(
+                                    context, "specifyinitlocation");
                               } else
                                 return null;
                             },
@@ -279,7 +280,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                           child: TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Specify the drop location";
+                                return getTranslated(
+                                    context, "specifydroplocation");
                               } else
                                 return null;
                             },
@@ -433,10 +435,12 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                           child: TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Specify the number of passengers";
+                                return getTranslated(
+                                    context, "specifynumpassengers");
                               } else if (int.parse(value) > 7 ||
                                   int.parse(value) < 1) {
-                                return "Passengers must be between 1-7";
+                                return getTranslated(
+                                    context, "passengerserror");
                               } else
                                 return null;
                             },
@@ -463,10 +467,12 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                     controller: priceController,
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return "Specify the price";
+                                        return getTranslated(
+                                            context, "specifyprice");
                                       } else if (int.parse(value) > 50 ||
                                           int.parse(value) < 1) {
-                                        return "Price range 1-50";
+                                        return getTranslated(
+                                            context, "pricerange");
                                       } else
                                         return null;
                                     },
@@ -553,7 +559,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                             decoration: InputDecoration(
                               icon: Icon(Icons.description_rounded,
                                   color: kPrimaryColor),
-                              labelText: "Ride Description",
+                              labelText:
+                                  getTranslated(context, "ridedescription"),
                             ),
                             onChanged: (value) {
                               _rideDescription = value;
@@ -640,9 +647,12 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   await showDialog(
                                     context: context,
                                     builder: (context) => new AlertDialog(
-                                      title: new Text('Success!'),
-                                      content: Text(
-                                          'You offered a new ride successfully.'),
+                                      title: getTitle(
+                                          title: getTranslated(
+                                              context, "success")),
+                                      content: getTitle(
+                                          title: getTranslated(
+                                              context, "offerridesuccess")),
                                       actions: [
                                         new TextButton(
                                           onPressed: () {
@@ -650,7 +660,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                                     rootNavigator: true)
                                                 .pop(); // dismisses only the dialog and returns nothing
                                           },
-                                          child: new Text('OK'),
+                                          child: getTitle(
+                                              title:
+                                                  getTranslated(context, "ok")),
                                         ),
                                       ],
                                     ),

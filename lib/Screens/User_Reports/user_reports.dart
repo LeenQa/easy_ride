@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
-import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 
@@ -14,7 +14,7 @@ class UserReportsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: getTitle(
-          title: "User Reports",
+          title: getTranslated(context, "userreports"),
           color: kPrimaryColor,
         ),
         backgroundColor: Colors.white,
@@ -29,10 +29,13 @@ class UserReportsScreen extends StatelessWidget {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot1) {
               if (snapshot1.hasError)
-                return new Text('Error: ${snapshot1.error}');
+                return getTitle(
+                    title:
+                        '${getTranslated(context, "error")}: ${snapshot1.error}');
               switch (snapshot1.connectionState) {
                 case ConnectionState.waiting:
-                  return new Text('Loading...');
+                  return getTitle(
+                      title: '${getTranslated(context, "loading")}...');
                 default:
                   return ListView.builder(
                     itemCount: snapshot1.data.docs.length,
@@ -45,7 +48,9 @@ class UserReportsScreen extends StatelessWidget {
                           children: [
                             Center(
                                 child: getTitle(
-                                    title: "Reported User", fontSize: 16)),
+                                    title:
+                                        getTranslated(context, "reporteduser"),
+                                    fontSize: 16)),
                             Card(
                               elevation: 0,
                               child: FutureBuilder<DocumentSnapshot>(
@@ -62,8 +67,9 @@ class UserReportsScreen extends StatelessWidget {
                                     default:
                                       if (snapshot.hasError) {
                                         print(snapshot.error);
-                                        return Text(
-                                            'Something Went Wrong Try later');
+                                        return getTitle(
+                                            title: getTranslated(
+                                                context, "sthwrong"));
                                       } else {
                                         return GestureDetector(
                                           onTap: () {
@@ -84,7 +90,7 @@ class UserReportsScreen extends StatelessWidget {
                                           },
                                           child: getTitle(
                                               title:
-                                                  "Name: ${snapshot.data.data()["firstName"]} ${snapshot.data.data()["lastName"]} \nEmail: ${snapshot.data.data()["email"]}",
+                                                  "${getTranslated(context, "name")}: ${snapshot.data.data()["firstName"]} ${snapshot.data.data()["lastName"]} \n${getTranslated(context, "email")}: ${snapshot.data.data()["email"]}",
                                               fontSize: 14,
                                               decoration:
                                                   TextDecoration.underline),
@@ -98,7 +104,7 @@ class UserReportsScreen extends StatelessWidget {
                                 elevation: 0,
                                 child: getTitle(
                                     title:
-                                        "Reason for reporting: ${snapshot1.data.docs[index].data()["report"]}",
+                                        "${getTranslated(context, "reasonforreport")}: ${snapshot1.data.docs[index].data()["report"]}",
                                     fontSize: 14)),
                             Card(
                               elevation: 0,
@@ -116,12 +122,13 @@ class UserReportsScreen extends StatelessWidget {
                                     default:
                                       if (snapshot.hasError) {
                                         print(snapshot.error);
-                                        return Text(
-                                            'Something Went Wrong Try later');
+                                        return getTitle(
+                                            title: getTranslated(
+                                                context, "sthwrong"));
                                       } else {
                                         return getTitle(
                                             title:
-                                                "Reporter: ${snapshot.data.data()["firstName"]} ${snapshot.data.data()["lastName"]}",
+                                                "${getTranslated(context, "reporter")}: ${snapshot.data.data()["firstName"]} ${snapshot.data.data()["lastName"]}",
                                             fontSize: 13);
                                       }
                                   }

@@ -14,6 +14,7 @@ class User with ChangeNotifier {
   String _phone;
   String _location;
   String _urlAvatar;
+  bool _isDriver;
 
   User(
       [this._email,
@@ -22,7 +23,8 @@ class User with ChangeNotifier {
       this._lastName,
       this._phone,
       this._location,
-      this._urlAvatar]);
+      this._urlAvatar,
+      this._isDriver]);
 
   set email(value) => this._email = value;
 
@@ -51,4 +53,8 @@ class User with ChangeNotifier {
   set urlAvatar(value) => this._urlAvatar = value;
 
   String get urlAvatar => this._urlAvatar;
+
+  set isDriver(value) => this._isDriver = value;
+
+  bool get isDriver => this._isDriver;
 }

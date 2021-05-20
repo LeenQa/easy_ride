@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_ride/Screens/Driver_Rides/requests.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -16,9 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-
 import '../../constants.dart';
-import '../../text_style.dart';
 
 class UserRides extends StatefulWidget {
   static const routeName = '/userrides';
@@ -41,6 +36,7 @@ Widget driverProfile(User.User driver, Ride ride, BuildContext ctx) {
         'name': driver.firstName + " " + driver.lastName,
         'urlAvatar': driver.urlAvatar,
         'isMe': false,
+        'isDriver': driver.isDriver,
       });
     },
     child: Text("Driver: " + driver.firstName + " " + driver.lastName,
@@ -60,26 +56,32 @@ class _UserRidesState extends State<UserRides> {
 
   double rating;
   String review;
+  //List<bool> reviewed;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _textFieldController = TextEditingController();
-  checkReviewed(String driverId, String rideId) async {
-    var reviews = await FirebaseFirestore.instance
-        .collection("drivers")
-        .doc(driverId)
-        .collection("reviews")
-        .get();
+  // checkReviewed(String driverId, String rideId, int index) async {
+  //   var reviews = await FirebaseFirestore.instance
+  //       .collection("drivers")
+  //       .doc(driverId)
+  //       .collection("reviews")
+  //       .get();
 
-    reviews.docs.forEach((element) {
-      if (uid == element.data()["reviewerId"] &&
-          rideId == element.data()["rideId"]) {
-        print("true");
-        return true;
-      }
-    });
-    return false;
-  }
+  //   reviews.docs.forEach((element) {
+  //     if (uid == element.data()["reviewerId"] &&
+  //         rideId == element.data()["rideId"]) {
+  //       print("true");
+  //       setState(() {
+  //         reviewed[index] = true;
+  //       });
+  //     }
+  //   });
+  //   setState(() {
+  //     reviewed[index] = false;
+  //   });
+  // }
 
-  _trySubmit(BuildContext ctx, String reviewdId, String rideId) async {
+  _trySubmit(BuildContext ctx, String reviewdId, String rideId,
+      String requestId, int index) async {
     print(rating);
     final isValid = _formKey.currentState.validate();
     FocusScope.of(ctx).unfocus();
@@ -97,18 +99,29 @@ class _UserRidesState extends State<UserRides> {
         "reviewerId": uid,
         "rideId": rideId
       });
+      await FirebaseFirestore.instance
+          .collection("requests")
+          .doc(requestId)
+          .update({
+        "isReviewed": true,
+      });
+      setState(() {
+        widget.userRides[index].isReviewed = true;
+      });
       _textFieldController.clear();
       await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-                title: new Text('Confirmation'),
-                content: Text('Your review has been submitted!'),
+                title: getTitle(title: getTranslated(context, "confirmation")),
+                content:
+                    getTitle(title: getTranslated(context, "reviewsubmitted")),
                 actions: [
                   new TextButton(
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       Navigator.of(context, rootNavigator: true).pop();
                     },
-                    child: new Text('ok'),
+                    child: getTitle(title: getTranslated(context, "ok")),
                   ),
                 ],
               ));
@@ -116,8 +129,8 @@ class _UserRidesState extends State<UserRides> {
     }
   }
 
-  void _modalBottomSheetMenu(
-      BuildContext context, String reviewedId, String rideId) {
+  void _modalBottomSheetMenu(BuildContext context, String reviewedId,
+      String rideId, String requestId, int index) {
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -149,7 +162,9 @@ class _UserRidesState extends State<UserRides> {
                             SizedBox(
                               width: 8,
                             ),
-                            getTitle(title: "Write a Review", fontSize: 14),
+                            getTitle(
+                                title: getTranslated(context, "writereview"),
+                                fontSize: 14),
                           ],
                         ),
                         SizedBox(
@@ -197,7 +212,8 @@ class _UserRidesState extends State<UserRides> {
                                 textAlign: TextAlign.start,
                                 inputDecoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: 'Write your review here..',
+                                  hintText:
+                                      getTranslated(context, "writereviewhere"),
                                   hintStyle: TextStyle(
                                     fontSize: 13,
                                     color: Colors.grey,
@@ -213,11 +229,11 @@ class _UserRidesState extends State<UserRides> {
                               height: 12,
                             ),
                             CustomElevatedButton(
-                              title: "Post",
+                              title: getTranslated(context, "post"),
                               backgroundColor: redColor,
                               color: Colors.white,
-                              onPressed: () =>
-                                  _trySubmit(context, reviewedId, rideId),
+                              onPressed: () => _trySubmit(context, reviewedId,
+                                  rideId, requestId, index),
                             )
                           ],
                         ),
@@ -244,7 +260,9 @@ class _UserRidesState extends State<UserRides> {
     return Scaffold(
         appBar: AppBar(
           title: getTitle(
-              title: "My Requested Rides", color: redColor, fontSize: 20),
+              title: getTranslated(context, "requestedrides"),
+              color: redColor,
+              fontSize: 20),
           backgroundColor: Colors.white,
         ),
         body: widget.userRides.length == 0
@@ -252,16 +270,18 @@ class _UserRidesState extends State<UserRides> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "You haven't requested any ride yet!",
-                    style: redSubHeadingTextStyle,
-                    textAlign: TextAlign.center,
+                  Center(
+                    child: getTitle(
+                        title: getTranslated(context, "norequestedrides"),
+                        color: redColor),
                   ),
                 ],
               )
             : ListView.builder(
                 itemCount: widget.userRides.length,
                 itemBuilder: (ctx, index) {
+                  // checkReviewed(widget.userRidesDetails[index].driver,
+                  //     widget.userRides[index].ride, index);
                   bool isBefore = DateFormat("EEE, MMM d")
                       .parse(widget.userRides[index].date)
                       .isBefore(DateTime.now());
@@ -288,7 +308,7 @@ class _UserRidesState extends State<UserRides> {
                           ),
                           title: getTitle(
                               title:
-                                  "From ${widget.userRidesDetails[index].startLocation}, \nTo ${widget.userRidesDetails[index].arrivalLocation}",
+                                  "${getTranslated(context, "from")} ${widget.userRidesDetails[index].startLocation}, \n${getTranslated(context, "to")} ${widget.userRidesDetails[index].arrivalLocation}",
                               color: Colors.brown[500],
                               fontSize: 16),
                           subtitle: Padding(
@@ -306,7 +326,7 @@ class _UserRidesState extends State<UserRides> {
                                       driverProfile(widget.drivers[index],
                                           widget.userRidesDetails[index], ctx),
                                       Text(
-                                        "\nStatus: ${widget.userRides[index].status}\n\nNumber of requested seats: ${widget.userRides[index].numOfPassengers}\n\nMeeting Point: ${widget.userRides[index].pickUpLocation}\n\nDate: ${widget.userRidesDetails[index].date}\n\nTime: ${widget.userRidesDetails[index].startTime}",
+                                        "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}",
                                         style: TextStyle(
                                             color: Colors.blueGrey,
                                             fontSize: 14),
@@ -328,7 +348,7 @@ class _UserRidesState extends State<UserRides> {
                                               widget.userRidesDetails[index],
                                               ctx),
                                           Text(
-                                            "\nStatus: ${widget.userRides[index].status}\n\nNumber of requested seats: ${widget.userRides[index].numOfPassengers}\n\nMeeting Point: ${widget.userRides[index].pickUpLocation}\n\nDate: ${widget.userRidesDetails[index].date}\n\nTime: ${widget.userRidesDetails[index].startTime}\n\nStopovers: \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}",
+                                            "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}",
                                             style: TextStyle(
                                                 color: Colors.blueGrey,
                                                 fontSize: 14),
@@ -351,7 +371,7 @@ class _UserRidesState extends State<UserRides> {
                                                       .userRidesDetails[index],
                                                   ctx),
                                               Text(
-                                                "\nStatus: ${widget.userRides[index].status}\n\nNumber of requested seats: ${widget.userRides[index].numOfPassengers}\n\nMeeting Point: ${widget.userRides[index].pickUpLocation}\n\nDate: ${widget.userRidesDetails[index].date}\n\nTime: ${widget.userRidesDetails[index].startTime}\n\nAdditional info: ${widget.userRidesDetails[index].description}",
+                                                "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
                                                 style: TextStyle(
                                                     color: Colors.blueGrey,
                                                     fontSize: 14),
@@ -368,7 +388,7 @@ class _UserRidesState extends State<UserRides> {
                                                       .userRidesDetails[index],
                                                   ctx),
                                               Text(
-                                                "\nStatus: ${widget.userRides[index].status}\n\nNumber of requested seats: ${widget.userRides[index].numOfPassengers}\n\nMeeting Point: ${widget.userRides[index].pickUpLocation}\n\nDate: ${widget.userRidesDetails[index].date}\n\nTime: ${widget.userRidesDetails[index].startTime}\n\nStopovers: \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\nAdditional info: ${widget.userRidesDetails[index].description}",
+                                                "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
                                                 style: TextStyle(
                                                     color: Colors.blueGrey,
                                                     fontSize: 14),
@@ -379,7 +399,7 @@ class _UserRidesState extends State<UserRides> {
                         ),
                         CustomElevatedButton(
                           backgroundColor: redColor,
-                          title: "Delete",
+                          title: getTranslated(context, "delete"),
                           color: Colors.white,
                           onPressed: () async {
                             DateTime now = DateTime.now();
@@ -389,9 +409,12 @@ class _UserRidesState extends State<UserRides> {
                               await showDialog(
                                 context: context,
                                 builder: (context) => new AlertDialog(
-                                  title: new Text('Confirmation!'),
-                                  content: Text(
-                                      'Are you sure you want to delete this ride request?'),
+                                  title: getTitle(
+                                      title: getTranslated(
+                                          context, "confirmation")),
+                                  content: getTitle(
+                                      title: getTranslated(
+                                          context, "deleteriderequest")),
                                   actions: [
                                     new TextButton(
                                       onPressed: () {
@@ -399,7 +422,9 @@ class _UserRidesState extends State<UserRides> {
                                                 rootNavigator: true)
                                             .pop();
                                       },
-                                      child: new Text('Cancel'),
+                                      child: getTitle(
+                                          title:
+                                              getTranslated(context, "cancel")),
                                     ),
                                     new TextButton(
                                       onPressed: () async {
@@ -422,7 +447,9 @@ class _UserRidesState extends State<UserRides> {
                                       },
                                       /*  */
 
-                                      child: new Text('Confirm'),
+                                      child: getTitle(
+                                          title: getTranslated(
+                                              context, "confirm")),
                                     ),
                                   ],
                                 ),
@@ -438,9 +465,12 @@ class _UserRidesState extends State<UserRides> {
                               await showDialog(
                                 context: context,
                                 builder: (context) => new AlertDialog(
-                                  title: new Text('Confirmation!'),
-                                  content: Text(
-                                      'Are you sure you want to delete this ride request? It has been already accepted'),
+                                  title: getTitle(
+                                      title: getTranslated(
+                                          context, "confirmation")),
+                                  content: getTitle(
+                                      title: getTranslated(
+                                          context, "deleteacceptedridereq")),
                                   actions: [
                                     new TextButton(
                                       onPressed: () {
@@ -448,7 +478,9 @@ class _UserRidesState extends State<UserRides> {
                                                 rootNavigator: true)
                                             .pop();
                                       },
-                                      child: new Text('Cancel'),
+                                      child: getTitle(
+                                          title:
+                                              getTranslated(context, "cancel")),
                                     ),
                                     new TextButton(
                                       onPressed: () async {
@@ -483,7 +515,9 @@ class _UserRidesState extends State<UserRides> {
                                                 rootNavigator: true)
                                             .pop();
                                       },
-                                      child: new Text('Confirm'),
+                                      child: getTitle(
+                                          title: getTranslated(
+                                              context, "confirm")),
                                     ),
                                   ],
                                 ),
@@ -495,9 +529,11 @@ class _UserRidesState extends State<UserRides> {
                               await showDialog(
                                 context: context,
                                 builder: (context) => new AlertDialog(
-                                  title: new Text('Confirmation!'),
-                                  content: Text(
-                                      'Do you want to delete this ride request?'),
+                                  title: getTitle(
+                                      title: getTranslated(context, "confirm")),
+                                  content: getTitle(
+                                      title: getTranslated(
+                                          context, "deleteriderequest")),
                                   actions: [
                                     new TextButton(
                                       onPressed: () {
@@ -505,7 +541,9 @@ class _UserRidesState extends State<UserRides> {
                                                 rootNavigator: true)
                                             .pop();
                                       },
-                                      child: new Text('Cancel'),
+                                      child: getTitle(
+                                          title:
+                                              getTranslated(context, "cancel")),
                                     ),
                                     new TextButton(
                                       onPressed: () async {
@@ -526,9 +564,9 @@ class _UserRidesState extends State<UserRides> {
                                                 rootNavigator: true)
                                             .pop();
                                       },
-                                      /*  */
-
-                                      child: new Text('Confirm'),
+                                      child: getTitle(
+                                          title: getTranslated(
+                                              context, "confirm")),
                                     ),
                                   ],
                                 ),
@@ -539,18 +577,19 @@ class _UserRidesState extends State<UserRides> {
                             }
                           },
                         ),
-                        checkReviewed(widget.userRidesDetails[index].driver,
-                                widget.userRides[index].ride)
-                            ? CustomElevatedButton(
-                                backgroundColor: redColor,
-                                title: "Write a Review",
-                                color: Colors.white,
-                                onPressed: () => _modalBottomSheetMenu(
-                                    context,
-                                    widget.userRidesDetails[index].driver,
-                                    widget.userRides[index].ride),
-                              )
-                            : Container()
+                        // reviewed[index]
+                        if (!widget.userRides[index].isReviewed)
+                          CustomElevatedButton(
+                            backgroundColor: redColor,
+                            title: getTranslated(context, "writereview"),
+                            color: Colors.white,
+                            onPressed: () => _modalBottomSheetMenu(
+                                context,
+                                widget.userRidesDetails[index].driver,
+                                widget.userRides[index].ride,
+                                widget.userRides[index].request,
+                                index),
+                          )
                       ],
                     ),
                   );

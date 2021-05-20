@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../constants.dart';
 
 class UserReview extends StatelessWidget {
   final String reviewerId;
@@ -27,7 +26,7 @@ class UserReview extends StatelessWidget {
           default:
             if (snapshot.hasError) {
               print(snapshot.error);
-              return Text('Something Went Wrong Try later');
+              return getTitle(title: getTranslated(context, "sthwrong"));
             } else {
               final name = snapshot.data.data()["firstName"] +
                   " " +
