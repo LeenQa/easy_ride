@@ -1,3 +1,4 @@
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Login/login_screen.dart';
@@ -16,18 +17,15 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              getTranslated(context, 'welcome'),
-              style: TextStyle(
-                fontSize: 22,
-              ),
+            getTitle(
+              title: getTranslated(context, 'welcome'),
+              fontSize: 22,
             ),
-            Text(
-              "EasyRide",
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: kPrimaryColor),
+            getTitle(
+              title: "EasyRide",
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: kPrimaryColor,
             ),
             SizedBox(height: size.height * 0.05),
             ClipRRect(

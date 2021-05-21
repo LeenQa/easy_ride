@@ -104,11 +104,10 @@ class _RidesListState extends State<RidesList> {
                           child: Padding(
                             padding: EdgeInsets.all(0),
                             child: FittedBox(
-                              child: Text(
-                                "${rides[index].price}₪",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                              child: getTitle(
+                                title: "${rides[index].price}₪",
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -118,10 +117,11 @@ class _RidesListState extends State<RidesList> {
                                 "${getTranslated(context, "from")} ${rides[index].startLocation}, ${getTranslated(context, "to")} ${rides[index].arrivalLocation}",
                             color: Colors.brown[500],
                             fontSize: 14),
-                        subtitle: Text(
-                          "${getTranslated(context, "numofseats")}: ${rides[index].numOfPassengers}",
-                          style:
-                              TextStyle(color: Colors.blueGrey, fontSize: 12),
+                        subtitle: getTitle(
+                          title:
+                              "${getTranslated(context, "numofseats")}: ${rides[index].numOfPassengers}",
+                          color: Colors.blueGrey,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -146,7 +146,7 @@ class _RidesListState extends State<RidesList> {
     return Scaffold(
       appBar: AppBar(
           title: getTitle(
-              title: getTranslated(context, "rideslist"), fontSize: 21)),
+              title: getTranslated(context, "rideslist"), fontSize: 20)),
       body: SingleChildScrollView(
         child: Column(
           children: [

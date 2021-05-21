@@ -135,7 +135,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(getTranslated(context, "addstopovers")),
+          title: getTitle(title: getTranslated(context, "addstopovers")),
           content: SingleChildScrollView(
             child: ListBody(
               children: [DialogContent()],
@@ -171,9 +171,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          place.place,
-          style: TextStyle(fontSize: 16.0),
+        getTitle(
+          title: place.place,
+          fontSize: 16.0,
         )
       ],
     );
@@ -259,7 +259,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                     vertical: 8, horizontal: 16),
                                 child: ListView.separated(
                                     itemBuilder: (context, index) {
-                                      //return Text("data");
+                                      //return getTitle(title:"data");
                                       return PredictionTile(
                                         placePrediction:
                                             pickUpPlacePredictionList[index],
@@ -303,7 +303,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                     vertical: 8, horizontal: 16),
                                 child: ListView.separated(
                                     itemBuilder: (context, index) {
-                                      //return Text("data");
+                                      //return getTitle(title:"data");
                                       return PredictionTile(
                                           placePrediction:
                                               dropOffPlacePredictionList[index],
@@ -366,10 +366,11 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 8)),
-                                Text(_selectedDate == null
-                                    ? ''
-                                    : DateFormat('EEE, MMM d')
-                                        .format(_selectedDate)),
+                                getTitle(
+                                    title: _selectedDate == null
+                                        ? ''
+                                        : DateFormat('EEE, MMM d')
+                                            .format(_selectedDate)),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -403,10 +404,11 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 8)),
-                                Text(_selectedTime == null
-                                    ? ''
-                                    : MaterialLocalizations.of(context)
-                                        .formatTimeOfDay(_selectedTime)),
+                                getTitle(
+                                    title: _selectedTime == null
+                                        ? ''
+                                        : MaterialLocalizations.of(context)
+                                            .formatTimeOfDay(_selectedTime)),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -490,7 +492,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                 ),
                               ),
                               Expanded(
-                                child: Text(getTranslated(context, 'nis')),
+                                child: getTitle(
+                                    title: getTranslated(context, 'nis')),
                               ),
                             ],
                           ),
@@ -504,9 +507,10 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   children: [
                                     Align(
                                         alignment: Alignment.topLeft,
-                                        child: Text(
-                                            getTranslated(context, 'stopovers'),
-                                            style: blueSubHeadingTextStyle)),
+                                        child: getTitle(
+                                            title: getTranslated(
+                                                context, 'stopovers'),
+                                            color: Colors.blue[400])),
                                     if (_stopOvers.isNotEmpty)
                                       SizedBox(
                                         height: 80.0,
@@ -676,7 +680,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                     ),
                                   ).catchError((onError) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(onError)));
+                                        SnackBar(
+                                            content: getTitle(title: onError)));
                                   });
                                 });
                               }
@@ -885,7 +890,7 @@ class _DialogContentState extends State<DialogContent> {
                     child: ListView.separated(
                         padding: EdgeInsets.all(5),
                         itemBuilder: (context, index) {
-                          //return Text("data");
+                          //return getTitle(title:"data");
                           return PredictionTile(
                               placePrediction: stopOverPredictionList[index],
                               callback: callback);

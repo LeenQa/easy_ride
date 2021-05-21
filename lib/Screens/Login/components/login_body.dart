@@ -1,4 +1,5 @@
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/user.dart';
@@ -45,11 +46,9 @@ class _LoginBodyState extends State<LoginBody> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                getTranslated(context, 'login'),
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+              getTitle(
+                title: getTranslated(context, 'login'),
+                fontSize: 20,
               ),
               SizedBox(height: size.height * 0.03),
               ClipRRect(

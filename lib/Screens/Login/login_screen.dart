@@ -1,6 +1,7 @@
 import 'package:easy_ride/Screens/Admin_Panel/admin_panel_screen.dart';
 import 'package:easy_ride/Screens/Login/components/login_body.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         message = err.message;
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
+        content: getTitle(title: message),
         backgroundColor: Theme.of(context).errorColor,
       ));
       if (this.mounted) {
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (err) {
       print(err);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(err.toString().substring(30)),
+        content: getTitle(title: err.toString().substring(30)),
         backgroundColor: Theme.of(context).errorColor,
       ));
       if (this.mounted) {

@@ -41,12 +41,15 @@ class _ChatsPageState extends State<ChatsPage> {
                 default:
                   if (snapshot.hasError) {
                     print(snapshot.error);
-                    return getTitle(title: getTranslated(context, "sthwrong"));
+                    return Center(
+                        child: getTitle(
+                            title: getTranslated(context, "sthwrong")));
                   } else {
                     final conversations = snapshot.data.docs;
 
                     if (conversations.isEmpty) {
-                      return getTitle(title: 'No Conversations Found');
+                      return Center(
+                          child: getTitle(title: 'No Conversations Found'));
                     } else
                       return Column(
                         children: [
@@ -57,13 +60,6 @@ class _ChatsPageState extends State<ChatsPage> {
               }
             },
           ),
-        ),
-      );
-
-  Widget buildText(String text) => Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       );
 }

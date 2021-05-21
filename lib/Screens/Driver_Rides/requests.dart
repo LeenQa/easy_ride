@@ -71,7 +71,8 @@ class _RideRequestsState extends State<RideRequests> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(getTranslated(context, "riderequests")),
+          title: getTitle(
+              title: getTranslated(context, "riderequests"), fontSize: 20),
           backgroundColor: Colors.white,
         ),
         body: widget.rideRequests.length == 0
@@ -79,10 +80,10 @@ class _RideRequestsState extends State<RideRequests> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    getTranslated(context, "norequests"),
-                    style: blueSubHeadingTextStyle,
-                    textAlign: TextAlign.center,
+                  Center(
+                    child: getTitle(
+                        title: getTranslated(context, "norequests"),
+                        color: Colors.blue[400]),
                   ),
                 ],
               )
@@ -292,8 +293,8 @@ class _RideRequestsState extends State<RideRequests> {
                                                         backgroundColor:
                                                             Theme.of(context)
                                                                 .errorColor,
-                                                        content: Text(
-                                                            getTranslated(
+                                                        content: getTitle(
+                                                            title: getTranslated(
                                                                 context,
                                                                 "oldrideerror"))));
                                               }
@@ -406,11 +407,12 @@ class _RideRequestsState extends State<RideRequests> {
                                                         .height *
                                                     0.05,
                                               ),
-                                              Text(
-                                                getTranslated(
-                                                    context, "rideaccepted"),
-                                                style: blueSubHeadingTextStyle,
-                                                textAlign: TextAlign.center,
+                                              Center(
+                                                child: getTitle(
+                                                    title: getTranslated(
+                                                        context,
+                                                        "rideaccepted"),
+                                                    color: Colors.blue[400]),
                                               )
                                             ],
                                           ),

@@ -297,11 +297,11 @@ class _UserRidesState extends State<UserRides> {
                             child: Padding(
                               padding: EdgeInsets.all(0),
                               child: FittedBox(
-                                child: Text(
-                                  "${widget.userRidesDetails[index].price}₪",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                child: getTitle(
+                                  title:
+                                      "${widget.userRidesDetails[index].price}₪",
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -325,11 +325,11 @@ class _UserRidesState extends State<UserRides> {
                                     children: [
                                       driverProfile(widget.drivers[index],
                                           widget.userRidesDetails[index], ctx),
-                                      Text(
-                                        "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}",
-                                        style: TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 14),
+                                      getTitle(
+                                        title:
+                                            "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}",
+                                        color: Colors.blueGrey,
+                                        fontSize: 14,
                                       ),
                                     ],
                                   )
@@ -347,11 +347,11 @@ class _UserRidesState extends State<UserRides> {
                                               widget.drivers[index],
                                               widget.userRidesDetails[index],
                                               ctx),
-                                          Text(
-                                            "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}",
-                                            style: TextStyle(
-                                                color: Colors.blueGrey,
-                                                fontSize: 14),
+                                          getTitle(
+                                            title:
+                                                "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}",
+                                            color: Colors.blueGrey,
+                                            fontSize: 14,
                                           ),
                                         ],
                                       )
@@ -370,11 +370,11 @@ class _UserRidesState extends State<UserRides> {
                                                   widget
                                                       .userRidesDetails[index],
                                                   ctx),
-                                              Text(
-                                                "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
-                                                style: TextStyle(
-                                                    color: Colors.blueGrey,
-                                                    fontSize: 14),
+                                              getTitle(
+                                                title:
+                                                    "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
+                                                color: Colors.blueGrey,
+                                                fontSize: 14,
                                               ),
                                             ],
                                           )
@@ -387,11 +387,11 @@ class _UserRidesState extends State<UserRides> {
                                                   widget
                                                       .userRidesDetails[index],
                                                   ctx),
-                                              Text(
-                                                "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
-                                                style: TextStyle(
-                                                    color: Colors.blueGrey,
-                                                    fontSize: 14),
+                                              getTitle(
+                                                title:
+                                                    "\n${getTranslated(context, "status")}: ${widget.userRides[index].status}\n\n${getTranslated(context, "numofreqseats")}: ${widget.userRides[index].numOfPassengers}\n\n${getTranslated(context, "meetingpoint")}: ${widget.userRides[index].pickUpLocation}\n\n${getTranslated(context, "date")}: ${widget.userRidesDetails[index].date}\n\n${getTranslated(context, "time")}: ${widget.userRidesDetails[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.userRidesDetails[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.userRidesDetails[index].description}",
+                                                color: Colors.blueGrey,
+                                                fontSize: 14,
                                               ),
                                             ],
                                           ),
@@ -455,7 +455,8 @@ class _UserRidesState extends State<UserRides> {
                                 ),
                               ).catchError((onError) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(onError)));
+                                    SnackBar(
+                                        content: getTitle(title: onError)));
                               });
                             } else if (widget.userRides[index].status ==
                                         "accepted" &&
@@ -523,7 +524,8 @@ class _UserRidesState extends State<UserRides> {
                                 ),
                               ).catchError((onError) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(onError)));
+                                    SnackBar(
+                                        content: getTitle(title: onError)));
                               });
                             } else {
                               await showDialog(
@@ -572,7 +574,8 @@ class _UserRidesState extends State<UserRides> {
                                 ),
                               ).catchError((onError) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(onError)));
+                                    SnackBar(
+                                        content: getTitle(title: onError)));
                               });
                             }
                           },

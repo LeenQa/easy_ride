@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/keys.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _PredictionTileState extends State<PredictionTile> {
                           overflow: TextOverflow.ellipsis),
                       SizedBox(height: 3),
                       (widget.placePrediction.secondary_text == null
-                          ? Text(widget.placePrediction.main_text)
+                          ? getTitle(title: widget.placePrediction.main_text)
                           : Text(widget.placePrediction.secondary_text,
                               overflow: TextOverflow.ellipsis)),
                     ],

@@ -16,6 +16,7 @@ class UserReportsScreen extends StatelessWidget {
         title: getTitle(
           title: getTranslated(context, "userreports"),
           color: kPrimaryColor,
+          fontSize: 20,
         ),
         backgroundColor: Colors.white,
       ),

@@ -150,8 +150,8 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                     if (count == 4) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: Colors.green,
-                          content:
-                              Text(getTranslated(context, "successfulreq"))));
+                          content: getTitle(
+                              title: getTranslated(context, "successfulreq"))));
                       setState(() {
                         _image.clear();
                         _textFieldController.clear();
@@ -162,7 +162,8 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                     } else if (count == 1) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.orange,
-                        content: Text(getTranslated(context, "pleasewait")),
+                        content: getTitle(
+                            title: getTranslated(context, "pleasewait")),
                         duration: Duration(seconds: 3),
                       ));
                     }

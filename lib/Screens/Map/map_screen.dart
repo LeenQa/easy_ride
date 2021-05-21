@@ -114,9 +114,11 @@ class _MapScreenState extends State<MapScreen> {
     LatLng southWest = LatLng(29.596533, 35.222665);
     return new Scaffold(
       appBar: AppBar(
-        title: Text(
-          getTranslated(context, "map"),
-          style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
+        title: getTitle(
+          title: getTranslated(context, "map"),
+          color: kPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
         backgroundColor: Colors.white,
       ),
@@ -177,15 +179,17 @@ class _MapScreenState extends State<MapScreen> {
                     children: [
                       distance == null
                           ? Container()
-                          : Text(
-                              "${getTranslated(context, "placesdistance")}: $distance ${getTranslated(context, "km")}",
-                              style: blueSubHeadingTextStyle),
+                          : getTitle(
+                              title:
+                                  "${getTranslated(context, "placesdistance")}: $distance ${getTranslated(context, "km")}",
+                              color: Colors.blue[400]),
                       SizedBox(height: 4),
                       price == null
                           ? Container()
-                          : Text(
-                              "${getTranslated(context, "cost")}: $price ${getTranslated(context, "nis")}",
-                              style: blueSubHeadingTextStyle),
+                          : getTitle(
+                              title:
+                                  "${getTranslated(context, "cost")}: $price ${getTranslated(context, "nis")}",
+                              color: Colors.blue[400]),
                       SizedBox(height: 10),
                       getTitle(
                           title: getTranslated(context, "currentlocation")),

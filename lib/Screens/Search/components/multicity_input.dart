@@ -145,9 +145,9 @@ class _MulticityInputState extends State<MulticityInput> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          place.place,
-          style: TextStyle(fontSize: 16.0),
+        getTitle(
+          title: place.place,
+          fontSize: 16.0,
         )
       ],
     );
@@ -197,7 +197,7 @@ class _MulticityInputState extends State<MulticityInput> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        //Text(_res == null ? "not chosen yet" : _res),
+                        //getTitle(title:_res == null ? "not chosen yet" : _res),
                         Padding(
                           padding: padding,
                           child: TextFormField(
@@ -219,7 +219,7 @@ class _MulticityInputState extends State<MulticityInput> {
                                     vertical: 8, horizontal: 16),
                                 child: ListView.separated(
                                     itemBuilder: (context, index) {
-                                      //return Text("data");
+                                      //return getTitle(title:"data");
                                       return PredictionTile(
                                         placePrediction:
                                             pickUpPlacePredictionList[index],
@@ -256,7 +256,7 @@ class _MulticityInputState extends State<MulticityInput> {
                                     vertical: 8, horizontal: 16),
                                 child: ListView.separated(
                                     itemBuilder: (context, index) {
-                                      //return Text("data");
+                                      //return getTitle(title:"data");
                                       return PredictionTile(
                                           placePrediction:
                                               dropOffPlacePredictionList[index],
@@ -361,11 +361,12 @@ class _MulticityInputState extends State<MulticityInput> {
                                   ],
                                 ),
                                 Expanded(
-                                  child: Text(_selectedDate == null
-                                      ? ''
-                                      : DateFormat(
-                                              '\'Picked date: \' EEE, MMM d')
-                                          .format(_selectedDate)),
+                                  child: getTitle(
+                                      title: _selectedDate == null
+                                          ? ''
+                                          : DateFormat(
+                                                  '\'Picked date: \' EEE, MMM d')
+                                              .format(_selectedDate)),
                                 ),
                               ],
                             ),

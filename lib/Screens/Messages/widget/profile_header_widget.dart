@@ -1,3 +1,4 @@
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
@@ -22,10 +23,10 @@ class ProfileHeaderWidget extends StatelessWidget {
                   child: Text(
                     name,
                     style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Quicksand"),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

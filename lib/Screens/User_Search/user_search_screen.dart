@@ -58,8 +58,9 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                   stream: getUserList(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError)
-                      return new Text(
-                          '${getTranslated(context, "error")}: ${snapshot.error}');
+                      return getTitle(
+                          title:
+                              '${getTranslated(context, "error")}: ${snapshot.error}');
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         return Center(
@@ -111,9 +112,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                           backgroundImage: NetworkImage(
                                               user.data()["urlAvatar"]),
                                         ),
-                                        title: Text(user.data()["firstName"] +
-                                            " " +
-                                            user.data()["lastName"]),
+                                        title: getTitle(
+                                            title: user.data()["firstName"] +
+                                                " " +
+                                                user.data()["lastName"]),
                                       ),
                                     );
                                   },

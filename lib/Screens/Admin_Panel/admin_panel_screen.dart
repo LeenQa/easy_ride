@@ -26,9 +26,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
     return Scaffold(
       appBar: AppBar(
         title: getTitle(
-          title: getTranslated(context, "adminpanel"),
-          color: kPrimaryColor,
-        ),
+            title: getTranslated(context, "adminpanel"),
+            color: kPrimaryColor,
+            fontSize: 20),
         backgroundColor: Colors.white,
       ),
       drawer: MainDrawer(),
@@ -43,10 +43,10 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError)
-                  return new Text('Error: ${snapshot.error}');
+                  return getTitle(title: 'Error: ${snapshot.error}');
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return new Text('Loading...');
+                    return getTitle(title: 'Loading...');
                   default:
                     return Expanded(
                       child: new ListView(
@@ -104,7 +104,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                           ),
                                         );
                                       }),
-                                  // child: new Text(document['user']),
+                                  // child: new getTitle(title:document['user']),
                                 ),
                                 Row(
                                   mainAxisAlignment:

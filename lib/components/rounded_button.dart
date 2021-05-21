@@ -1,3 +1,4 @@
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_ride/constants.dart';
 
@@ -26,9 +27,9 @@ class RoundedButton extends StatelessWidget {
           style: TextButton.styleFrom(
               backgroundColor: color,
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40)),
-          child: Text(
-            text,
-            style: TextStyle(color: textColor),
+          child: getTitle(
+            title: text,
+            color: textColor,
           ),
         ),
       ),

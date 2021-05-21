@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Screens/Edit_Profile/components/edit_card.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -134,7 +135,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: getTitle(title: text),
+          title: getTitle(title: text, color: kPrimaryColor),
           content: Form(
             key: _formKeyPhone,
             child: SingleChildScrollView(
@@ -194,7 +195,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: getTitle(title: text),
+          title: getTitle(title: text, color: kPrimaryColor),
           content: Container(
             height: 150,
             child: Form(
@@ -275,13 +276,13 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     );
   }
 
-  Future<void> _currPass(BuildContext context, String text) async {
+  Future<void> _changePasswordDialog(BuildContext context, String text) async {
     Map args = ModalRoute.of(context).settings.arguments;
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: getTitle(title: text),
+          title: getTitle(title: text, color: kPrimaryColor),
           content: Container(
             height: 150,
             child: Form(
@@ -355,44 +356,39 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: getTitle(
-              title: getTranslated(context, 'profile'),
+              title: getTranslated(context, 'editprofile'),
               color: kPrimaryColor,
               fontSize: 20),
         ),
         body: Container(
-          margin: EdgeInsets.all(20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CustomElevatedButton(
-                onPressed: () {
-                  _showSelectionDialog();
-                },
+              EditCard(
+                methodTitle: "photoselectiondialog",
+                showDialog: _showSelectionDialog,
                 title: getTranslated(context, "updatephoto"),
-                color: Colors.white,
               ),
-              SizedBox(height: 20),
-              CustomElevatedButton(
+              SizedBox(height: 10),
+              EditCard(
                 title: getTranslated(context, "updatename"),
-                color: Colors.white,
-                onPressed: () => _changeNameDialog(
-                    context, getTranslated(context, "typename")),
+                showDialog: _changeNameDialog,
+                methodTitle: getTranslated(context, "typename"),
               ),
-              SizedBox(height: 20),
-              CustomElevatedButton(
+              SizedBox(height: 10),
+              EditCard(
                 title: getTranslated(context, "updatephone"),
-                color: Colors.white,
-                onPressed: () => _changePhoneDialog(
-                    context, getTranslated(context, "typephone")),
+                showDialog: _changePhoneDialog,
+                methodTitle: getTranslated(context, "typephone"),
               ),
-              SizedBox(height: 20),
-              CustomElevatedButton(
+              SizedBox(height: 10),
+              EditCard(
                 title: getTranslated(context, "updatepassword"),
-                color: Colors.white,
-                onPressed: () =>
-                    _currPass(context, getTranslated(context, "typepassword")),
+                showDialog: _changePasswordDialog,
+                methodTitle: getTranslated(context, "typepassword"),
               ),
               SizedBox(height: 20),
             ],
@@ -406,6 +402,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     final pickedFile = await picker.getImage(source: imageSource);
     Map args = ModalRoute.of(context).settings.arguments;
     setState(() async {
+      ReturnMessage.wait(context, getTranslated(context, "pleasewait"));
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         Reference storageReference;
@@ -424,8 +421,8 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                 .doc(args["id"])
                 .update({
               'urlAvatar': _uploadedFileURL,
-            });
-            Navigator.pushNamed(context, ProfileScreen.routeName);
+            }).then((value) => ReturnMessage.success(
+                    context, getTranslated(context, "ppupdated")));
           });
         });
       } else
@@ -433,13 +430,13 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     });
   }
 
-  Future _showSelectionDialog() async {
+  Future _showSelectionDialog(BuildContext ctx, String title) async {
     await showDialog(
       builder: (context) => SimpleDialog(
-        title: Text('Select photo'),
+        title: getTitle(title: 'Select photo'),
         children: <Widget>[
           SimpleDialogOption(
-            child: Text('From gallery'),
+            child: getTitle(title: 'From gallery'),
             onPressed: () {
               selectOrTakePhoto(ImageSource.gallery);
               Navigator.pop(context);

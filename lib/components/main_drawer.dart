@@ -28,6 +28,7 @@ Widget getTitle(
     Color color,
     double fontSize,
     TextDecoration decoration,
+    FontWeight fontWeight,
     Color decorationColor}) {
   if (color == null) {
     color = Colors.black54;
@@ -43,7 +44,7 @@ Widget getTitle(
       style: TextStyle(
           color: color,
           fontFamily: 'Quicksand',
-          fontWeight: FontWeight.w600,
+          fontWeight: fontWeight == null ? FontWeight.w600 : fontWeight,
           fontSize: fontSize,
           decoration: decoration,
           decorationColor: Colors.blueGrey));
@@ -268,9 +269,9 @@ class _MainDrawerState extends State<MainDrawer> {
             child: Column(
               children: [
                 Container(
-                  height: 80,
+                  height: 85,
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(10),
                   alignment: Alignment.centerLeft,
                   color: Theme.of(context).primaryColor,
                   child: SingleChildScrollView(
@@ -283,10 +284,10 @@ class _MainDrawerState extends State<MainDrawer> {
                             backgroundColor: Colors.transparent,
                           ),
                           title: getTitle(
-                            title:
-                                "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
-                            color: Colors.white,
-                          ),
+                              title:
+                                  "${snapshot.data.data()['firstName']} ${snapshot.data.data()['lastName']}",
+                              color: Colors.white,
+                              fontSize: 17),
                         ),
                         //streambuilder
                       ],
@@ -294,7 +295,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 uid != "CjaDPZMqhpQD9j4rs33tqhROVS63"
                     ? Column(
@@ -421,7 +422,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     //   () {},
                     //   DropdownButton<Language>(
                     //     underline: SizedBox(),
-                    //     hint: Text(getTranslated(context, "switchlang")),
+                    //     hint: getTitle(title:getTranslated(context, "switchlang")),
                     //     onChanged: (Language language) {
                     //       _changeLanguage(language);
                     //     },
@@ -432,11 +433,11 @@ class _MainDrawerState extends State<MainDrawer> {
                     //             child: Row(
                     //               mainAxisAlignment: MainAxisAlignment.spaceAround,
                     //               children: <Widget>[
-                    //                 Text(
+                    //                 getTitle(title:
                     //                   e.flag,
                     //                   style: TextStyle(fontSize: 30),
                     //                 ),
-                    //                 Text(e.name)
+                    //                 getTitle(title:e.name)
                     //               ],
                     //             ),
                     //           ),

@@ -44,10 +44,10 @@ class _DriverRidesState extends State<DriverRides> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    getTranslated(context, "noofferedrides"),
-                    style: redSubHeadingTextStyle,
-                    textAlign: TextAlign.center,
+                  Center(
+                    child: getTitle(
+                        title: getTranslated(context, "noofferedrides"),
+                        color: Colors.red[400]),
                   ),
                 ],
               )
@@ -66,11 +66,10 @@ class _DriverRidesState extends State<DriverRides> {
                             child: Padding(
                               padding: EdgeInsets.all(0),
                               child: FittedBox(
-                                child: Text(
-                                  "${widget.driverRides[index].price}₪",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                child: getTitle(
+                                  title: "${widget.driverRides[index].price}₪",
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -86,20 +85,21 @@ class _DriverRidesState extends State<DriverRides> {
                                         0 &&
                                     widget.driverRides[index].description ==
                                         null
-                                ? Text(
-                                    "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}",
-                                    style: TextStyle(
-                                        color: Colors.blueGrey, fontSize: 14),
+                                ? getTitle(
+                                    title:
+                                        "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}",
+                                    color: Colors.blueGrey,
+                                    fontSize: 14,
                                   )
                                 : widget.driverRides[index].stopOvers.length >
                                             0 &&
                                         widget.driverRides[index].description ==
                                             null
-                                    ? Text(
-                                        "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}",
-                                        style: TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 14),
+                                    ? getTitle(
+                                        title:
+                                            "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "date")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}",
+                                        color: Colors.blueGrey,
+                                        fontSize: 14,
                                       )
                                     : widget.driverRides[index].stopOvers
                                                     .length ==
@@ -107,17 +107,17 @@ class _DriverRidesState extends State<DriverRides> {
                                             widget.driverRides[index]
                                                     .description !=
                                                 null
-                                        ? Text(
-                                            "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
-                                            style: TextStyle(
-                                                color: Colors.blueGrey,
-                                                fontSize: 14),
+                                        ? getTitle(
+                                            title:
+                                                "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
+                                            color: Colors.blueGrey,
+                                            fontSize: 14,
                                           )
-                                        : Text(
-                                            "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
-                                            style: TextStyle(
-                                                color: Colors.blueGrey,
-                                                fontSize: 14),
+                                        : getTitle(
+                                            title:
+                                                "${getTranslated(context, "numofseats")}: ${widget.driverRides[index].numOfPassengers} \n\n${getTranslated(context, "date")}: ${widget.driverRides[index].date}\n\n${getTranslated(context, "time")}: ${widget.driverRides[index].startTime}\n\n${getTranslated(context, "stopovers")} \n${widget.driverRides[index].stopOvers.where((item) => item.contains('')).join('\n')}\n\n${getTranslated(context, "additionalinfo")}: ${widget.driverRides[index].description}",
+                                            color: Colors.blueGrey,
+                                            fontSize: 14,
                                           ),
                           ),
                         ),
@@ -194,10 +194,12 @@ class _DriverRidesState extends State<DriverRides> {
                                 await showDialog(
                                   context: context,
                                   builder: (context) => new AlertDialog(
-                                    title: new Text(
-                                        getTranslated(context, "confirmation")),
-                                    content: Text(getTranslated(
-                                        context, "confirmdeleteride")),
+                                    title: getTitle(
+                                        title: getTranslated(
+                                            context, "confirmation")),
+                                    content: getTitle(
+                                        title: getTranslated(
+                                            context, "confirmdeleteride")),
                                     actions: [
                                       new TextButton(
                                         onPressed: () {
@@ -205,7 +207,7 @@ class _DriverRidesState extends State<DriverRides> {
                                                   rootNavigator: true)
                                               .pop();
                                         },
-                                        child: new Text('Cancel'),
+                                        child: getTitle(title: 'Cancel'),
                                       ),
                                       new TextButton(
                                         onPressed: () async {
@@ -241,14 +243,16 @@ class _DriverRidesState extends State<DriverRides> {
                                                   rootNavigator: true)
                                               .pop();
                                         },
-                                        child: new Text(
-                                            getTranslated(context, "confirm")),
+                                        child: getTitle(
+                                            title: getTranslated(
+                                                context, "confirm")),
                                       ),
                                     ],
                                   ),
                                 ).catchError((onError) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(onError)));
+                                      SnackBar(
+                                          content: getTitle(title: onError)));
                                 });
                               },
                             ),

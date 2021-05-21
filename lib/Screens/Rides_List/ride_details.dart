@@ -41,10 +41,10 @@ class RideDetails extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.all(0),
                       child: FittedBox(
-                        child: Text(
-                          "${ride.price}₪",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                        child: getTitle(
+                          title: "${ride.price}₪",
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -57,15 +57,17 @@ class RideDetails extends StatelessWidget {
                   subtitle: Padding(
                       padding: const EdgeInsets.only(top: 12),
                       child: ride.stopOvers.length == 0
-                          ? Text(
-                              "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers}\n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}",
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 14),
+                          ? getTitle(
+                              title:
+                                  "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers}\n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}",
+                              color: Colors.blueGrey,
+                              fontSize: 14,
                             )
-                          : Text(
-                              "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers} \n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}\n\n${getTranslated(context, "stopovers")} \n${ride.stopOvers.where((item) => item.contains('')).join('\n')}",
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 14),
+                          : getTitle(
+                              title:
+                                  "${getTranslated(context, "numofseats")}: ${ride.numOfPassengers} \n\n${getTranslated(context, "date")}: ${ride.date}\n\n${getTranslated(context, "time")}: ${ride.startTime}\n\n${getTranslated(context, "stopovers")} \n${ride.stopOvers.where((item) => item.contains('')).join('\n')}",
+                              color: Colors.blueGrey,
+                              fontSize: 14,
                             )),
                 ),
                 ListTile(
@@ -112,17 +114,19 @@ class RideDetails extends StatelessWidget {
                   subtitle: Padding(
                     padding: const EdgeInsets.only(top: 12),
                     child: ride.description == null
-                        ? Text(
-                            //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
-                            "${getTranslated(context, "carmodel")}: ${driver.carModel}",
-                            style:
-                                TextStyle(color: Colors.blueGrey, fontSize: 14),
+                        ? getTitle(
+                            title:
+                                //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
+                                "${getTranslated(context, "carmodel")}: ${driver.carModel}",
+                            color: Colors.blueGrey,
+                            fontSize: 14,
                           )
-                        : Text(
-                            //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
-                            "${getTranslated(context, "carmodel")}: ${driver.carModel}\n\n${getTranslated(context, "additionalinfo")}: ${ride.description}",
-                            style:
-                                TextStyle(color: Colors.blueGrey, fontSize: 14),
+                        : getTitle(
+                            title:
+                                //"Notes: ${ride.driver.setOfRules[0]}, ${ride.driver.setOfRules[1]}.\n\nCar Model: ${ride.driver.carModel}\n\nStopovers: ${ride.stopOvers[0]}, ${ride.stopOvers[1]}",
+                                "${getTranslated(context, "carmodel")}: ${driver.carModel}\n\n${getTranslated(context, "additionalinfo")}: ${ride.description}",
+                            color: Colors.blueGrey,
+                            fontSize: 14,
                           ),
                   ),
                 ),
@@ -269,8 +273,8 @@ class RideDetails extends StatelessWidget {
                               ],
                             ),
                           ).catchError((onError) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text(onError)));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: getTitle(title: onError)));
                           });
                   },
                 ),

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:easy_ride/Screens/Signup/components/signup_body.dart';
@@ -67,19 +69,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (err.message != null) {
         message = err.message;
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).errorColor,
-      ));
+      ReturnMessage.fail(context, message);
       setState(() {
         _isLoading = false;
       });
     } catch (err) {
       print(err);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(err.toString().substring(30)),
-        backgroundColor: Theme.of(context).errorColor,
-      ));
+      ReturnMessage.fail(context, err.toString().substring(30));
       setState(() {
         _isLoading = false;
       });

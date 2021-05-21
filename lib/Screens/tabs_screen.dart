@@ -77,10 +77,11 @@ class _TabsScreenState extends State<TabsScreen> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _pages[_selectedPageIndex]['title'],
-          style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
-        ),
+        title: getTitle(
+            title: _pages[_selectedPageIndex]['title'],
+            color: kPrimaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20),
         backgroundColor: Colors.white,
       ),
       drawer: MainDrawer(),

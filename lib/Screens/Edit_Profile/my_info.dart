@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -90,10 +91,9 @@ class _MyInfoState extends State<MyInfo> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  getTranslated(context, 'verifieddriver'),
-                  style: blueSubHeadingTextStyle,
-                ),
+                child: getTitle(
+                    title: getTranslated(context, 'verifieddriver'),
+                    color: Colors.blue[400]),
               )
             ],
           ),

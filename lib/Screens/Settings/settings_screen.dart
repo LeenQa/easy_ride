@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,10 +73,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          getTranslated(context, 'settings'),
-          style: TextStyle(color: kPrimaryColor),
-        ),
+        title: getTitle(
+            title: getTranslated(context, 'settings'),
+            color: kPrimaryColor,
+            fontSize: 20),
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -88,8 +89,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               title: DropdownButton<Language>(
                 underline: SizedBox(),
-                hint: Text(getTranslated(context, "switchlang"),
-                    style: TextStyle(fontWeight: FontWeight.w500)),
+                hint: getTitle(
+                    title: getTranslated(context, "switchlang"),
+                    fontWeight: FontWeight.w500),
                 onChanged: (Language language) {
                   _changeLanguage(language);
                 },
@@ -100,11 +102,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            Text(
-                              e.flag,
-                              style: TextStyle(fontSize: 30),
+                            getTitle(
+                              title: e.flag,
+                              fontSize: 30,
                             ),
-                            Text(e.name)
+                            getTitle(title: e.name)
                           ],
                         ),
                       ),
@@ -133,7 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Column(
                     children: [
                       SwitchListTile.adaptive(
-                          title: Text('Receive Chat Notifications'),
+                          title: getTitle(title: 'Receive Chat Notifications'),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.notifications,
@@ -148,7 +150,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .update({"getChatNotifications": chatNotif});
                           }),
                       SwitchListTile.adaptive(
-                          title: Text('Receive Request Notifications'),
+                          title:
+                              getTitle(title: 'Receive Request Notifications'),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.notifications,
@@ -164,7 +167,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     {"getRequestNotifications": requestNotif});
                           }),
                       SwitchListTile.adaptive(
-                          title: Text('Show phone number in profile'),
+                          title:
+                              getTitle(title: 'Show phone number in profile'),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.phone,

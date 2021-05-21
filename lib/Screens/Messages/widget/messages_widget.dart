@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widget/message_widget.dart';
 import 'package:flutter/material.dart';
@@ -47,13 +48,14 @@ class _MessagesWidgetState extends State<MessagesWidget> {
             return Center(child: CircularProgressIndicator());
           default:
             if (snapshot.hasError) {
-              return buildText('Something Went Wrong Try later');
+              return Center(
+                  child: getTitle(title: 'Something Went Wrong Try later'));
             } else if (!snapshot.hasData) {
-              return buildText('No Data');
+              return Center(child: getTitle(title: 'No Data'));
             } else {
               final messages = snapshot.data.docs;
               return messages == null
-                  ? buildText('Say Hi..')
+                  ? Center(child: getTitle(title: 'Say Hi..'))
                   : ListView.builder(
                       physics: BouncingScrollPhysics(),
                       reverse: true,
@@ -74,11 +76,4 @@ class _MessagesWidgetState extends State<MessagesWidget> {
       },
     );
   }
-
-  Widget buildText(String text) => Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 24),
-        ),
-      );
 }

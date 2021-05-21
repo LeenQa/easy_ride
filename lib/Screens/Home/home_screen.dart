@@ -4,10 +4,8 @@ import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/constants.dart';
 import 'package:easy_ride/localization/language_constants.dart';
-import 'package:easy_ride/models/ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../components/main_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,46 +45,36 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  DateTime dateTime = DateFormat('h:mm:ssa', 'en_US').parseLoose('2:00:00AM');
-
-  Ride ride1 = new Ride(
-    "TimeOfDay.now()",
-    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-    "Bethlehem",
-    "Ramallah",
-    "DateTime.now()",
-    2,
-    "20.00",
-    ["Jericho", "Ebediye"],
-  );
-
-  Ride ride2 = new Ride(
-    "TimeOfDay.now()",
-    // DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-    "Bethlehem",
-    "Ramallah",
-    "DateTime.now()",
-    2,
-    "20.00",
-    ["Jericho", "Ebediye"],
-  );
-
-  List<Ride> transactions = [];
-
   @override
   Widget build(BuildContext context) {
-    transactions = [ride1, ride2];
     return SingleChildScrollView(
       child: Column(
         children: [
-          /* RidesList(
-            transactions: transactions,
-            title: getTranslated(context, "nearyou"),
-          ), */
           InfoContainer(
             colors: [
-              kAccentDarkColor,
-              Color(0xff7be495),
+              redColor,
+              redColorLight,
+            ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                getTitle(
+                  title: getTranslated(context, "aboutus"),
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+                getTitle(
+                  title: getTranslated(context, "servicedescription"),
+                  color: Colors.white,
+                )
+              ],
+            ),
+          ),
+          InfoContainer(
+            colors: [
+              redColor,
+              kprimaryLitColor,
             ],
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,18 +82,118 @@ class _HomeScreenState extends State<HomeScreen> {
                 getTitle(
                     title: getTranslated(context, "ourservices"),
                     color: Colors.white,
-                    fontSize: 15),
-                getTitle(
-                    title: getTranslated(context, "servicedescription"),
-                    color: Colors.white)
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+                SizedBox(
+                  height: 14,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.search,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "srchforard"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800)
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.local_offer,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "offrard"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800)
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.drive_eta,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "bcmadriver"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800)
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 14,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.chat_bubble,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "messaging"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800)
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.rate_review,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "reviewing"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800)
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.map,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        getTitle(
+                            title: getTranslated(context, "maps"),
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800),
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 14,
+                ),
               ],
             ),
           ),
           InfoContainer(
             colors: [
               kPrimaryColor,
-              // kPrimaryColor,
-              redColor,
+              kprimaryLitColor,
             ],
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 getTitle(
                     title: getTranslated(context, "homequest2"),
                     color: Colors.white,
-                    fontSize: 15),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
                 CustomElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
@@ -121,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         arguments: {"already": already});
                   },
                   title: getTranslated(context, "bcmadriver"),
-                  color: redColor,
+                  color: kPrimaryDarkColor,
                   backgroundColor: Colors.white, // Use the component's default.
                 ),
               ],

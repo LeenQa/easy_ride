@@ -1,6 +1,7 @@
 import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Signup/components/field_validation.dart';
 import 'package:easy_ride/components/keys.dart';
+import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/components/rounded_password_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
@@ -66,11 +67,9 @@ class _SingupBodyState extends State<SingupBody> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: size.height * 0.07),
-              Text(
-                getTranslated(context, 'signup'),
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+              getTitle(
+                title: getTranslated(context, 'signup'),
+                fontSize: 20,
               ),
               SizedBox(height: size.height * 0.03),
               ClipRRect(
@@ -170,7 +169,7 @@ class _SingupBodyState extends State<SingupBody> {
                         child: ListView.separated(
                             padding: EdgeInsets.all(5),
                             itemBuilder: (context, index) {
-                              //return Text("data");
+                              //return getTitle(title:"data");
                               return PredictionTile(
                                   placePrediction:
                                       userLocationPredictionList[index],

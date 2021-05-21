@@ -169,5 +169,12 @@
     "delete": "Delete",
     "deleteriderequest": "Are you sure you want to delete this ride request?",
     "deleteacceptedridereq": "Are you sure you want to delete this ride request? It has been already accepted",
-    "typeusername": "Type user's name"
+    "typeusername": "Type user's name",
+    "editprofile": "Edit Profile",
+    "aboutus": "About Us",
+    "messaging": "User Messaging",
+    "reviewing": "Driver Reviewing",
+    "maps": "Location Mapping",
+    "ppupdated": "Profile Picture Updated!",
+    "phonep": "Phone"
 } 
