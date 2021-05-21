@@ -604,6 +604,13 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
 
                               FocusScope.of(context).unfocus();
                               if (isValid) {
+                                var nearbyPlaces = await FirebaseFirestore
+                                    .instance
+                                    .collection('nearbyPlaces')
+                                    .doc(uid)
+                                    .get()
+                                    .then((value) =>
+                                        value.data()['nearbyPlaces']);
                                 var firstname = await FirebaseFirestore.instance
                                     .collection('users')
                                     .doc(uid)
@@ -632,6 +639,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                   'stopovers': _stopOvers,
                                   'driver': uid,
                                   'description': _rideDescription,
+                                  'nearbyPlaces': nearbyPlaces,
                                 }).then((_) async {
                                   setState(() {
                                     _selectedDate = null;

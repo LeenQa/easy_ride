@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/keys.dart';
@@ -5,6 +6,8 @@ import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../tabs_screen.dart';
 
 class PredictionTile extends StatefulWidget {
   PlacePrediction placePrediction;
@@ -122,6 +125,7 @@ class _PredictionTileState extends State<PredictionTile> {
         print("drop off location");
         print(address.placeName);
         widget.callback("drop");
+        await getNearByPlaces(address.latitude, address.longitude);
       }
       if (pd == "stop") {
         Provider.of<Address>(context, listen: false)
@@ -132,5 +136,38 @@ class _PredictionTileState extends State<PredictionTile> {
         widget.callback("stop");
       }
     }
+  }
+
+  Future<void> getNearByPlaces(double latitude, double longitude) async {
+    List results = [];
+    List placesId = [];
+    List nearbyPlaces = [];
+    String nearbyUrl =
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&key=${mapKey}";
+    var nearbyResponse =
+        await RequestAssistant.getRequest(Uri.parse(nearbyUrl));
+    if (nearbyResponse == "Failed.") {
+      return;
+    }
+    results = nearbyResponse["results"];
+    for (int i = 0; i < results.length; i++) {
+      placesId.add(results[i]['place_id']);
+      String placeDetailsUrl =
+          "https://maps.googleapis.com/maps/api/place/details/json?place_id=${results[i]['place_id']}&key=$mapKey";
+      var response =
+          await RequestAssistant.getRequest(Uri.parse(placeDetailsUrl));
+
+      if (response == "Failed.") {
+        return;
+      }
+      if (response["status"] == "OK") {
+        await nearbyPlaces.add(response["result"]["name"]);
+      }
+    }
+    print(nearbyPlaces);
+    await FirebaseFirestore.instance
+        .collection("nearbyPlaces")
+        .doc(uid)
+        .set({'nearbyPlaces': nearbyPlaces});
   }
 }

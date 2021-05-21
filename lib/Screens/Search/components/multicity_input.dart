@@ -402,8 +402,9 @@ class _MulticityInputState extends State<MulticityInput> {
                                       .collection("rides")
                                       .doc(result.id)
                                       .collection("userrides")
-                                      .where("arrivalLocation",
-                                          isEqualTo: searched.arrivalLocation)
+                                      .where("nearbyPlaces",
+                                          arrayContains:
+                                              searched.arrivalLocation)
                                       .where("date",
                                           isEqualTo: DateFormat('EEE, MMM d')
                                               .format(_selectedDate))
