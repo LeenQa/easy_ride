@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Screens/Home/home_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
@@ -159,7 +160,13 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                         _textFieldController2.clear();
                         _textFieldController3.clear();
                         _textFieldController4.clear();
+                        cardNumber = '';
+                        expiryDate = '';
+                        cardHolderName = '';
+                        cvvCode = '';
                       });
+                      Navigator.of(context)
+                          .pushReplacementNamed(HomeScreen.routeName);
                     } else if (count == 1) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.orange,
@@ -350,7 +357,12 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                             Column(
                               children: [
                                 CreditCardForm(
-                                  cvvValidationMessage: "validated",
+                                  cvvValidationMessage:
+                                      getTranslated(context, "validcvv"),
+                                  dateValidationMessage:
+                                      getTranslated(context, "validdate"),
+                                  numberValidationMessage:
+                                      getTranslated(context, "validcardnumber"),
                                   formKey: formKey,
                                   obscureCvv: true,
                                   obscureNumber: true,
@@ -363,12 +375,14 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                                       border: OutlineInputBorder(),
                                       labelText: 'Card Number',
                                       hintText: 'XXXX XXXX XXXX XXXX',
+                                      errorMaxLines: 3,
                                       hintStyle: TextStyle(fontSize: 13),
                                       labelStyle: TextStyle(fontSize: 13)),
                                   expiryDateDecoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'Expired Date',
                                     hintText: 'XX/XX',
+                                    errorMaxLines: 3,
                                     hintStyle: TextStyle(fontSize: 13),
                                     labelStyle: TextStyle(fontSize: 13),
                                   ),
@@ -376,6 +390,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                                     border: OutlineInputBorder(),
                                     labelText: 'CVV',
                                     hintText: 'XXX',
+                                    errorMaxLines: 3,
                                     hintStyle: TextStyle(fontSize: 13),
                                     labelStyle: TextStyle(fontSize: 13),
                                   ),

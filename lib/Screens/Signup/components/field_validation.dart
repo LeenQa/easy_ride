@@ -6,7 +6,7 @@ class FieldValidation {
     RegExp passRegex = RegExp(
         r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$");
     if (password.isEmpty || !passRegex.hasMatch(password)) {
-      return "Password should be strong";
+      return "Password should be strong, you stupidm go choose a stronger password with small, capital, special characters";
     } else
       return null;
   }

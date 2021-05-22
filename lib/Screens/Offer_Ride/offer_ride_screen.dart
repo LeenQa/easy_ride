@@ -63,10 +63,6 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   String _price;
 
   List<Place> places;
-  AutoCompleteTextField searchTextFieldFrom;
-  AutoCompleteTextField searchTextFieldTo;
-  GlobalKey<AutoCompleteTextFieldState<Place>> keyFrom = new GlobalKey();
-  GlobalKey<AutoCompleteTextFieldState<Place>> keyTo = new GlobalKey();
 
   bool loading = true;
 
@@ -120,13 +116,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   }
 
   Future<String> loadJsonData() async {
-    var jsonText = await rootBundle.loadString('assets/places.json');
-    final parsed = json.decode(jsonText).cast<Map<String, dynamic>>();
-    setState(() =>
-        places = parsed.map<Place>((json) => Place.fromJson(json)).toList());
     loading = false;
-    // places = json.decode(jsonText).cast<Map<String, dynamic>>());
-    print(places.first.place);
     return getTranslated(context, "success");
   }
 
@@ -221,13 +211,13 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
       body: Card(
         elevation: 5,
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -615,16 +605,6 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                     .get()
                                     .then((value) =>
                                         value.data()['nearbyPlaces']);
-                                var firstname = await FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(uid)
-                                    .get()
-                                    .then((value) => value.data()['firstName']);
-                                var lastname = await FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(uid)
-                                    .get()
-                                    .then((value) => value.data()['lastName']);
 
                                 await FirebaseFirestore.instance
                                     .collection('rides')
@@ -696,8 +676,8 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -36,6 +36,7 @@ List<PlacePrediction> pickUpPlacePredictionList = [];
 List<PlacePrediction> dropOffPlacePredictionList = [];
 TextEditingController pickUpController = TextEditingController();
 TextEditingController dropOffController = TextEditingController();
+TextEditingController numOfPassengersController = TextEditingController();
 List<LatLng> pLineCoordinates = [];
 Set<Polyline> polylineSet = {};
 LatLngBounds latLngBounds;
@@ -73,41 +74,11 @@ List<Ride> Search(String from, String to, DateTime time, List<Ride> rides) {
 }
 
 class _MulticityInputState extends State<MulticityInput> {
+  final _formKey = GlobalKey<FormState>();
+  bool isValid = true;
+  bool isDate = true;
   List<Place> places;
-
   DateTime _selectedDate;
-  Ride ride1 = new Ride(
-      "TimeOfDay.now()",
-      //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-      "Bethlehem",
-      "Ramallah",
-      "DateTime.now()",
-      2,
-      "20.00",
-      ["Jericho", "Ebediye"],
-      "driver"
-      /* new Driver(
-      new User.User("email", "password", "Leen", "Qazaha", 059473232),
-      "Alfa Romeo giulia",
-      ["No smoking", "No pets"],
-    ), */
-      );
-  Ride ride2 = new Ride(
-      "TimeOfDay.now()",
-      //DateFormat('h:mm:ssa', 'en_US').parseLoose('4:00:00PM'),
-      "Bethlehem",
-      "Ramallah",
-      "DateTime.now()",
-      2,
-      "20.00",
-      ["Jericho", "Ebediye"],
-      "driver"
-      /* new Driver(
-      new User.User("email", "password", "Leen", "Qazaha", 059473232),
-      "Alfa Romeo giulia",
-      ["No smoking", "No pets"],
-    ), */
-      );
 
   @override
   void initState() {
@@ -166,7 +137,6 @@ class _MulticityInputState extends State<MulticityInput> {
       }
     });
 
-    List<Ride> rides = [ride1, ride2];
     void _presentDatePicker() {
       showDatePicker(
               context: context,
@@ -177,6 +147,7 @@ class _MulticityInputState extends State<MulticityInput> {
         if (pickedDate != null) {
           setState(() {
             _selectedDate = pickedDate;
+            isDate = true;
           });
         } else
           return;
@@ -193,16 +164,24 @@ class _MulticityInputState extends State<MulticityInput> {
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Form(
+                  key: _formKey,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        //getTitle(title:_res == null ? "not chosen yet" : _res),
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return getTranslated(
+                                    context, "specifyinitlocation");
+                              } else
+                                return null;
+                            },
                             controller: pickUpController,
                             decoration: InputDecoration(
+                              errorMaxLines: 3,
                               icon: Icon(Icons.local_taxi_rounded,
                                   color: kPrimaryColor),
                               labelText: getTranslated(context, 'from'),
@@ -238,8 +217,16 @@ class _MulticityInputState extends State<MulticityInput> {
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return getTranslated(
+                                    context, "specifydroplocation");
+                              } else
+                                return null;
+                            },
                             controller: dropOffController,
                             decoration: InputDecoration(
+                              errorMaxLines: 3,
                               icon: Icon(Icons.local_taxi_rounded,
                                   color: kPrimaryColor),
                               labelText: getTranslated(context, 'to'),
@@ -314,12 +301,24 @@ class _MulticityInputState extends State<MulticityInput> {
                               color: Colors.white,
                               fontSize: 14),
                         ),
-
                         Padding(
                           padding: padding,
                           child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return getTranslated(
+                                    context, "specifynumpassengers");
+                              } else if (int.parse(value) > 7 ||
+                                  int.parse(value) < 1) {
+                                return getTranslated(
+                                    context, "passengerserror");
+                              } else
+                                return null;
+                            },
+                            controller: numOfPassengersController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              errorMaxLines: 3,
                               icon: Icon(Icons.person, color: kPrimaryColor),
                               labelText: getTranslated(context, 'numofpass'),
                             ),
@@ -353,20 +352,20 @@ class _MulticityInputState extends State<MulticityInput> {
                                               TextStyle(fontSize: 30))),
                                       onPressed: _presentDatePicker,
                                       child: getTitle(
-                                          title: getTranslated(
-                                              context, "choosedate"),
-                                          color: Colors.grey[700],
+                                          title: _selectedDate == null
+                                              ? getTranslated(
+                                                  context, 'choosedate')
+                                              : DateFormat('EEE, MMM d')
+                                                      .format(_selectedDate) +
+                                                  '   ' +
+                                                  getTranslated(
+                                                      context, 'choosedate'),
+                                          color: isDate
+                                              ? Colors.grey[700]
+                                              : ThemeData().errorColor,
                                           fontSize: 14),
                                     ),
                                   ],
-                                ),
-                                Expanded(
-                                  child: getTitle(
-                                      title: _selectedDate == null
-                                          ? ''
-                                          : DateFormat(
-                                                  '\'Picked date: \' EEE, MMM d')
-                                              .format(_selectedDate)),
                                 ),
                               ],
                             ),
@@ -392,92 +391,112 @@ class _MulticityInputState extends State<MulticityInput> {
                                 textStyle: MaterialStateProperty.all(
                                     TextStyle(fontSize: 30))),
                             onPressed: () async {
+                              print(numOfPassengersController.text);
+                              print(isValid);
                               exactRides.clear();
                               otherRides.clear();
-                              await FirebaseFirestore.instance
-                                  .collection("users")
-                                  .get()
-                                  .then((querySnapshot) {
-                                querySnapshot.docs.forEach((result) async {
-                                  await FirebaseFirestore.instance
-                                      .collection("rides")
-                                      .doc(result.id)
-                                      .collection("userrides")
-                                      .where("nearbyPlaces",
-                                          arrayContains:
-                                              searched.arrivalLocation)
-                                      .where("date",
-                                          isEqualTo: DateFormat('EEE, MMM d')
-                                              .format(_selectedDate))
-                                      .get()
-                                      .then((querySnapshot) {
-                                    querySnapshot.docs.forEach((result) {
-                                      print("${querySnapshot.size} size");
-                                      print(result.data()['startLocation']);
-                                      String startTime =
-                                          result.data()['startTime'];
-                                      String startLocation =
-                                          result.data()['startLocation'];
-                                      String arrivalLocation =
-                                          result.data()['arrivalLocation'];
-                                      String date = result.data()['date'];
-                                      int numOfPassengers =
-                                          result.data()['numOfPassengers'];
-                                      String price = result.data()['price'];
-                                      List stopovers =
-                                          result.data()['stopovers'];
-                                      String driver = result.data()['driver'];
-                                      String description =
-                                          result.data()['description'];
-                                      String id = result.id;
-                                      Ride ride = new Ride(
-                                          startTime,
-                                          startLocation,
-                                          arrivalLocation,
-                                          date,
-                                          numOfPassengers,
-                                          price,
-                                          stopovers,
-                                          driver,
-                                          description,
-                                          [],
-                                          id);
-                                      searchedRide = SearchedRide(
-                                          pickUpLocation:
-                                              searched.startLocation,
-                                          dropOffLocation:
-                                              searched.arrivalLocation,
-                                          date: DateFormat('EEE, MMM d')
-                                              .format(_selectedDate),
-                                          numOfPassengers:
-                                              searched.numOfPassengers,
-                                          currentUser: uid);
-                                      if (ride.numOfPassengers >=
-                                          searched.numOfPassengers) {
-                                        if (ride.startLocation ==
-                                                searched.startLocation ||
-                                            ride.stopOvers.contains(
-                                                searched.startLocation)) {
-                                          exactRides.add(ride);
-                                          print(searchedRide.date);
-                                          print(
-                                              "exactrides: ${exactRides.length}");
-                                        } else {
-                                          otherRides.add(ride);
-                                          print(
-                                              "otherrides: ${otherRides.length}");
+                              isValid = _formKey.currentState.validate();
+                              print(isValid);
+                              if (_selectedDate == null) {
+                                setState(() {
+                                  isDate = false;
+                                  isValid = false;
+                                });
+                              }
+
+                              FocusScope.of(context).unfocus();
+                              if (isValid) {
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .get()
+                                    .then((querySnapshot) {
+                                  querySnapshot.docs.forEach((result) async {
+                                    await FirebaseFirestore.instance
+                                        .collection("rides")
+                                        .doc(result.id)
+                                        .collection("userrides")
+                                        .where("nearbyPlaces",
+                                            arrayContains:
+                                                searched.arrivalLocation)
+                                        .where("date",
+                                            isEqualTo: DateFormat('EEE, MMM d')
+                                                .format(_selectedDate))
+                                        .get()
+                                        .then((querySnapshot) {
+                                      querySnapshot.docs.forEach((result) {
+                                        print("${querySnapshot.size} size");
+                                        print(result.data()['startLocation']);
+                                        String startTime =
+                                            result.data()['startTime'];
+                                        String startLocation =
+                                            result.data()['startLocation'];
+                                        String arrivalLocation =
+                                            result.data()['arrivalLocation'];
+                                        String date = result.data()['date'];
+                                        int numOfPassengers =
+                                            result.data()['numOfPassengers'];
+                                        String price = result.data()['price'];
+                                        List stopovers =
+                                            result.data()['stopovers'];
+                                        String driver = result.data()['driver'];
+                                        String description =
+                                            result.data()['description'];
+                                        String id = result.id;
+                                        Ride ride = new Ride(
+                                            startTime,
+                                            startLocation,
+                                            arrivalLocation,
+                                            date,
+                                            numOfPassengers,
+                                            price,
+                                            stopovers,
+                                            driver,
+                                            description,
+                                            [],
+                                            id);
+                                        searchedRide = SearchedRide(
+                                            pickUpLocation:
+                                                searched.startLocation,
+                                            dropOffLocation:
+                                                searched.arrivalLocation,
+                                            date: DateFormat('EEE, MMM d')
+                                                .format(_selectedDate),
+                                            numOfPassengers:
+                                                searched.numOfPassengers,
+                                            currentUser: uid);
+                                        if (ride.numOfPassengers >=
+                                            searched.numOfPassengers) {
+                                          if (ride.startLocation ==
+                                                  searched.startLocation ||
+                                              ride.stopOvers.contains(
+                                                  searched.startLocation)) {
+                                            exactRides.add(ride);
+                                            print(searchedRide.date);
+                                            print(
+                                                "exactrides: ${exactRides.length}");
+                                          } else {
+                                            otherRides.add(ride);
+                                            print(
+                                                "otherrides: ${otherRides.length}");
+                                          }
                                         }
-                                      }
+                                      });
                                     });
                                   });
                                 });
-                              });
 
-                              Future.delayed(const Duration(seconds: 1))
-                                  .then((_) {
-                                Navigator.of(context)
-                                    .pushNamed(RidesList.routeName);
-                              });
+                                Future.delayed(const Duration(seconds: 1))
+                                    .then((_) {
+                                  Navigator.of(context)
+                                      .pushNamed(RidesList.routeName);
+                                  setState(() {
+                                    _selectedDate = null;
+                                    numOfPassengersController.clear();
+                                    dropOffController.clear();
+                                    pickUpController.clear();
+                                  });
+                                });
+                              }
                             },
                             child: getTitle(
                                 title: getTranslated(context, "search"),

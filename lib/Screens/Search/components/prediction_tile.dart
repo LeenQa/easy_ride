@@ -144,7 +144,7 @@ class _PredictionTileState extends State<PredictionTile> {
     List placesId = [];
     List nearbyPlaces = [];
     String nearbyUrl =
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&key=${mapKey}";
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1000&key=${mapKey}";
     var nearbyResponse =
         await RequestAssistant.getRequest(Uri.parse(nearbyUrl));
     if (nearbyResponse == "Failed.") {
@@ -153,17 +153,7 @@ class _PredictionTileState extends State<PredictionTile> {
     results = nearbyResponse["results"];
     for (int i = 0; i < results.length; i++) {
       placesId.add(results[i]['place_id']);
-      String placeDetailsUrl =
-          "https://maps.googleapis.com/maps/api/place/details/json?place_id=${results[i]['place_id']}&key=$mapKey";
-      var response =
-          await RequestAssistant.getRequest(Uri.parse(placeDetailsUrl));
-
-      if (response == "Failed.") {
-        return;
-      }
-      if (response["status"] == "OK") {
-        await nearbyPlaces.add(response["result"]["name"]);
-      }
+      nearbyPlaces.add(results[i]['name']);
     }
     print(nearbyPlaces);
     await FirebaseFirestore.instance

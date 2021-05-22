@@ -147,36 +147,67 @@ class _RidesListState extends State<RidesList> {
       appBar: AppBar(
           title: getTitle(
               title: getTranslated(context, "rideslist"), fontSize: 20)),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CustomContainer(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ridesList(context, exactRides,
-                        getTranslated(context, "rideresults")),
-                  ],
+      body: (exactRides.length == 0 && otherRides.length == 0)
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: getTitle(
+                      title: getTranslated(context, "noridesfound"),
+                      color: blueColor),
                 ),
+              ],
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  exactRides.length == 0
+                      ? Container(
+                          margin: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Center(
+                                child: getTitle(
+                                    title:
+                                        getTranslated(context, "nodirectrides"),
+                                    color: blueColor),
+                              ),
+                            ],
+                          ),
+                        )
+                      : CustomContainer(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ridesList(context, exactRides,
+                                    getTranslated(context, "rideresults")),
+                              ],
+                            ),
+                          ),
+                        ),
+                  otherRides.length == 0
+                      ? Container()
+                      : CustomContainer(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ridesList(
+                                    context,
+                                    otherRides,
+                                    getTranslated(
+                                        context, "otherridesresults")),
+                              ],
+                            ),
+                          ),
+                        ),
+                ],
               ),
             ),
-            otherRides.length == 0
-                ? Container()
-                : CustomContainer(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ridesList(context, otherRides,
-                              getTranslated(context, "otherridesresults")),
-                        ],
-                      ),
-                    ),
-                  ),
-          ],
-        ),
-      ),
     );
   }
 }

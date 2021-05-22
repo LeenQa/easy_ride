@@ -73,11 +73,11 @@ class _MapScreenState extends State<MapScreen> {
     var pad;
     search
         ? Search.directionsDetails != null
-            ? pad = 0.20
-            : pad = 0.15
+            ? pad = 0.22
+            : pad = 0.17
         : Offer.directionsDetails != null
-            ? pad = 0.20
-            : pad = 0.15;
+            ? pad = 0.22
+            : pad = 0.17;
 
     /* var resultLocation = Provider.of<Address>(context).pickUpLocation != null
         ? Provider.of<Address>(context).pickUpLocation.placeName
@@ -174,47 +174,49 @@ class _MapScreenState extends State<MapScreen> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      distance == null
-                          ? Container()
-                          : getTitle(
-                              title:
-                                  "${getTranslated(context, "placesdistance")}: $distance ${getTranslated(context, "km")}",
-                              color: Colors.blue[400]),
-                      SizedBox(height: 4),
-                      price == null
-                          ? Container()
-                          : getTitle(
-                              title:
-                                  "${getTranslated(context, "cost")}: $price ${getTranslated(context, "nis")}",
-                              color: Colors.blue[400]),
-                      SizedBox(height: 10),
-                      getTitle(
-                          title: getTranslated(context, "currentlocation")),
-                      SizedBox(height: 15),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        distance == null
+                            ? Container()
+                            : getTitle(
+                                title:
+                                    "${getTranslated(context, "placesdistance")}: $distance ${getTranslated(context, "km")}",
+                                color: Colors.blue[400]),
+                        SizedBox(height: 4),
+                        price == null
+                            ? Container()
+                            : getTitle(
+                                title:
+                                    "${getTranslated(context, "cost")}: $price ${getTranslated(context, "nis")}",
+                                color: Colors.blue[400]),
+                        SizedBox(height: 10),
+                        getTitle(
+                            title: getTranslated(context, "currentlocation")),
+                        SizedBox(height: 15),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.location_on_rounded,
+                                  color: kPrimaryColor),
+                              SizedBox(width: 10),
+                              Provider.of<Address>(context).currentLocation ==
+                                      null
+                                  ? Center(child: CircularProgressIndicator())
+                                  : getTitle(
+                                      title: Provider.of<Address>(context)
+                                          .currentLocation
+                                          .placeName)
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.location_on_rounded,
-                                color: kPrimaryColor),
-                            SizedBox(width: 10),
-                            Provider.of<Address>(context).currentLocation ==
-                                    null
-                                ? Center(child: CircularProgressIndicator())
-                                : getTitle(
-                                    title: Provider.of<Address>(context)
-                                        .currentLocation
-                                        .placeName)
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

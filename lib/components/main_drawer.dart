@@ -340,7 +340,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           ),
                           buildListTile(
                             context,
-                            Icons.person_search_outlined,
+                            Icons.arrow_forward,
                             () => _showUserRides(context),
                             getTitle(
                                 title: getTranslated(context, "requestedrides"),
