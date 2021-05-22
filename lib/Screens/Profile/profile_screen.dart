@@ -270,50 +270,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       endIndent: 10,
                                     ),
                                     snapshot.data.data()["showPhone"]
-                                        ? Card(
-                                            elevation: 0,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 25,
-                                                            horizontal: 10)),
-                                                Icon(
-                                                  Icons.phone,
-                                                  color: Colors.red,
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.08,
-                                                ),
-                                                Title(
-                                                  color: Colors.pink,
-                                                  child: getTitle(
-                                                    title: getTranslated(
-                                                        context, "phonep"),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.05,
-                                                ),
-                                                getTitle(
-                                                    title: snapshot.data
-                                                        .data()["phone"]),
-                                              ],
-                                            ))
+                                        ? Column(
+                                            children: [
+                                              Card(
+                                                  elevation: 0,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 25,
+                                                                  horizontal:
+                                                                      10)),
+                                                      Icon(
+                                                        Icons.phone,
+                                                        color: Colors.red,
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.08,
+                                                      ),
+                                                      Title(
+                                                        color: Colors.pink,
+                                                        child: getTitle(
+                                                          title: getTranslated(
+                                                              context,
+                                                              "phonep"),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                      ),
+                                                      getTitle(
+                                                          title: snapshot.data
+                                                              .data()["phone"]),
+                                                    ],
+                                                  )),
+                                              Divider(
+                                                indent: 10,
+                                                endIndent: 10,
+                                              ),
+                                            ],
+                                          )
                                         : Container(),
-                                    Divider(
-                                      indent: 10,
-                                      endIndent: 10,
-                                    ),
                                     args["isDriver"]
                                         ? FutureBuilder<QuerySnapshot>(
                                             future: FirebaseFirestore.instance

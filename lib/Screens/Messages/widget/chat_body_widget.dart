@@ -53,8 +53,9 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
         itemBuilder: (context, index) {
           final userId = widget.conversations[index].data()["receiverId"];
           final time = widget.conversations[index].data()["lastMessageTime"];
+          final message = widget.conversations[index].data()["lastMessage"];
           return Container(
-            height: 75,
+            height: 90,
             child: FutureBuilder(
               future: getConversations(userId),
               builder: (BuildContext context, snapshot) {
@@ -104,16 +105,17 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                               title: getTitle(
                                   title: name,
                                   color: Colors.black,
-                                  fontSize: 16), //name
-                              subtitle: getTitle(
-                                  title: DateFormat(
-                                          'EEE, MMM d y \'at\' H:mm:s')
-                                      .format(
-                                          DateTime.fromMicrosecondsSinceEpoch(
-                                              time.microsecondsSinceEpoch))
-                                      .toString(),
-                                  fontSize: 13),
+                                  fontSize: 15), //name
+                              trailing: getTitle(
+                                title: DateFormat('EEE, MMM d')
+                                    .format(DateTime.fromMicrosecondsSinceEpoch(
+                                        time.microsecondsSinceEpoch))
+                                    .toString(),
+                                fontSize: 12,
+                              ),
+                              subtitle: getTitle(title: message, fontSize: 13),
                             ),
+                            Divider()
                           ],
                         );
                     }

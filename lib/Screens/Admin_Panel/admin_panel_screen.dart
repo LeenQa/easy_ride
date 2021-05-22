@@ -36,6 +36,11 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: getTitle(
+                title: getTranslated(context, "driverrequests"), fontSize: 17),
+          ),
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('driver_requests')
@@ -140,7 +145,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                             });
                                             AssistantMethods.sendNotification([
                                               token
-                                            ], "Your request for becoming a driver had been rejected!",
+                                            ], "Your request to become a driver has been rejected!",
                                                 "", "");
                                           }
                                         }),
@@ -188,7 +193,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                             });
                                             AssistantMethods.sendNotification([
                                               token
-                                            ], "Your request for becoming a driver had been accepted!",
+                                            ], "Your request to become a driver has been accepted!",
                                                 "", "");
                                           }
                                         });
@@ -202,6 +207,25 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                         }).toList(),
                       ),
                     );
+                }
+              }),
+          StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection("drivers").snapshots(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center();
+                  default:
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return getTitle(
+                          title: getTranslated(context, "sthwrong"));
+                    } else
+                      return CustomContainer(
+                          child: getTitle(
+                              title:
+                                  "${getTranslated(context, "numofdrivers")}: ${snapshot.data.docs.length}"));
                 }
               }),
         ],

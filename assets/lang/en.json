@@ -122,7 +122,7 @@
     "updatename": "Update Full Name",
     "updatepassword": "Update Password",
     "typename": "Type a new name",
-    "typephone": "لإype a new phone number",
+    "typephone": "Type a new phone number",
     "typepassword": "Type a new password",
     "photoerror": "No photo was selected or taken",
     "selectphoto": "Select Photo",
@@ -176,5 +176,7 @@
     "reviewing": "Driver Reviewing",
     "maps": "Location Mapping",
     "ppupdated": "Profile Picture Updated!",
-    "phonep": "Phone"
+    "phonep": "Phone",
+    "driverrequests": "Driver Requests",
+    "numofdrivers": "Total number of verified drivers"
 } 

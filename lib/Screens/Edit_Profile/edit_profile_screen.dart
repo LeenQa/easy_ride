@@ -402,8 +402,8 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
     final pickedFile = await picker.getImage(source: imageSource);
     Map args = ModalRoute.of(context).settings.arguments;
     setState(() async {
-      ReturnMessage.wait(context, getTranslated(context, "pleasewait"));
       if (pickedFile != null) {
+        ReturnMessage.wait(context, getTranslated(context, "pleasewait"));
         _image = File(pickedFile.path);
         Reference storageReference;
         storageReference = FirebaseStorage.instance

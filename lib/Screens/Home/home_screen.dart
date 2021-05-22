@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/Screens/Become_Driver/become_driver_screen.dart';
+import 'package:easy_ride/Screens/Offer_Ride/offer_ride_screen.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/info_container.dart';
 import 'package:easy_ride/constants.dart';
@@ -195,26 +196,54 @@ class _HomeScreenState extends State<HomeScreen> {
               kPrimaryColor,
               kprimaryLitColor,
             ],
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                getTitle(
-                    title: getTranslated(context, "homequest2"),
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600),
-                CustomElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                        BecomeDriverScreen.routeName,
-                        arguments: {"already": already});
-                  },
-                  title: getTranslated(context, "bcmadriver"),
-                  color: kPrimaryDarkColor,
-                  backgroundColor: Colors.white, // Use the component's default.
-                ),
-              ],
-            ),
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Center();
+                    default:
+                      if (snapshot.hasError) {
+                        print(snapshot.error);
+                        return getTitle(
+                            title: getTranslated(context, "sthwrong"));
+                      } else
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            getTitle(
+                                title: getTranslated(context, "homequest2"),
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600),
+                            !snapshot.data.data()["isDriver"]
+                                ? CustomElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(
+                                          BecomeDriverScreen.routeName,
+                                          arguments: {"already": already});
+                                    },
+                                    title: getTranslated(context, "bcmadriver"),
+                                    color: kPrimaryDarkColor,
+                                    backgroundColor: Colors.white,
+                                  )
+                                : CustomElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(
+                                        OfferRideScreen.routeName,
+                                      );
+                                    },
+                                    title: getTranslated(context, "offrard"),
+                                    color: kPrimaryDarkColor,
+                                    backgroundColor: Colors.white,
+                                  )
+                          ],
+                        );
+                  }
+                }),
           ),
         ],
       ),

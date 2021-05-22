@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/return_message.dart';
@@ -221,143 +222,175 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      getTitle(
-                          title: getTranslated(context, "drivinglicense"),
-                          fontSize: 15),
-                      _image[Picture.DriverLicense] != null
-                          ? Image.file(
-                              File(_image[Picture.DriverLicense].path),
-                              height: 100,
-                              width: 100,
-                            )
-                          : Container(height: 20),
-                      CustomElevatedButton(
-                        title: getTranslated(context, "choosephoto"),
-                        onPressed: () => chooseFile(Picture.DriverLicense),
-                        backgroundColor: kPrimaryColor,
-                      ),
-                      Container(height: 20),
-                      getTitle(
-                          title: getTranslated(context, "carlicense"),
-                          fontSize: 15),
-                      _image[Picture.CarLicense] != null
-                          ? Image.file(
-                              File(_image[Picture.CarLicense].path),
-                              height: 100,
-                              width: 100,
-                            )
-                          : Container(height: 20),
-                      CustomElevatedButton(
-                        title: getTranslated(context, "choosephoto"),
-                        onPressed: () => chooseFile(Picture.CarLicense),
-                        backgroundColor: kPrimaryColor,
-                      ),
-                      Container(height: 20),
-                      getTitle(
-                          title: getTranslated(context, "carinsurance"),
-                          fontSize: 15),
-                      _image[Picture.CarInsurance] != null
-                          ? Image.file(
-                              File(_image[Picture.CarInsurance].path),
-                              height: 100,
-                              width: 100,
-                            )
-                          : Container(height: 20),
-                      CustomElevatedButton(
-                        title: getTranslated(context, "choosephoto"),
-                        onPressed: () => chooseFile(Picture.CarInsurance),
-                        backgroundColor: kPrimaryColor,
-                      ),
-                      Container(height: 20),
-                      getTitle(
-                          title: getTranslated(context, "identity"),
-                          fontSize: 15),
-                      _image[Picture.DriverIdentity] != null
-                          ? Image.file(
-                              File(_image[Picture.DriverIdentity].path),
-                              height: 100,
-                              width: 100,
-                            )
-                          : Container(height: 20),
-                      CustomElevatedButton(
-                        title: getTranslated(context, "choosephoto"),
-                        onPressed: () => chooseFile(Picture.DriverIdentity),
-                        backgroundColor: kPrimaryColor,
-                      ),
-                      Container(height: 20),
-                      getTitle(
-                          title: getTranslated(context, "carpic"),
-                          fontSize: 15),
-                      _image[Picture.Car] != null
-                          ? Image.file(
-                              File(_image[Picture.Car].path),
-                              height: 100,
-                              width: 100,
-                            )
-                          : Container(height: 20),
-                      CustomElevatedButton(
-                        title: getTranslated(context, "choosephoto"),
-                        onPressed: () => chooseFile(Picture.Car),
-                        backgroundColor: kPrimaryColor,
-                      ),
-                      Container(height: 20),
-                      RoundedInputField(
-                        controller: _textFieldController,
-                        hintText: getTranslated(context, "whatiscarmodel"),
-                        icon: Icons.car_repair,
-                        onSaved: (value) {
-                          _carModel = value.trim();
-                        },
-                      ),
-                      Container(height: 20),
-                      getTitle(
-                          title: getTranslated(context, "fillpaymentinfo"),
-                          fontSize: 15),
-                      CreditCardWidget(
-                        cardNumber: cardNumber,
-                        expiryDate: expiryDate,
-                        cardHolderName: cardHolderName,
-                        cvvCode: cvvCode,
-                        showBackView: isCvvFocused,
-                        obscureCardNumber: true,
-                        obscureCardCvv: true,
-                        cardBgColor: kPrimaryColor,
-                        cardType: CardType.visa,
-                      ),
-                      Column(
-                        children: [
-                          CreditCardForm(
-                            cvvValidationMessage: "validated",
-                            formKey: formKey,
-                            obscureCvv: true,
-                            obscureNumber: true,
-                            cardNumber: cardNumber,
-                            cvvCode: cvvCode,
-                            cardHolderName: cardHolderName,
-                            expiryDate: expiryDate,
-                            themeColor: kPrimaryColor,
-                            cardNumberDecoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Card Number',
-                              hintText: 'XXXX XXXX XXXX XXXX',
+                      CustomContainer(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            getTitle(
+                                title: getTranslated(context, "drivinglicense"),
+                                fontSize: 15),
+                            _image[Picture.DriverLicense] != null
+                                ? Image.file(
+                                    File(_image[Picture.DriverLicense].path),
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Container(height: 20),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "choosephoto"),
+                              onPressed: () =>
+                                  chooseFile(Picture.DriverLicense),
+                              backgroundColor: kPrimaryColor,
                             ),
-                            expiryDateDecoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Expired Date',
-                              hintText: 'XX/XX',
+                            Container(height: 20),
+                            getTitle(
+                                title: getTranslated(context, "carlicense"),
+                                fontSize: 15),
+                            _image[Picture.CarLicense] != null
+                                ? Image.file(
+                                    File(_image[Picture.CarLicense].path),
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Container(height: 20),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "choosephoto"),
+                              onPressed: () => chooseFile(Picture.CarLicense),
+                              backgroundColor: kPrimaryColor,
                             ),
-                            cvvCodeDecoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'CVV',
-                              hintText: 'XXX',
+                            Container(height: 20),
+                            getTitle(
+                                title: getTranslated(context, "carinsurance"),
+                                fontSize: 15),
+                            _image[Picture.CarInsurance] != null
+                                ? Image.file(
+                                    File(_image[Picture.CarInsurance].path),
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Container(height: 20),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "choosephoto"),
+                              onPressed: () => chooseFile(Picture.CarInsurance),
+                              backgroundColor: kPrimaryColor,
                             ),
-                            cardHolderDecoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Card Holder',
+                            Container(height: 20),
+                            getTitle(
+                                title: getTranslated(context, "identity"),
+                                fontSize: 15),
+                            _image[Picture.DriverIdentity] != null
+                                ? Image.file(
+                                    File(_image[Picture.DriverIdentity].path),
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Container(height: 20),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "choosephoto"),
+                              onPressed: () =>
+                                  chooseFile(Picture.DriverIdentity),
+                              backgroundColor: kPrimaryColor,
                             ),
-                            onCreditCardModelChange: onCreditCardModelChange,
-                          ),
-                        ],
+                            Container(height: 20),
+                            getTitle(
+                                title: getTranslated(context, "carpic"),
+                                fontSize: 15),
+                            _image[Picture.Car] != null
+                                ? Image.file(
+                                    File(_image[Picture.Car].path),
+                                    height: 100,
+                                    width: 100,
+                                  )
+                                : Container(height: 20),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "choosephoto"),
+                              onPressed: () => chooseFile(Picture.Car),
+                              backgroundColor: kPrimaryColor,
+                            ),
+                            Container(height: 20),
+                            RoundedInputField(
+                              controller: _textFieldController,
+                              hintText:
+                                  getTranslated(context, "whatiscarmodel"),
+                              icon: Icons.car_repair,
+                              onSaved: (value) {
+                                _carModel = value.trim();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      CustomContainer(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(height: 20),
+                            getTitle(
+                                title:
+                                    getTranslated(context, "fillpaymentinfo"),
+                                fontSize: 15),
+                            CreditCardWidget(
+                              cardNumber: cardNumber,
+                              expiryDate: expiryDate,
+                              cardHolderName: cardHolderName,
+                              cvvCode: cvvCode,
+                              showBackView: isCvvFocused,
+                              obscureCardNumber: true,
+                              obscureCardCvv: true,
+                              cardBgColor: kPrimaryColor,
+                              cardType: CardType.visa,
+                              textStyle: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontFamily: "Quicksand",
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Column(
+                              children: [
+                                CreditCardForm(
+                                  cvvValidationMessage: "validated",
+                                  formKey: formKey,
+                                  obscureCvv: true,
+                                  obscureNumber: true,
+                                  cardNumber: cardNumber,
+                                  cvvCode: cvvCode,
+                                  cardHolderName: cardHolderName,
+                                  expiryDate: expiryDate,
+                                  themeColor: kPrimaryColor,
+                                  cardNumberDecoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Card Number',
+                                      hintText: 'XXXX XXXX XXXX XXXX',
+                                      hintStyle: TextStyle(fontSize: 13),
+                                      labelStyle: TextStyle(fontSize: 13)),
+                                  expiryDateDecoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Expired Date',
+                                    hintText: 'XX/XX',
+                                    hintStyle: TextStyle(fontSize: 13),
+                                    labelStyle: TextStyle(fontSize: 13),
+                                  ),
+                                  cvvCodeDecoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'CVV',
+                                    hintText: 'XXX',
+                                    hintStyle: TextStyle(fontSize: 13),
+                                    labelStyle: TextStyle(fontSize: 13),
+                                  ),
+                                  cardHolderDecoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Card Holder',
+                                    labelStyle: TextStyle(fontSize: 13),
+                                  ),
+                                  onCreditCardModelChange:
+                                      onCreditCardModelChange,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       CheckboxListTile(
                         title: getTitle(

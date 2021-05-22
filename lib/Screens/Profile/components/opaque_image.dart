@@ -14,7 +14,7 @@ class OpaqueImage extends StatelessWidget {
           image: NetworkImage(imageUrl),
           width: double.maxFinite,
           height: double.maxFinite,
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         ),
         Container(
           color: kPrimaryLightColor.withOpacity(0.85),

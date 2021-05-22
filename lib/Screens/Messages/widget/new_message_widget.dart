@@ -55,6 +55,7 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
           .doc(widget.convId.trim())
           .update({
         "lastMessageTime": DateTime.now(),
+        "lastMessage": message,
       });
 
       await FirebaseFirestore.instance
