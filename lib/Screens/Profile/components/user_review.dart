@@ -2,17 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class UserReview extends StatelessWidget {
   final String reviewerId;
   final String date;
   final String review;
+  final double rating;
 
   const UserReview(
       {Key key,
       @required this.reviewerId,
       @required this.date,
-      @required this.review})
+      @required this.review,
+      this.rating})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -56,6 +59,17 @@ class UserReview extends StatelessWidget {
                             title: name,
                             color: Colors.brown[500],
                             fontSize: 14),
+                        trailing: SmoothStarRating(
+                          isReadOnly: true,
+                          rating: rating,
+                          size: 10,
+                          filledIconData: Icons.star,
+                          halfFilledIconData: Icons.star_half,
+                          defaultIconData: Icons.star_border,
+                          starCount: 5,
+                          //allowHalfRating: true,
+                          spacing: 1.0,
+                        ),
                         subtitle: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

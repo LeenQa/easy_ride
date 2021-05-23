@@ -497,6 +497,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                   reviewerId: review
                                                                           .data()[
                                                                       "reviewerId"],
+                                                                  rating: review
+                                                                          .data()[
+                                                                      "rating"],
                                                                 );
                                                               })
                                                         ],

@@ -5,6 +5,7 @@ import 'package:easy_ride/Screens/Search/components/multicity_input.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/driver.dart';
 import 'package:easy_ride/models/ride.dart';
@@ -136,10 +137,8 @@ class RideDetails extends StatelessWidget {
                   color: Colors.white,
                   onPressed: () async {
                     searchedRide.currentUser == ride.driver
-                        ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Theme.of(context).errorColor,
-                            content: getTitle(
-                                title: getTranslated(context, "ownrideerror"))))
+                        ? ReturnMessage.fail(
+                            context, getTranslated(context, "ownrideerror"))
                         : await showDialog(
                             context: context,
                             builder: (context) => new AlertDialog(
@@ -195,6 +194,7 @@ class RideDetails extends StatelessWidget {
                                         'user': searchedRide.currentUser,
                                         'ride': ride.id,
                                         'status': 'pending',
+                                        'isReviewed': false,
                                       }).then((_) async {
                                         await FirebaseFirestore.instance
                                             .collection('users')
@@ -241,30 +241,19 @@ class RideDetails extends StatelessWidget {
                                           Navigator.of(context,
                                                   rootNavigator: true)
                                               .pop();
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              backgroundColor: Colors.green,
-                                              content: getTitle(
-                                                  title: getTranslated(context,
-                                                      "requestsentsuccess")),
-                                            ),
-                                          );
+                                          ReturnMessage.success(
+                                              context,
+                                              getTranslated(context,
+                                                  "requestsentsuccess"));
                                         });
                                       });
                                     } else {
                                       Navigator.of(context, rootNavigator: true)
                                           .pop();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          backgroundColor:
-                                              Theme.of(context).errorColor,
-                                          content: getTitle(
-                                              title: getTranslated(context,
-                                                  "requestalreadysent")),
-                                        ),
-                                      );
+                                      ReturnMessage.fail(
+                                          context,
+                                          getTranslated(
+                                              context, "requestalreadysent"));
                                     }
                                   },
                                   child: getTitle(
@@ -273,8 +262,7 @@ class RideDetails extends StatelessWidget {
                               ],
                             ),
                           ).catchError((onError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: getTitle(title: onError)));
+                            ReturnMessage.fail(context, onError);
                           });
                   },
                 ),

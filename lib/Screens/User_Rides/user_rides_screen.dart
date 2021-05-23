@@ -3,6 +3,7 @@ import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/components/rounded_input_field.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
@@ -397,202 +398,212 @@ class _UserRidesState extends State<UserRides> {
                                           ),
                           ),
                         ),
-                        CustomElevatedButton(
-                          backgroundColor: redColor,
-                          title: getTranslated(context, "delete"),
-                          color: Colors.white,
-                          onPressed: () async {
-                            DateTime now = DateTime.now();
-                            DateTime rideDate = new DateFormat('EEE, MMM d')
-                                .parse(widget.userRides[index].date);
-                            if (widget.userRides[index].status == "pending") {
-                              await showDialog(
-                                context: context,
-                                builder: (context) => new AlertDialog(
-                                  title: getTitle(
-                                      title: getTranslated(
-                                          context, "confirmation")),
-                                  content: getTitle(
-                                      title: getTranslated(
-                                          context, "deleteriderequest")),
-                                  actions: [
-                                    new TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: getTitle(
-                                          title:
-                                              getTranslated(context, "cancel")),
-                                    ),
-                                    new TextButton(
-                                      onPressed: () async {
-                                        await FirebaseFirestore.instance
-                                            .collection('requests')
-                                            .doc(
-                                                widget.userRides[index].request)
-                                            .delete()
-                                            .then((value) {
-                                          setState(() {
-                                            widget.drivers.removeAt(index);
-                                            widget.userRides.removeAt(index);
-                                            widget.userRidesDetails
-                                                .removeAt(index);
-                                          });
-                                        });
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      /*  */
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (!widget.userRides[index].isReviewed)
+                              CustomElevatedButton(
+                                backgroundColor: Colors.green[400],
+                                title: getTranslated(context, "writereview"),
+                                color: Colors.white,
+                                onPressed: () => _modalBottomSheetMenu(
+                                    context,
+                                    widget.userRidesDetails[index].driver,
+                                    widget.userRides[index].ride,
+                                    widget.userRides[index].request,
+                                    index),
+                              ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            CustomElevatedButton(
+                              title: getTranslated(context, "delete"),
+                              color: Colors.red,
+                              backgroundColor: Colors.white,
+                              borderColor: Colors.red,
+                              onPressed: () async {
+                                DateTime now = DateTime.now();
+                                DateTime rideDate = new DateFormat('EEE, MMM d')
+                                    .parse(widget.userRides[index].date);
+                                if (widget.userRides[index].status ==
+                                    "pending") {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) => new AlertDialog(
+                                      title: getTitle(
+                                          title: getTranslated(
+                                              context, "confirmation")),
+                                      content: getTitle(
+                                          title: getTranslated(
+                                              context, "deleteriderequest")),
+                                      actions: [
+                                        new TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "cancel")),
+                                        ),
+                                        new TextButton(
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('requests')
+                                                .doc(widget
+                                                    .userRides[index].request)
+                                                .delete()
+                                                .then((value) {
+                                              setState(() {
+                                                widget.drivers.removeAt(index);
+                                                widget.userRides
+                                                    .removeAt(index);
+                                                widget.userRidesDetails
+                                                    .removeAt(index);
+                                              });
+                                            });
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          /*  */
 
-                                      child: getTitle(
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "confirm")),
+                                        ),
+                                      ],
+                                    ),
+                                  ).catchError((onError) {
+                                    ReturnMessage.fail(context, onError);
+                                  });
+                                } else if (widget.userRides[index].status ==
+                                            "accepted" &&
+                                        rideDate.month > now.month ||
+                                    (rideDate.day >= now.day &&
+                                        rideDate.month == now.month)) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) => new AlertDialog(
+                                      title: getTitle(
+                                          title: getTranslated(
+                                              context, "confirmation")),
+                                      content: getTitle(
+                                          title: getTranslated(context,
+                                              "deleteacceptedridereq")),
+                                      actions: [
+                                        new TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "cancel")),
+                                        ),
+                                        new TextButton(
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('requests')
+                                                .doc(widget
+                                                    .userRides[index].request)
+                                                .delete()
+                                                .then((value) async {
+                                              await FirebaseFirestore.instance
+                                                  .collection('rides')
+                                                  .doc(widget
+                                                      .userRidesDetails[index]
+                                                      .driver)
+                                                  .collection('userrides')
+                                                  .doc(widget
+                                                      .userRides[index].ride)
+                                                  .update({
+                                                'numOfPassengers': widget
+                                                        .userRidesDetails[index]
+                                                        .numOfPassengers +
+                                                    widget.userRides[index]
+                                                        .numOfPassengers
+                                              });
+                                              setState(() {
+                                                widget.drivers.removeAt(index);
+                                                widget.userRides
+                                                    .removeAt(index);
+                                                widget.userRidesDetails
+                                                    .removeAt(index);
+                                              });
+                                            });
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "confirm")),
+                                        ),
+                                      ],
+                                    ),
+                                  ).catchError((onError) {
+                                    ReturnMessage.fail(context, onError);
+                                  });
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) => new AlertDialog(
+                                      title: getTitle(
                                           title: getTranslated(
                                               context, "confirm")),
-                                    ),
-                                  ],
-                                ),
-                              ).catchError((onError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: getTitle(title: onError)));
-                              });
-                            } else if (widget.userRides[index].status ==
-                                        "accepted" &&
-                                    rideDate.month > now.month ||
-                                (rideDate.day >= now.day &&
-                                    rideDate.month == now.month)) {
-                              await showDialog(
-                                context: context,
-                                builder: (context) => new AlertDialog(
-                                  title: getTitle(
-                                      title: getTranslated(
-                                          context, "confirmation")),
-                                  content: getTitle(
-                                      title: getTranslated(
-                                          context, "deleteacceptedridereq")),
-                                  actions: [
-                                    new TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: getTitle(
-                                          title:
-                                              getTranslated(context, "cancel")),
-                                    ),
-                                    new TextButton(
-                                      onPressed: () async {
-                                        await FirebaseFirestore.instance
-                                            .collection('requests')
-                                            .doc(
-                                                widget.userRides[index].request)
-                                            .delete()
-                                            .then((value) async {
-                                          await FirebaseFirestore.instance
-                                              .collection('rides')
-                                              .doc(widget
-                                                  .userRidesDetails[index]
-                                                  .driver)
-                                              .collection('userrides')
-                                              .doc(widget.userRides[index].ride)
-                                              .update({
-                                            'numOfPassengers': widget
-                                                    .userRidesDetails[index]
-                                                    .numOfPassengers +
-                                                widget.userRides[index]
-                                                    .numOfPassengers
-                                          });
-                                          setState(() {
-                                            widget.drivers.removeAt(index);
-                                            widget.userRides.removeAt(index);
-                                            widget.userRidesDetails
-                                                .removeAt(index);
-                                          });
-                                        });
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: getTitle(
+                                      content: getTitle(
                                           title: getTranslated(
-                                              context, "confirm")),
+                                              context, "deleteriderequest")),
+                                      actions: [
+                                        new TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "cancel")),
+                                        ),
+                                        new TextButton(
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('requests')
+                                                .doc(widget
+                                                    .userRides[index].request)
+                                                .delete()
+                                                .then((value) {
+                                              setState(() {
+                                                widget.drivers.removeAt(index);
+                                                widget.userRides
+                                                    .removeAt(index);
+                                                widget.userRidesDetails
+                                                    .removeAt(index);
+                                              });
+                                            });
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                          child: getTitle(
+                                              title: getTranslated(
+                                                  context, "confirm")),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ).catchError((onError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: getTitle(title: onError)));
-                              });
-                            } else {
-                              await showDialog(
-                                context: context,
-                                builder: (context) => new AlertDialog(
-                                  title: getTitle(
-                                      title: getTranslated(context, "confirm")),
-                                  content: getTitle(
-                                      title: getTranslated(
-                                          context, "deleteriderequest")),
-                                  actions: [
-                                    new TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: getTitle(
-                                          title:
-                                              getTranslated(context, "cancel")),
-                                    ),
-                                    new TextButton(
-                                      onPressed: () async {
-                                        await FirebaseFirestore.instance
-                                            .collection('requests')
-                                            .doc(
-                                                widget.userRides[index].request)
-                                            .delete()
-                                            .then((value) {
-                                          setState(() {
-                                            widget.drivers.removeAt(index);
-                                            widget.userRides.removeAt(index);
-                                            widget.userRidesDetails
-                                                .removeAt(index);
-                                          });
-                                        });
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: getTitle(
-                                          title: getTranslated(
-                                              context, "confirm")),
-                                    ),
-                                  ],
-                                ),
-                              ).catchError((onError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: getTitle(title: onError)));
-                              });
-                            }
-                          },
+                                  ).catchError((onError) {
+                                    ReturnMessage.fail(context, onError);
+                                  });
+                                }
+                              },
+                            ),
+                          ],
                         ),
                         // reviewed[index]
-                        if (!widget.userRides[index].isReviewed)
-                          CustomElevatedButton(
-                            backgroundColor: redColor,
-                            title: getTranslated(context, "writereview"),
-                            color: Colors.white,
-                            onPressed: () => _modalBottomSheetMenu(
-                                context,
-                                widget.userRidesDetails[index].driver,
-                                widget.userRides[index].ride,
-                                widget.userRides[index].request,
-                                index),
-                          )
                       ],
                     ),
                   );

@@ -59,12 +59,25 @@ dev_dependencies:
     sdk: flutter
   intl: 0.17.0 
   flutter_launcher_icons: "^0.9.0"
+  flutter_native_splash: ^1.1.8+4
+
+flutter_native_splash:
+  color: "#ffefe6"
+  image: assets/icons/EZ.png
+  android: true
+  ios: true
+  web: true
+  fullscreen: true
+  android_gravity: center
+  ios_content_mode: center
+  web_image_mode: center
+
 
 flutter_icons:
   #android: "launcher_icon"
   android: true
   ios: true
-  image_path: "assets/icons/2.png" 
+  image_path: "assets/icons/EZ.png" 
   
 
 

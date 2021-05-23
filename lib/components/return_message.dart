@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 class ReturnMessage {
   static success(BuildContext context, String message) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.green[400], content: getTitle(title: message)));
+        backgroundColor: Colors.green[400],
+        content: getTitle(title: message, color: Colors.white)));
   }
 
   static fail(BuildContext context, String message) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red[400], content: getTitle(title: message)));
+        backgroundColor: Colors.red[400],
+        content: getTitle(title: message, color: Colors.white)));
   }
 
   static wait(BuildContext context, String message) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.orange[400],
-        content: getTitle(title: message)));
+        content: getTitle(title: message, color: Colors.white)));
   }
 }

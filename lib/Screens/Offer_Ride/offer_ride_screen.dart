@@ -5,6 +5,7 @@ import 'package:easy_ride/Assistants/requestAssistant.dart';
 import 'package:easy_ride/Screens/Map/map_screen.dart';
 import 'package:easy_ride/Screens/Search/components/prediction_tile.dart';
 import 'package:easy_ride/components/keys.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/direction_details.dart';
 import 'package:easy_ride/models/place_prediction.dart';
@@ -659,9 +660,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                       ],
                                     ),
                                   ).catchError((onError) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: getTitle(title: onError)));
+                                    ReturnMessage.fail(context, onError);
                                   });
                                 });
                               }

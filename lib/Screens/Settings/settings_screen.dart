@@ -98,18 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 items: Language.languageList()
                     .map<DropdownMenuItem<Language>>(
                       (e) => DropdownMenuItem<Language>(
-                        value: e,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            getTitle(
-                              title: e.flag,
-                              fontSize: 30,
-                            ),
-                            getTitle(title: e.name)
-                          ],
-                        ),
-                      ),
+                          value: e, child: getTitle(title: e.name)),
                     )
                     .toList(),
               ),

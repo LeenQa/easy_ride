@@ -174,7 +174,8 @@ class _RideRequestsState extends State<RideRequests> {
                                                   (rideDate.day >= now.day &&
                                                       rideDate.month ==
                                                           now.month)) {
-                                                widget.driverRide.numOfPassengers >=
+                                                widget.driverRide
+                                                            .numOfPassengers >=
                                                         widget
                                                             .rideRequests[index]
                                                             .numOfPassengers
@@ -184,8 +185,9 @@ class _RideRequestsState extends State<RideRequests> {
                                                         .doc(widget
                                                             .rideRequests[index]
                                                             .request)
-                                                        .update({'status': 'accepted'}).then(
-                                                            (_) async {
+                                                        .update({
+                                                        'status': 'accepted'
+                                                      }).then((_) async {
                                                         await FirebaseFirestore
                                                             .instance
                                                             .collection('rides')
@@ -278,25 +280,15 @@ class _RideRequestsState extends State<RideRequests> {
                                                               'accepted';
                                                         });
                                                       })
-                                                    : ScaffoldMessenger.of(context)
-                                                        .showSnackBar(SnackBar(
-                                                            backgroundColor:
-                                                                Theme.of(context)
-                                                                    .errorColor,
-                                                            content: ReturnMessage.fail(
-                                                                context,
-                                                                getTranslated(
-                                                                    context, "numofseatserror"))));
+                                                    : ReturnMessage.fail(
+                                                        context,
+                                                        getTranslated(context,
+                                                            "numofseatserror"));
                                               } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                        backgroundColor:
-                                                            Theme.of(context)
-                                                                .errorColor,
-                                                        content: getTitle(
-                                                            title: getTranslated(
-                                                                context,
-                                                                "oldrideerror"))));
+                                                ReturnMessage.fail(
+                                                    context,
+                                                    getTranslated(context,
+                                                        "oldrideerror"));
                                               }
                                             },
                                             iconSize: 45,

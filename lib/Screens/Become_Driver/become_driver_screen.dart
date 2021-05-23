@@ -150,10 +150,8 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                   }).then((value) {
                     count++;
                     if (count == 4) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Colors.green,
-                          content: getTitle(
-                              title: getTranslated(context, "successfulreq"))));
+                      ReturnMessage.success(
+                          context, getTranslated(context, "successfulreq"));
                       setState(() {
                         _image.clear();
                         _textFieldController.clear();

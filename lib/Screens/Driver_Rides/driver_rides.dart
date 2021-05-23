@@ -5,6 +5,7 @@ import 'package:easy_ride/Screens/Driver_Rides/requests.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
 import 'package:easy_ride/components/main_drawer.dart';
+import 'package:easy_ride/components/return_message.dart';
 import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/ride.dart';
 import 'package:easy_ride/models/searched_ride.dart';
@@ -250,9 +251,7 @@ class _DriverRidesState extends State<DriverRides> {
                                     ],
                                   ),
                                 ).catchError((onError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: getTitle(title: onError)));
+                                  ReturnMessage.fail(context, onError);
                                 });
                               },
                             ),
