@@ -145,8 +145,11 @@ class _RidesListState extends State<RidesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Colors.white,
           title: getTitle(
-              title: getTranslated(context, "rideslist"), fontSize: 20)),
+              title: getTranslated(context, "rideslist"),
+              fontSize: 20,
+              color: kPrimaryColor)),
       body: (exactRides.length == 0 && otherRides.length == 0)
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,

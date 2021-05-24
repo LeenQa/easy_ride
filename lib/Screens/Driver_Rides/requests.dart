@@ -72,7 +72,9 @@ class _RideRequestsState extends State<RideRequests> {
       child: Scaffold(
         appBar: AppBar(
           title: getTitle(
-              title: getTranslated(context, "riderequests"), fontSize: 20),
+              color: redColor,
+              title: getTranslated(context, "riderequests"),
+              fontSize: 20),
           backgroundColor: Colors.white,
         ),
         body: widget.rideRequests.length == 0

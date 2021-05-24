@@ -113,7 +113,9 @@ class _ChatBodyWidgetState extends State<ChatBodyWidget> {
                                     .toString(),
                                 fontSize: 12,
                               ),
-                              subtitle: getTitle(title: message, fontSize: 13),
+                              subtitle: message != null
+                                  ? getTitle(title: message, fontSize: 13)
+                                  : "",
                             ),
                             Divider()
                           ],
