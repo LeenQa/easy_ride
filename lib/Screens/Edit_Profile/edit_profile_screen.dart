@@ -218,6 +218,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                           return null;
                       },
                       controller: _textFieldController,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                           errorMaxLines: 5,
                           hintText: getTranslated(context, "firstname")),
@@ -232,6 +233,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                           return null;
                         ;
                       },
+                      textCapitalization: TextCapitalization.sentences,
                       controller: _textFieldController2,
                       decoration: InputDecoration(
                           errorMaxLines: 5,
