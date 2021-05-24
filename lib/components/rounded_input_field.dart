@@ -49,25 +49,22 @@ class RoundedInputField extends StatelessWidget {
       child: TextFormField(
           validator: (value) {
             if (value.isEmpty) {
-              return "Fill empty fields";
+              return getTranslated(context, 'fillemptyfields');
             } else if (hintText == getTranslated(context, 'firstname') ||
                 hintText == getTranslated(context, 'lastname')) {
               if (!isAlpha(value)) {
-                return "Names can only contain letters";
+                return getTranslated(context, 'usernameerror');
               }
             } else if (hintText == "Username") {
               return FieldValidation.validateUsername(value, context);
             } else if (hintText == getTranslated(context, 'email')) {
               return FieldValidation.validateEmail(value, context);
             } else if (hintText == getTranslated(context, 'phone')) {
-              if (value.length < 7) {
-                return "Phone number is too short";
-              }
-              if (value.length > 15) {
-                return "Phone number is too long";
+              if (value.length < 7 || value.length > 15) {
+                return getTranslated(context, 'phoneerror');
               }
             } else if (value.length < 3) {
-              return "Enter at least 3 characters";
+              return getTranslated(context, 'atleast3chars');
             } else
               return null;
             return null;
@@ -85,6 +82,7 @@ class RoundedInputField extends StatelessWidget {
           textAlign: textAlign == null ? TextAlign.start : textAlign,
           decoration: inputDecoration == null
               ? InputDecoration(
+                  errorMaxLines: 5,
                   hintStyle: TextStyle(
                       fontSize: 14,
                       fontFamily: 'QuickSand',

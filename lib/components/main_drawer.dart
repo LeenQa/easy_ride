@@ -23,6 +23,7 @@ class MainDrawer extends StatefulWidget {
   _MainDrawerState createState() => _MainDrawerState();
 }
 
+bool already = false;
 Widget getTitle(
     {String title,
     Color color,
@@ -91,7 +92,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   String uid;
-  bool already;
+
   getUser() {
     final User user = auth.currentUser;
     uid = user.uid;
@@ -118,7 +119,7 @@ class _MainDrawerState extends State<MainDrawer> {
         .collection("rides")
         .doc(uid)
         .collection("userrides")
-        .orderBy('date', descending: true)
+        .orderBy('date', descending: false)
         .get()
         .then((querySnapshot) async {
       querySnapshot.docs.forEach((result) {

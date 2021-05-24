@@ -116,9 +116,10 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     CustomElevatedButton(
+                                        color: Colors.red,
+                                        backgroundColor: Colors.white,
+                                        borderColor: Colors.red,
                                         title: "Reject",
-                                        backgroundColor: kPrimaryColor,
-                                        color: Colors.white,
                                         onPressed: () async {
                                           String token = "";
                                           await FirebaseFirestore.instance
@@ -150,8 +151,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
                                           }
                                         }),
                                     CustomElevatedButton(
+                                      backgroundColor: Colors.green[400],
                                       title: "Accept",
-                                      backgroundColor: kPrimaryColor,
                                       color: Colors.white,
                                       onPressed: () async {
                                         await FirebaseFirestore.instance

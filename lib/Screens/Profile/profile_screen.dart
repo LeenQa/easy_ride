@@ -205,7 +205,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _handleClick(context, currentUser, uid);
                     },
                     itemBuilder: (BuildContext context) {
-                      return {'Report'}.map((String choice) {
+                      return {getTranslated(context, 'report')}
+                          .map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
                           child: getTitle(title: choice),

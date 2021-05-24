@@ -16,6 +16,7 @@ import 'package:flutter_credit_card/credit_card_model.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
+import 'package:url_launcher/url_launcher.dart';
 
 enum Picture {
   DriverLicense,
@@ -150,7 +151,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                   }).then((value) {
                     count++;
                     if (count == 4) {
-                      ReturnMessage.success(
+                     ReturnMessage.success(
                           context, getTranslated(context, "successfulreq"));
                       setState(() {
                         _image.clear();
@@ -405,10 +406,20 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
+                        child: getTitle(
+                          title: "Note: EasyRide takes 10% of every ride!",
+                        ),
+                      ),
                       CheckboxListTile(
-                        title: getTitle(
-                            title: getTranslated(context, "agree"),
-                            fontSize: 14),
+                        title: GestureDetector(
+                          onTap: _launch,
+                          child: getTitle(
+                              title: getTranslated(context, "agree"),
+                              fontSize: 14,
+                              decoration: TextDecoration.underline),
+                        ),
                         value: agree,
                         onChanged: (newValue) {
                           setState(() {
@@ -436,5 +447,20 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               ),
             ),
     );
+  }
+
+  Future<void> _launch() async {
+    const url =
+        'https://www.freeprivacypolicy.com/live/ff404587-6ac6-4189-a01e-af08e2ff5a6b';
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

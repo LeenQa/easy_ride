@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_ride/Assistants/assistantMethods.dart';
 import 'package:easy_ride/Screens/Profile/profile_screen.dart';
 import 'package:easy_ride/components/custom_container.dart';
 import 'package:easy_ride/components/custom_elevated_button.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import '../../constants.dart';
 
@@ -60,6 +62,8 @@ class _UserRidesState extends State<UserRides> {
   //List<bool> reviewed;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _textFieldController = TextEditingController();
+
+  DateTime now = DateTime.now();
   // checkReviewed(String driverId, String rideId, int index) async {
   //   var reviews = await FirebaseFirestore.instance
   //       .collection("drivers")
@@ -283,6 +287,8 @@ class _UserRidesState extends State<UserRides> {
                 itemBuilder: (ctx, index) {
                   // checkReviewed(widget.userRidesDetails[index].driver,
                   //     widget.userRides[index].ride, index);
+                  DateTime rideDate = new DateFormat('EEE, MMM d')
+                      .parse(widget.userRides[index].date);
                   bool isBefore = DateFormat("EEE, MMM d")
                       .parse(widget.userRides[index].date)
                       .isBefore(DateTime.now());
@@ -398,22 +404,30 @@ class _UserRidesState extends State<UserRides> {
                                           ),
                           ),
                         ),
+
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (!widget.userRides[index].isReviewed)
-                              CustomElevatedButton(
-                                backgroundColor: Colors.green[400],
-                                title: getTranslated(context, "writereview"),
-                                color: Colors.white,
-                                onPressed: () => _modalBottomSheetMenu(
-                                    context,
-                                    widget.userRidesDetails[index].driver,
-                                    widget.userRides[index].ride,
-                                    widget.userRides[index].request,
-                                    index),
-                              ),
+                              ((rideDate.month < now.month ||
+                                          (rideDate.day < now.day &&
+                                              rideDate.month == now.month)) &&
+                                      widget.userRides[index].status ==
+                                          "accepted")
+                                  ? CustomElevatedButton(
+                                      backgroundColor: Colors.green[400],
+                                      title:
+                                          getTranslated(context, "writereview"),
+                                      color: Colors.white,
+                                      onPressed: () => _modalBottomSheetMenu(
+                                          context,
+                                          widget.userRidesDetails[index].driver,
+                                          widget.userRides[index].ride,
+                                          widget.userRides[index].request,
+                                          index),
+                                    )
+                                  : Container(),
                             SizedBox(
                               width: 10,
                             ),
@@ -506,6 +520,13 @@ class _UserRidesState extends State<UserRides> {
                                         ),
                                         new TextButton(
                                           onPressed: () async {
+                                            String token = '';
+                                            bool
+                                                areRequestsNotificationsTurnedOn =
+                                                true;
+                                            String firstName = '';
+                                            String lastName = '';
+                                            String urlAvatar = '';
                                             await FirebaseFirestore.instance
                                                 .collection('requests')
                                                 .doc(widget
@@ -527,6 +548,54 @@ class _UserRidesState extends State<UserRides> {
                                                     widget.userRides[index]
                                                         .numOfPassengers
                                               });
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(widget
+                                                      .userRidesDetails[index]
+                                                      .driver)
+                                                  .get()
+                                                  .then((value) async {
+                                                token = value.data()['token'];
+
+                                                areRequestsNotificationsTurnedOn =
+                                                    value.data()[
+                                                        'getRequestNotifications'];
+                                                if (token != '') {
+                                                  print(token);
+                                                  OneSignal.shared
+                                                      .setNotificationWillShowInForegroundHandler(
+                                                          (OSNotificationReceivedEvent
+                                                              event) {
+                                                    event.complete(null);
+                                                  });
+                                                  if (areRequestsNotificationsTurnedOn) {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('users')
+                                                        .doc(uid)
+                                                        .get()
+                                                        .then((value) {
+                                                      firstName = value
+                                                          .data()['firstName'];
+                                                      lastName = value
+                                                          .data()['lastName'];
+                                                      urlAvatar = value
+                                                          .data()['urlAvatar'];
+                                                      AssistantMethods
+                                                          .sendNotification(
+                                                              [token],
+                                                              getTranslated(
+                                                                  context,
+                                                                  "riderequestdelete"),
+                                                              firstName +
+                                                                  " " +
+                                                                  lastName,
+                                                              urlAvatar);
+                                                    });
+                                                  }
+                                                }
+                                              });
+
                                               setState(() {
                                                 widget.drivers.removeAt(index);
                                                 widget.userRides
@@ -602,7 +671,8 @@ class _UserRidesState extends State<UserRides> {
                               },
                             ),
                           ],
-                        ),
+                        )
+
                         // reviewed[index]
                       ],
                     ),

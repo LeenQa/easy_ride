@@ -10,7 +10,7 @@ class ReturnMessage {
 
   static fail(BuildContext context, String message) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red[400],
+        backgroundColor: Theme.of(context).errorColor,
         content: getTitle(title: message, color: Colors.white)));
   }
 

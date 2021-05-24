@@ -21,14 +21,14 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
             title: login
                 ? getTranslated(context, 'noaccount')
                 : getTranslated(context, 'haveaccount'),
-            color: kPrimaryColor),
+            color: blueColor),
         GestureDetector(
           onTap: press,
           child: getTitle(
             title: login
                 ? getTranslated(context, 'signup')
                 : getTranslated(context, 'login'),
-            color: kPrimaryColor,
+            color: blueColor,
             fontWeight: FontWeight.bold,
           ),
         )

@@ -72,7 +72,6 @@ class _TabsScreenState extends State<TabsScreen> {
     final List<Map<String, Object>> _pages = [
       {'page': HomeScreen(), 'title': 'EasyRide'},
       {'page': MessagesScreen(), 'title': getTranslated(context, 'messages')},
-      {'page': HomeScreen(), 'title': getTranslated(context, 'notifications')},
       {'page': SearchScreen(), 'title': getTranslated(context, 'search')},
     ];
     return Scaffold(
@@ -98,7 +97,6 @@ class _TabsScreenState extends State<TabsScreen> {
         items: [
           Icon(Icons.home),
           Icon(Icons.message),
-          Icon(Icons.notifications),
           Icon(Icons.search),
         ],
       ),

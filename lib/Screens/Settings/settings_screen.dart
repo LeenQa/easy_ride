@@ -124,7 +124,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Column(
                     children: [
                       SwitchListTile.adaptive(
-                          title: getTitle(title: 'Receive Chat Notifications'),
+                          title: getTitle(
+                              title: getTranslated(
+                                  context, 'receivechatnotification')),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.notifications,
@@ -139,8 +141,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .update({"getChatNotifications": chatNotif});
                           }),
                       SwitchListTile.adaptive(
-                          title:
-                              getTitle(title: 'Receive Request Notifications'),
+                          title: getTitle(
+                              title: getTranslated(
+                                  context, 'receiverequestnotification')),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.notifications,
@@ -156,8 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     {"getRequestNotifications": requestNotif});
                           }),
                       SwitchListTile.adaptive(
-                          title:
-                              getTitle(title: 'Show phone number in profile'),
+                          title: getTitle(
+                              title: getTranslated(context, 'showphone')),
                           activeColor: kPrimaryColor,
                           secondary: const Icon(
                             Icons.phone,

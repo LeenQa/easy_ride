@@ -40,6 +40,7 @@ class _SingupBodyState extends State<SingupBody> {
     if (isValid) {
       _formKey.currentState.save();
       widget.signupSubmit(_user);
+      userLocationController.clear();
       Navigator.of(ctx).pushNamed(
         LoginScreen.routeName,
       );

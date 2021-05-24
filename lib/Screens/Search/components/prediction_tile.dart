@@ -155,6 +155,7 @@ class _PredictionTileState extends State<PredictionTile> {
       placesId.add(results[i]['place_id']);
       nearbyPlaces.add(results[i]['name']);
     }
+    nearbyPlaces.add(searched.arrivalLocation);
     print(nearbyPlaces);
     await FirebaseFirestore.instance
         .collection("nearbyPlaces")

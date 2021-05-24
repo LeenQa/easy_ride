@@ -146,11 +146,16 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                     keyboardType: TextInputType.phone,
                     controller: _textFieldController,
                     validator: (value) {
-                      if (value == null) {
+                      if (value == "") {
                         return getTranslated(context, "pleaseprovidevalue");
+                      } else if (value.length > 15 || value.length < 7) {
+                        return getTranslated(context, "phoneerror");
                       } else
                         return null;
                     },
+                    decoration: InputDecoration(
+                        errorMaxLines: 5,
+                        hintText: getTranslated(context, "phone")),
                   ),
                 ],
               ),
@@ -205,7 +210,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                   children: [
                     TextFormField(
                       validator: (value) {
-                        if (value == null) {
+                        if (value == "" || value == null) {
                           return getTranslated(context, "pleaseprovidevalue");
                         } else if (!isAlpha(value)) {
                           return getTranslated(context, "nameerror");
@@ -214,11 +219,12 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                       },
                       controller: _textFieldController,
                       decoration: InputDecoration(
+                          errorMaxLines: 5,
                           hintText: getTranslated(context, "firstname")),
                     ),
                     TextFormField(
                       validator: (value) {
-                        if (value == null) {
+                        if (value == "" || value == null) {
                           return getTranslated(context, "pleaseprovidevalue");
                         } else if (!isAlpha(value)) {
                           return getTranslated(context, "nameerror");
@@ -228,6 +234,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                       },
                       controller: _textFieldController2,
                       decoration: InputDecoration(
+                          errorMaxLines: 5,
                           hintText: getTranslated(context, "lastname")),
                     )
                   ],
@@ -262,6 +269,17 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                     'searchIndex': searchIndex(
                         _textFieldController.text, _textFieldController2.text),
                   });
+                  already
+                      ? await FirebaseFirestore.instance
+                          .collection("driver_requests")
+                          .doc(args["id"])
+                          .update({
+                          "firstName": _textFieldController.text,
+                          "lastName": _textFieldController2.text,
+                        })
+                      // ignore: unnecessary_statements
+                      : null;
+
                   ReturnMessage.success(
                       context, getTranslated(context, "nameupdated"));
                   _textFieldController.text = "";
@@ -297,6 +315,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                       },
                       controller: _textFieldController,
                       decoration: InputDecoration(
+                          errorMaxLines: 5,
                           hintText: getTranslated(context, "currpass")),
                     ),
                     TextFormField(
@@ -306,6 +325,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
                       },
                       controller: _textFieldController2,
                       decoration: InputDecoration(
+                          errorMaxLines: 5,
                           hintText: getTranslated(context, "newpass")),
                     ),
                   ],
@@ -416,6 +436,15 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
           storageReference.getDownloadURL().then((fileURL) async {
             _uploadedFileURL = fileURL;
             print(fileURL);
+            already
+                ? await FirebaseFirestore.instance
+                    .collection("driver_requests")
+                    .doc(args["id"])
+                    .update({
+                    'urlAvatar': _uploadedFileURL,
+                  })
+                // ignore: unnecessary_statements
+                : null;
             await FirebaseFirestore.instance
                 .collection('users')
                 .doc(args["id"])

@@ -51,6 +51,7 @@ dependencies:
   onesignal_flutter: ^3.0.0-beta3
   flutter_credit_card: ^2.0.0
   string_validator: ^0.3.0
+  url_launcher: ^6.0.4
   
 dev_dependencies:
   flutter_test:

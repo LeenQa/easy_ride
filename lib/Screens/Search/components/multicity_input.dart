@@ -524,12 +524,13 @@ class _MulticityInputState extends State<MulticityInput> {
                     color: Colors.white,
                   ),
                   getTitle(
-                      title: "Reminder", color: Colors.white, fontSize: 16),
+                      title: getTranslated(context, "note"),
+                      color: Colors.white,
+                      fontSize: 16),
                 ],
               ),
               getTitle(
-                  title:
-                      "Don't forget to review the driver after the ride is finished!",
+                  title: getTranslated(context, "notemsg"),
                   color: Colors.white,
                   fontSize: 14),
             ],

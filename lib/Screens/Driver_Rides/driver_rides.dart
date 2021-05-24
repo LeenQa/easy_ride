@@ -126,7 +126,7 @@ class _DriverRidesState extends State<DriverRides> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             CustomElevatedButton(
-                              backgroundColor: redColor,
+                              backgroundColor: Colors.green[400],
                               title: getTranslated(context, "requests"),
                               color: Colors.white,
                               onPressed: () async {
@@ -188,9 +188,10 @@ class _DriverRidesState extends State<DriverRides> {
                               },
                             ),
                             CustomElevatedButton(
-                              backgroundColor: redColor,
+                              color: Colors.red,
+                              backgroundColor: Colors.white,
+                              borderColor: Colors.red,
                               title: getTranslated(context, "deleteride"),
-                              color: Colors.white,
                               onPressed: () async {
                                 await showDialog(
                                   context: context,
@@ -208,7 +209,9 @@ class _DriverRidesState extends State<DriverRides> {
                                                   rootNavigator: true)
                                               .pop();
                                         },
-                                        child: getTitle(title: 'Cancel'),
+                                        child: getTitle(
+                                            title: getTranslated(
+                                                context, "cancel")),
                                       ),
                                       new TextButton(
                                         onPressed: () async {

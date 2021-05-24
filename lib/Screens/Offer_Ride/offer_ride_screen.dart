@@ -10,8 +10,6 @@ import 'package:easy_ride/models/address.dart';
 import 'package:easy_ride/models/direction_details.dart';
 import 'package:easy_ride/models/place_prediction.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import 'package:easy_ride/components/main_drawer.dart';
@@ -21,11 +19,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:provider/provider.dart';
-
 import '../../constants.dart';
-import '../../text_style.dart';
 
 class OfferRideScreen extends StatefulWidget {
   static const routeName = '/offer_ride';
@@ -66,12 +61,19 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   List<Place> places;
 
   bool loading = true;
-
+  var localizations;
   @override
   void initState() {
     super.initState();
     loadJsonData();
     getUser();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    localizations = MaterialLocalizations.of(context).toString();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -191,7 +193,7 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
   @override
   Widget build(BuildContext context) {
     //print(data);
-    var localizations = MaterialLocalizations.of(context).toString();
+
     var padding;
     setState(() {
       if (localizations.contains("En")) {
@@ -497,7 +499,9 @@ class _OfferRideScreenState extends State<OfferRideScreen> {
                                 child: Column(
                                   children: [
                                     Align(
-                                        alignment: Alignment.topLeft,
+                                        alignment: localizations.contains("En")
+                                            ? Alignment.topLeft
+                                            : Alignment.topRight,
                                         child: getTitle(
                                             title: getTranslated(
                                                 context, 'stopovers'),

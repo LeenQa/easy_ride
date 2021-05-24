@@ -3,6 +3,7 @@ import 'package:easy_ride/Screens/Login/components/login_body.dart';
 import 'package:easy_ride/Screens/tabs_screen.dart';
 import 'package:easy_ride/components/main_drawer.dart';
 import 'package:easy_ride/components/return_message.dart';
+import 'package:easy_ride/localization/language_constants.dart';
 import 'package:easy_ride/models/user.dart' as User;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,7 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (err.message != null) {
         message = err.message;
       }
-      ReturnMessage.fail(context, message);
+
+      ReturnMessage.fail(context, getTranslated(context, "checkcredentials"));
       if (this.mounted) {
         setState(() {
           _isLoading = false;
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (err) {
       print(err);
-      ReturnMessage.fail(context, err.toString().substring(30));
+      ReturnMessage.fail(context, getTranslated(context, "checkcredentials"));
       if (this.mounted) {
         setState(() {
           _isLoading = false;
