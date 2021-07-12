@@ -13,5 +13,4 @@ management. Moreover, different Google APIs
 were integrated into the application for maps
 and locations services.
 
-
-![login](https://github.com/LeenQa/easy_ride/tree/master/pics/login.jpg)
+see some pictures of the application: https://github.com/LeenQa/easy_ride/blob/master/pics
