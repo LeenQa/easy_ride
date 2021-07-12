@@ -14,4 +14,4 @@ were integrated into the application for maps
 and locations services.
 
 
-!login(https://github.com/LeenQa/easy_ride/tree/master/pics/login.jpg?raw=true)
+![login](https://github.com/LeenQa/easy_ride/tree/master/pics/login.jpg?raw=true)
