@@ -409,25 +409,17 @@ class _UserRidesState extends State<UserRides> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (!widget.userRides[index].isReviewed)
-                              ((rideDate.month < now.month ||
-                                          (rideDate.day < now.day &&
-                                              rideDate.month == now.month)) &&
-                                      widget.userRides[index].status ==
-                                          "accepted")
-                                  ? CustomElevatedButton(
-                                      backgroundColor: Colors.green[400],
-                                      title:
-                                          getTranslated(context, "writereview"),
-                                      color: Colors.white,
-                                      onPressed: () => _modalBottomSheetMenu(
-                                          context,
-                                          widget.userRidesDetails[index].driver,
-                                          widget.userRides[index].ride,
-                                          widget.userRides[index].request,
-                                          index),
-                                    )
-                                  : Container(),
+                            CustomElevatedButton(
+                              backgroundColor: Colors.green[400],
+                              title: getTranslated(context, "writereview"),
+                              color: Colors.white,
+                              onPressed: () => _modalBottomSheetMenu(
+                                  context,
+                                  widget.userRidesDetails[index].driver,
+                                  widget.userRides[index].ride,
+                                  widget.userRides[index].request,
+                                  index),
+                            ),
                             SizedBox(
                               width: 10,
                             ),
